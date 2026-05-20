@@ -5,17 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Document(collection = "ofertas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Oferta {
+    @Id
     private String id;
+    @DocumentReference(lazy = true)
     private List<Figurita> figuritas;
+    @DocumentReference(lazy = true)
     private Usuario usuario;
     private Estado estado;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

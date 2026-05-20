@@ -1,26 +1,33 @@
 package com.grupo3.tp.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+
 import java.time.LocalDateTime;
 
+@Document(collection = "notificaciones")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Notificacion {
+    @Id
     private String id;
-    private Usuario usuario;           // Who receives it
-    private String tipo;               // "propuesta", "figurita-faltante", "subasta"
+    @DocumentReference(lazy = true)
+    private Usuario usuario;
+    private String tipo;
     private String titulo;
     private String mensaje;
     private Boolean leida;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fecha;
-    private String enlace;             // "/propuestas/recibidas", etc
+    private String enlace;
 }
 
 
