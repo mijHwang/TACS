@@ -21,6 +21,7 @@ public class FiguritaBaseService {
     }
 
     public Optional<FiguritaBase> obtenerPorId(String id) {
+
         return repository.findById(id);
     }
 

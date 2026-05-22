@@ -1,7 +1,8 @@
 package com.grupo3.tp.controller;
 
-import com.grupo3.tp.models.FiguritaBase;
-import com.grupo3.tp.service.FiguritaBaseService;
+import com.grupo3.tp.dtos.FiguritaBaseRequestDTO;
+import com.grupo3.tp.models.*;
+import com.grupo3.tp.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,21 @@ import java.util.List;
 public class FiguritaBaseController {
 
     private final FiguritaBaseService service;
+    private final SeleccionService seleccionService;
+    private final JugadorService jugadorService;
+    private final CategoriaFiguritaService  categoriaService;
+    private final EquipoService equipoService;
 
-    public FiguritaBaseController(FiguritaBaseService service) {
+    public FiguritaBaseController(FiguritaBaseService service,
+                                  SeleccionService seleccionService,
+                                  JugadorService jugadorService,
+                                  CategoriaFiguritaService categoriaService,
+                                  EquipoService equipoService) {
         this.service = service;
+        this.seleccionService = seleccionService;
+        this.jugadorService = jugadorService;
+        this.categoriaService = categoriaService;
+        this.equipoService = equipoService;
     }
 
     @GetMapping
@@ -31,7 +44,30 @@ public class FiguritaBaseController {
     }
 
     @PostMapping
-    public ResponseEntity<FiguritaBase> create(@RequestBody FiguritaBase figuritaBase) {
+    public ResponseEntity<FiguritaBase> create(@RequestBody FiguritaBaseRequestDTO request) {
+
+
+        Seleccion seleccion = seleccionService.obtenerPorId(request.getSeleccionId())
+                .orElseThrow(() -> new RuntimeException("Seleccion no encontrada"));
+
+        Equipo equipo = equipoService.obtenerPorId(request.getEquipoId())
+                .orElseThrow(() -> new RuntimeException("Equipo no encontrado"));
+
+        CategoriaFigurita categoria = categoriaService.obtenerPorId(request.getCategoriaId())
+                .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+
+        Jugador jugador = jugadorService.obtenerPorId(request.getJugadorId())
+                .orElseThrow(() -> new RuntimeException("Jugador no encontrado"));
+
+        FiguritaBase figuritaBase = FiguritaBase.builder()
+                .numero(request.getNumero())
+                .seleccion(seleccion)
+                .equipo(equipo)
+                .categoria(categoria)
+                .jugador(jugador)
+                .build();
+
+
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(figuritaBase));
     }
 

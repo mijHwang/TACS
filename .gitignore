@@ -36,3 +36,5 @@ build/
 .env
 application-local.properties
 /.claude/*
+
+node_modules/

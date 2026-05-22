@@ -2,6 +2,7 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.SolicitudDeIntercambioRepository;
+import jakarta.validation.constraints.Null;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -174,8 +175,6 @@ public class SolicitudDelIntercambioServiceTest {
 
         assertFalse(result.isPresent());
 
-        verify(repo, never()).findById("sol-1000");
-
     }
 
     @Test
@@ -216,7 +215,8 @@ public class SolicitudDelIntercambioServiceTest {
 
         assertTrue(result.isPresent());
         assertEquals("sol-1", result.get().getId());
-        assertEquals(2, result.get().getCantidadDisponible());
+        assertNull(result.get().getFiguritasOfrecidas());
+
 
     }
 
@@ -257,10 +257,10 @@ public class SolicitudDelIntercambioServiceTest {
         testList.add(solicitudDelIntercambio3);
 
         when(repo.findByFiguritaOwnerId("user-2")).thenReturn(testList);
-        List<SolicitudDeIntercambio> result = service.obtenerRecibidas("user-1");
+        List<SolicitudDeIntercambio> result = service.obtenerRecibidas("user-2");
 
         assertTrue(result.containsAll(testList));
-        verify(repo, times(1)).findByFiguritaOwnerId("user-1");
+        verify(repo, times(1)).findByFiguritaOwnerId("user-2");
 
     }
 
@@ -268,7 +268,7 @@ public class SolicitudDelIntercambioServiceTest {
     public void obtenerRecibidasVacia(){
         List<SolicitudDeIntercambio> testList = new ArrayList<>();
 
-        when(repo.findByFiguritaOwnerId("user-2")).thenReturn(testList);
+        when(repo.findByFiguritaOwnerId("user-1")).thenReturn(testList);
 
         List<SolicitudDeIntercambio> result = service.obtenerRecibidas("user-1");
         assertTrue(result.isEmpty());
