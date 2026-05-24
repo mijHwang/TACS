@@ -5,4 +5,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FiguritaRepository extends MongoRepository<Figurita, String> {}
+public interface FiguritaRepository extends MongoRepository<Figurita, String>, FiguritaRepositoryCustom {}

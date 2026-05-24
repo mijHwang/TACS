@@ -1,7 +1,9 @@
 package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.Usuariodto;
+import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Usuario;
+import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import java.util.List;
 public class UsuarioController {
 
     private final UsuarioService service;
+    private final FiguritaService figuritaService;
 
-    public UsuarioController(UsuarioService service) {
+    public UsuarioController(UsuarioService service, FiguritaService figuritaService ) {
         this.service = service;
+        this.figuritaService = figuritaService;
     }
 
     @GetMapping
@@ -34,6 +38,10 @@ public class UsuarioController {
     @GetMapping("/by-username/{userName}")
     public ResponseEntity<Usuario> getByUserName(@PathVariable String userName) {
          Usuario usuario = service.loadUserByUsername(userName);
+
+        List<Figurita> figuritas = figuritaService.obtenerPorUserId(usuario.getId());
+        usuario.setFiguritas(figuritas);
+
         return  ResponseEntity.ok(usuario);
     }
 

@@ -29,6 +29,10 @@ public class FiguritaService {
         return repository.findAll();
     }
 
+    public List<Figurita> obtenerPorUserId(String userId) {
+        return repository.findByFiguritaOwnerId(userId);
+    }
+
     public Optional<Figurita> actualizar(String id, Figurita figurita) {
         if (!repository.existsById(id)) {
             return Optional.empty();
@@ -36,6 +40,8 @@ public class FiguritaService {
         figurita.setId(id);
         return Optional.of(repository.save(figurita));
     }
+
+
 
     public boolean eliminar(String id) {
         if (!repository.existsById(id)) {

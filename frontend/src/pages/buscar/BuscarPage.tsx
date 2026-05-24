@@ -32,6 +32,7 @@ export default function BuscarPage() {
     const [filterCategoria, setFilterCategoria] = useState('');
 
 
+
     //Buscar booting
     useEffect( () => {
       api.get('/api/figuritas')
@@ -111,6 +112,10 @@ export default function BuscarPage() {
           const matchesSearch = figurita.figuritaBase.jugador.nombre
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
+
+          const currentUserId = localStorage.getItem('userID');
+
+          const isNotOwned = figurita.owner?.id !== currentUserId;
     
           const matchesNumero = filterNumero === '' || 
             figurita.figuritaBase.id.includes(filterNumero);
@@ -128,7 +133,7 @@ export default function BuscarPage() {
             .includes(filterCategoria.toLowerCase());
     
             return matchesSearch && matchesNumero && matchesSeleccion && 
-              matchesEquipo && matchesCategoria;
+              matchesEquipo && matchesCategoria && isNotOwned;
           })
           .map((figurita) => (
             <div key={figurita.id} className="bg-surface p-4 rounded-lg border border-border">

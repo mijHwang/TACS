@@ -42,6 +42,11 @@ public class FiguritaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/usuario/{userId}")
+    public ResponseEntity<List<Figurita>> getByUser(@PathVariable String userId) {
+        return ResponseEntity.ok(service.obtenerPorUserId(userId));
+    }
+
 
     @PostMapping
     public ResponseEntity<Figurita> create(@RequestBody FiguritaRequestDTO figuritaRequestDTO) {

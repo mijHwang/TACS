@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import api from '../services/api';
 
 export interface User {
   id: string;
@@ -37,12 +38,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   });
 
-  const loginWithToken = (token: string) => {
-    localStorage.setItem('token', token);
-    const { sub, roles } = decodeToken(token);
-    const role = roles.some((r: string) => r.includes('ADMIN')) ? 'admin' : 'user';
-    setUser({ id: sub, username: sub, email: '', role });
-  };
+  useEffect(() => {
+    if (!user?.username) return;
+    
+    api.get(`/api/usuarios/by-username/${user.username}`)
+      .then(res => {
+        setUser({
+          id: res.data.id,
+          username: res.data.username,
+          email: res.data.email,
+          role: user.role
+        });
+      })
+      .catch(error => console.error('Failed to fetch user:', error));
+  }, []);
+
+
+
+  const loginWithToken = async (token: string) => {
+
+    try {
+  localStorage.setItem('token', token);
+  const { sub, roles } = decodeToken(token);
+  // Determine role
+  const role = roles.some((r: string) => r.includes('ADMIN')) ? 'admin' : 'user';
+  
+  // Fetch full user data
+  const response = await api.get(`/api/usuarios/by-username/${sub}`);
+  setUser({
+    id: response.data.id,
+    username: response.data.username,
+    email: response.data.email,
+    role: role
+  });
+  } catch (error) {
+    console.error('Failed to load user:', error);
+    // Optionally redirect to login
+  }
+
+};
+
+ 
 
   const logout = () => {
     localStorage.removeItem('token');

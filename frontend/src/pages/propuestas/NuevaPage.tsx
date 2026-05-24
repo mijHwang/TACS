@@ -30,6 +30,7 @@ export default function PropuestasNuevaPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();  
+
   
   const figuritaDelLink = location.state?.figuritaSeleccionada as Figurita | undefined;
   const [misFiguritas, setMisFiguritas] = useState<Figurita[]>([]);
@@ -50,6 +51,9 @@ export default function PropuestasNuevaPage() {
   // Handle submit
   const handleSubmit = () => {
 
+
+  
+
     if (figuritaSeleccionada === user?.id) {
     alert("No puedes querer tu propia figurita");
     return;
@@ -62,9 +66,9 @@ export default function PropuestasNuevaPage() {
     }
 
     const newSolicitud = {
-      usuario: { id: user?.id },
-      figurita: { id: figuritaSeleccionada },
-      figuritasOfrecidas: figuritasOfrecidas.map(id => ({ id })),
+      usuarioId: user?.id,
+      figuritaId: figuritaSeleccionada,
+      figuritasOfrecidas: figuritasOfrecidas,
       estado: "pendiente"
     };
 
@@ -76,21 +80,28 @@ export default function PropuestasNuevaPage() {
     })
     .catch(error => {
       console.error('Error:', error);
+      console.log(newSolicitud);
       alert("Error al enviar propuesta");
     });
   };
 
+
   useEffect(() => {
-    if (!user?.id) return;
+  if (!user?.username) return;  
+
+   console.log("Fetching figuritas for:", user.username);
+  
+  api.get(`/api/usuarios/by-username/${user.username}`)  // Use username endpoint
+    .then(res => {
     
-    api.get(`/api/usuarios/by-username/${user.username}`)
-      .then(res => {
-        setMisFiguritas(res.data.figuritas || []);
-      })
-      .catch(error => {
-        console.error('Error fetching figuritas:', error);
-      });
-  }, [user?.id]);
+      setMisFiguritas(res.data.figuritas || []);
+    })
+    .catch(error => {
+      console.error('Error fetching figuritas:', error);
+    });
+}, [user?.username]);
+
+ 
 
   return (
     <div className="page-enter">
