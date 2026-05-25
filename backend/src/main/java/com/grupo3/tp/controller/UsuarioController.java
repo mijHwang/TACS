@@ -35,6 +35,13 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{userName}/figuritas")
+    public ResponseEntity<List<Figurita>> getFiguritasByUsuario(@PathVariable String userName) {
+        Usuario usuario = service.loadUserByUsername(userName);
+        List<Figurita> figuritas = figuritaService.obtenerPorUserId(usuario.getId());
+        return ResponseEntity.ok(figuritas);
+    }
+
     @GetMapping("/by-username/{userName}")
     public ResponseEntity<Usuario> getByUserName(@PathVariable String userName) {
          Usuario usuario = service.loadUserByUsername(userName);

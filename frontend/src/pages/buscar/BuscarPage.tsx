@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
+import { useAuth } from '../../auth/useAuth';
 
 
   interface FiguritaBase {
@@ -22,6 +23,7 @@ interface Figurita {
 export default function BuscarPage() {
 
 
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [figuritas, setFiguritas] = useState<Figurita[]>([]);
     const [loading, setLoading] = useState(true);
@@ -113,9 +115,8 @@ export default function BuscarPage() {
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
 
-          const currentUserId = localStorage.getItem('userID');
-
-          const isNotOwned = figurita.owner?.id !== currentUserId;
+        
+          const isNotOwned = figurita.owner?.id !== user?.id;
     
           const matchesNumero = filterNumero === '' || 
             figurita.figuritaBase.id.includes(filterNumero);

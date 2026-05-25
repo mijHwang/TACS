@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface SolicitudDeIntercambioRepositoryCustom {
     List<SolicitudDeIntercambio> findByFiguritaOwnerId(String usuarioId);
+    List<SolicitudDeIntercambio> findByUsuarioId(String usuarioId);
 }

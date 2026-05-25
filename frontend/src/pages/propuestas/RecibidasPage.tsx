@@ -57,12 +57,12 @@ export default function PropuestasRecibidasPage() {
         console.error('Error fetching propuestas recibidas:', error);
         setLoading(false);
       });
-  }, [user?.id]);
+  }, []);
 
   const handleAceptar = (propuestaId: string) => {
     api.put(`/api/solicitudes-intercambio/${propuestaId}/aceptar`)
     .then(() => {
-      setLocalState(prev => ({ ...prev, [propuestaId]: "aceptado" }));
+      setLocalState(prev => ({ ...prev, [propuestaId]: "ACEPTADO" }));
       console.log(`Propuesta ${propuestaId} aceptada`);
     })
     .catch(error => {
@@ -74,7 +74,7 @@ export default function PropuestasRecibidasPage() {
   const handleRechazar = (propuestaId: string) => {
     api.put(`/api/solicitudes-intercambio/${propuestaId}/rechazar`)
     .then(() => {
-      setLocalState(prev => ({ ...prev, [propuestaId]: "rechazado" }));
+      setLocalState(prev => ({ ...prev, [propuestaId]: "RECHAZADO" }));
       console.log(`Propuesta ${propuestaId} rechazada`);
     })
     .catch(error => {
@@ -85,11 +85,11 @@ export default function PropuestasRecibidasPage() {
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
-      case "pendiente":
+      case "PENDIENTE":
         return "text-yellow-500";
-      case "aceptado":
+      case "ACEPTADO":
         return "text-green-500";
-      case "rechazado":
+      case "RECHAZADO":
         return "text-red-500";
       default:
         return "text-muted";
@@ -98,11 +98,11 @@ export default function PropuestasRecibidasPage() {
 
   const getStatusText = (estado: string) => {
     switch (estado) {
-      case "pendiente":
+      case "PENDIENTE":
         return "⏳ Pendiente";
-      case "aceptado":
+      case "ACEPTADO":
         return "✅ Aceptado";
-      case "rechazado":
+      case "RECHAZADO":
         return "❌ Rechazado";
       default:
         return estado;
@@ -163,7 +163,7 @@ export default function PropuestasRecibidasPage() {
               </div>
 
               {/* Buttons - Only show if pending */}
-              {localState[propuesta.id] === "pendiente" && (
+              {localState[propuesta.id] === "PENDIENTE" && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleAceptar(propuesta.id)}

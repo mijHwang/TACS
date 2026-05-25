@@ -34,7 +34,6 @@ export default function PropuestasNuevaPage() {
   
   const figuritaDelLink = location.state?.figuritaSeleccionada as Figurita | undefined;
   const [misFiguritas, setMisFiguritas] = useState<Figurita[]>([]);
-  //const [figuritaSeleccionada, setFiguritaSeleccionada] = useState<string>(figuritaDelLink?.id || "");
   const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || "");
   const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>([]);
   const [expandedMias, setExpandedMias] = useState<boolean>(false);

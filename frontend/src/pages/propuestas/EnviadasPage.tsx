@@ -55,15 +55,15 @@ export default function PropuestasEnviadasPage() {
         console.error('Error fetching propuestas enviadas:', error);
         setLoading(false);
       });
-  }, [user?.id]);
+  }, []);
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
-      case "pendiente":
+      case "PENDIENTE":
         return "text-yellow-500";
-      case "aceptado":
+      case "ACEPTADO":
         return "text-green-500";
-      case "rechazado":
+      case "RECHAZADO":
         return "text-red-500";
       default:
         return "text-muted";
@@ -72,11 +72,11 @@ export default function PropuestasEnviadasPage() {
 
   const getStatusText = (estado: string) => {
     switch (estado) {
-      case "pendiente":
+      case "PENDIENTE":
         return "⏳ Pendiente";
-      case "aceptado":
+      case "ACEPTADO":
         return "✅ Aceptado";
-      case "rechazado":
+      case "RECHAZADO":
         return "❌ Rechazado";
       default:
         return estado;
@@ -105,8 +105,8 @@ export default function PropuestasEnviadasPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-sm text-muted">Enviado a:</p>
-                  <p className="text-text font-semibold">{propuesta.usuario?.username || 'Usuario desconocido'}</p>
-                </div>
+                  <p className="text-text font-semibold">{propuesta.figurita.owner?.username || 'Usuario desconocido'}</p>
+                </div>                                      {/* propuesta.usuario?.username */}
                 <p className={`font-semibold ${getStatusColor(propuesta.estado)}`}>
                   {getStatusText(propuesta.estado)}
                 </p>
