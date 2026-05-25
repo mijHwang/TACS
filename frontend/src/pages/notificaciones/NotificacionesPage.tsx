@@ -67,6 +67,7 @@ export default function NotificacionesPage() {
   const handleLeerNotificacion = (id: string) => {
   api.put(`/api/notificaciones/${id}/leer`)
     .then(res => {
+        console.log(res, "hola");
       setNotificaciones(prev =>
         prev.map(notif => 
         notif.id === id ? res.data : notif

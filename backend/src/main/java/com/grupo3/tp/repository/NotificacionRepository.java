@@ -8,7 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface NotificacionRepository extends MongoRepository<Notificacion, String> {
-    @Query("{ 'usuario': ?0 }")
-    List<Notificacion> findByUsuarioId(String usuarioId);
-}
+public interface NotificacionRepository extends MongoRepository<Notificacion, String>, NotificacionRepositoryCustom {
+    }
