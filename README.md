@@ -1,5 +1,32 @@
 # TACS — TP Grupo 3
 
+
+## Descripción del Proyecto
+
+**TACS** es una plataforma para el intercambio de figuritas del Mundial de Fútbol 2026.
+
+**Propósito:** Facilitar que los usuarios publiquen figuritas repetidas, busquen coincidencias 
+con otros usuarios, realicen propuestas de intercambio y completen operaciones dentro de la plataforma.
+
+**Funcionalidades principales:**
+
+- Autenticación y gestión de cuentas
+- Búsqueda y filtrado de figuritas disponibles
+- Propuestas de intercambio entre usuarios
+- Gestión de propuestas (aceptar/rechazar)
+- Colección personal y tracking de figuritas
+- Notificaciones de actividad
+- Historial de intercambios completados
+
+**Roadmap:**
+Subastas, sugerencias automáticas, sistema de reputación, alertas de figuritas faltantes.
+
+## Equipo
+
+- Hwang, Min Jun
+- Sicher, Matias
+- Abascal, Nicolas
+
 ## Requisitos previos
 
 | Herramienta | Versión mínima |
@@ -51,6 +78,7 @@ docker compose down
 |---|---|---|
 | **frontend** | React 19 + Vite + TailwindCSS 4 → build estático servido por Nginx | 80 |
 | **backend** | Spring Boot 4 + Java 21 + Lombok | 8080 |
+|**persistencia**|Mongo Atlas Cloud|DB nombre: tacs |
 
 Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla directamente con el backend desde el browser** — todo pasa por el proxy de Nginx. Esto elimina problemas de CORS.
 
@@ -60,7 +88,6 @@ Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla d
 
 ### Backend
 
-- **Persistencia en memoria**: el enunciado de la primera entrega no requería base de datos persistente. Se implementaron repositorios en memoria con `HashMap` para poder iterar rápido sin dependencias externas. MongoDB está comentado en el `pom.xml` y `application.properties` para una futura integración.
 - **Arquitectura en capas**: `Controller → Service → Repository`, separando responsabilidades y facilitando el testing unitario de cada capa y posterior migrado a microservicios.
 - **Spring Boot 4 / Java 21**: se eligió la versión más reciente estable.
 
@@ -70,6 +97,46 @@ Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla d
 - **TailwindCSS 4**: Nos permite iterar en la UI sin escribir CSS custom.
 - **Lazy loading de páginas**: todas las páginas se importan con `React.lazy()` para que solo se descarguen cuando el usuario las visita.
 - **Roles de usuario**: `PrivateRoute` soporta un `requiredRole` opcional. La ruta `/admin` solo es accesible para usuarios con rol `admin`.
+
+### Persistencia
+
+- **MongoDB**: A highly scalable, document-oriented NoSQL database that stores data in JSON-like formats.
+- **Cluster**: cluster0.nqxun4d.mongodb.net
+- **Database**: tacs
+- **Connection**: mongodb+srv://test:<db_password>@cluster0.nqxun4d.mongodb.net/tacs?appName=Cluster0
+
+**Colecciones**
+El sistema actualmente utiliza las siguientes colecciones en MongoDB:
+
+- `usuarios` — Cuentas de usuario
+- `figuritas` — Instancias de figuritas (con propietario)
+- `figuritas_base` — Definición base de figuritas
+- `solicitudes_intercambio` — Propuestas de intercambio
+- `intercambios` — Intercambios completados
+- `notificaciones` — Notificaciones para usuarios
+- Datos de referencia: `selecciones`, `equipos`, `jugadores`, `categorias_figurita`
+
+Futuras expansiones incluirán colecciones para subastas, alerta, y estadísticas de usuario entre otras cosas.
+
+## Testing
+
+**Status**: [WIP] En desarrollo
+
+Estrategia:
+- Tests unitarios para services (lógica de negocio) usando mocks de repositories
+- Integration tests para flujos críticos (propuestas, intercambios)
+- Spring Data MongoDB tested implícitamente a través de integration tests
+- Coverage target: 70%+ en services
+
+## Seguridad
+
+**Status**: [WIP] Por documentar
+
+Notas para próxima revisión:
+- Revisar estrategia de DTOs implementada
+- Documentar gestión de contraseñas (BCrypt)
+- Verificar variables de entorno para credenciales
+
 
 ---
 
@@ -82,6 +149,7 @@ Durante el desarrollo se utilizó **Claude Sonnet 4.6** como asistente de pair p
 - Configuración de la infraestructura (Dockerfiles y docker-compose).
 - Generación de estructuras base y código repetitivo.
 - Validación de ideas y decisiones de diseño (principalmente UI).
+- Implemetación de la persistencia.
 
 La herramienta fue utilizada como apoyo, manteniendo revisión y adaptación manual del código generado.
 ---
@@ -109,3 +177,5 @@ TACS/
 │   └── Dockerfile
 └── docker-compose.yml
 ```
+
+
