@@ -1,5 +1,6 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.UsuarioDTO;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Usuario;
@@ -74,7 +75,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{userName}/figuritas/repetidas")
-    public ResponseEntity<List<Figurita>> getRepetidas(@PathVariable String userName) {
+    public ResponseEntity<List<FiguritaResponseDTO>> getRepetidas(@PathVariable String userName) {
         Usuario usuario = service.loadUserByUsername(userName);
         return ResponseEntity.ok(figuritaService.obtenerRepetidas(usuario.getId()));
     }

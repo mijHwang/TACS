@@ -6,7 +6,7 @@
 **TACS** es una plataforma para el intercambio de figuritas del Mundial de Fútbol 2026.
 
 **Propósito:** Facilitar que los usuarios publiquen figuritas repetidas, busquen coincidencias 
-con otros usuarios, realicen propuestas de intercambio y completen operaciones dentro de la plataforma.
+con otros usuarios, realicen propuestas de intercambio, completen operaciones dentro de la plataforma y publiquen subastas de figuritas repetidas
 
 **Funcionalidades principales:**
 
@@ -17,9 +17,10 @@ con otros usuarios, realicen propuestas de intercambio y completen operaciones d
 - Colección personal y tracking de figuritas
 - Notificaciones de actividad
 - Historial de intercambios completados
+- Subastas de figuritas (crear, listar, participar, pujar)
 
 **Roadmap:**
-Subastas, sugerencias automáticas, sistema de reputación, alertas de figuritas faltantes.
+Subastas (parcialmente), sugerencias automáticas, sistema de reputación, alertas de figuritas faltantes.
 
 ## Equipo
 
@@ -41,6 +42,12 @@ Subastas, sugerencias automáticas, sistema de reputación, alertas de figuritas
 ```bash
 # Desde la raíz del repositorio
 docker compose up --build
+```
+
+### Online (AWS)
+La aplicación está alojada en una instancia AWS:
+```
+http://34.195.221.240/
 ```
 
 | URL | Descripción |
@@ -90,6 +97,11 @@ Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla d
 
 - **Arquitectura en capas**: `Controller → Service → Repository`, separando responsabilidades y facilitando el testing unitario de cada capa y posterior migrado a microservicios.
 - **Spring Boot 4 / Java 21**: se eligió la versión más reciente estable.
+- DTOs para respuestas serializadas [NEW: Document pattern used in Subastas]
+  Ejemplo: FiguritaResponseDTO para evitar serializar IDs sin resolver en la respuesta de /figuritas/repetidas
+  Patrón: Repository devuelve DTO mapeado en lugar de entidades con referencias lazy
+- Custom Repository Queries [NEW: Document pattern used]
+  Ejemplo: FiguritaRepository.findRepetidas(usuarioId) con lógica de grouping y filtering en el repositorio
 
 ### Frontend
 
@@ -114,9 +126,11 @@ El sistema actualmente utiliza las siguientes colecciones en MongoDB:
 - `solicitudes_intercambio` — Propuestas de intercambio
 - `intercambios` — Intercambios completados
 - `notificaciones` — Notificaciones para usuarios
+- `subastas` — Subastas de figuritas (WIP) 
+- `ofertas` — Ofertas/pujas en subastas (WIP) 
 - Datos de referencia: `selecciones`, `equipos`, `jugadores`, `categorias_figurita`
 
-Futuras expansiones incluirán colecciones para subastas, alerta, y estadísticas de usuario entre otras cosas.
+
 
 ## Testing
 

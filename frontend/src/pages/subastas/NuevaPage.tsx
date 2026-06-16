@@ -4,7 +4,7 @@ import CreateAuctionForm from './components/CreateAuctionForm';
 import { auctionService } from '../../services/auctionService';
 import { useAuth } from '../../auth/useAuth';
 import api from '../../services/api';
-import { MOCK_MY_STICKERS } from '../../data/mockAuctions';
+import { mapFiguritaToSticker } from '../../services/auctionService';
 
 const RED = '#D82D31';
 const GREEN = '#05B15A';
@@ -19,10 +19,12 @@ export default function SubastasNuevaPage() {
 
   // FETCH REAL STICKERS
   useEffect(() => {
+
     if (!user?.username) { setLoading(false); return; }
     api.get(`/api/usuarios/${user.username}/figuritas/repetidas`)
       .then(res => {
-        setMyStickers(res.data);
+        const mapped = res.data.map(mapFiguritaToSticker);
+        setMyStickers(mapped);
         setLoading(false);
       })
       .catch(() => {
@@ -34,8 +36,8 @@ export default function SubastasNuevaPage() {
   const handleSubmit = async (stickerId: string, durationHours: number, conditions: AuctionCondition[]) => {
     if (!user) return;
 
-    const stickersList = myStickers.length > 0 ? myStickers : MOCK_MY_STICKERS;
-    const sticker = stickersList.find(s => s.id === stickerId);
+    
+    const sticker = myStickers.find(s => s.id === stickerId);
     if (!sticker) return;
 
     setSubmitting(true);

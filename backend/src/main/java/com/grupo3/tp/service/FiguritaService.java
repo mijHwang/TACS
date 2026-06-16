@@ -1,5 +1,6 @@
 package com.grupo3.tp.service;
 
+import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaRepository;
@@ -65,7 +66,7 @@ public class FiguritaService {
         return Optional.of(updated);
     }
 
-    public List<Figurita> obtenerRepetidas(String usuarioId) {
+    public List<FiguritaResponseDTO> obtenerRepetidas(String usuarioId) {
         return repository.findRepetidas(usuarioId);
     }
 }

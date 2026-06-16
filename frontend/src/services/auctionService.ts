@@ -1,6 +1,18 @@
 import type { Auction, AuctionCondition, Sticker } from '../types/auction';
 import { apiFetch, mapSubasta, type BackendSubasta } from './api';
 
+
+function mapFiguritaToSticker(figurita: any): Sticker {
+  return {
+    id: figurita.id,
+    number: figurita.numero,
+    playerName: figurita.jugadorNombre,
+    country: figurita.seleccionNombre,
+  };
+}
+
+export { mapFiguritaToSticker };
+
 export const auctionService = {
 
   async getAll(currentUserId?: string): Promise<Auction[]> {
@@ -50,13 +62,16 @@ export const auctionService = {
     horaFin: end.toISOString().slice(0, 19),
     ofertas: [],
   };
+  
 
   const data = await apiFetch<BackendSubasta>('/subastas', {
     method: 'POST',
     body: JSON.stringify(body),
   });
   return mapSubasta(data, payload.userId);
+
 },
+
 
   /**
    * Agrega una oferta a una subasta.
