@@ -7,6 +7,8 @@ RUN npm ci
 
 COPY . .
 
+# En producción la API va por Nginx (mismo origen): VITE_API_URL vacío → baseURL relativa.
+ENV VITE_API_URL=""
 RUN npm run build
 
 

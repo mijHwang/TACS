@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+// Origen de la API. En el build de producción se inyecta VITE_API_URL="" → mismo origen
+// (todas las llamadas pasan por Nginx). En desarrollo (npm run dev) cae al backend local.
+const API_ORIGIN = import.meta.env.VITE_API_URL ?? 'http://localhost:8080';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8080',
+  baseURL: API_ORIGIN,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -26,7 +30,7 @@ export default api;
 
 import type { Sticker, Bid, Auction, AuctionCondition, AuctionStatus } from '../types/auction';
 
-export const BASE_URL = 'http://localhost:8080/api';
+export const BASE_URL = `${API_ORIGIN}/api`;
 
 // ── Backend types ─────────────────────────────────────────────────────────────
 
