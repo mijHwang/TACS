@@ -10,4 +10,5 @@ import java.util.List;
 public interface FiguritaRepositoryCustom {
 
     List<Figurita>findByFiguritaOwnerId(String usuarioId);
+    List<Figurita> findRepetidas(String usuarioId);
 }

@@ -1,6 +1,6 @@
 package com.grupo3.tp.controller;
 
-import com.grupo3.tp.dtos.Usuariodto;
+import com.grupo3.tp.dtos.UsuarioDTO;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.service.FiguritaService;
@@ -53,7 +53,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> create(@RequestBody Usuariodto usuariodto) {
+    public ResponseEntity<Usuario> create(@RequestBody UsuarioDTO usuariodto) {
         Usuario usuario = new Usuario(usuariodto.getUsername(),usuariodto.getPassword(),usuariodto.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(usuario));
     }
@@ -71,5 +71,11 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{userName}/figuritas/repetidas")
+    public ResponseEntity<List<Figurita>> getRepetidas(@PathVariable String userName) {
+        Usuario usuario = service.loadUserByUsername(userName);
+        return ResponseEntity.ok(figuritaService.obtenerRepetidas(usuario.getId()));
     }
 }

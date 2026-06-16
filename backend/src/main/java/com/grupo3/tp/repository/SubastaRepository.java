@@ -5,4 +5,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubastaRepository extends MongoRepository<Subasta, String> {}
+public interface SubastaRepository extends MongoRepository<Subasta, String>, SubastaRepositoryCustom {}

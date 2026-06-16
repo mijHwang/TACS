@@ -64,4 +64,8 @@ public class FiguritaService {
         Figurita updated = repository.save(figurita);
         return Optional.of(updated);
     }
+
+    public List<Figurita> obtenerRepetidas(String usuarioId) {
+        return repository.findRepetidas(usuarioId);
+    }
 }

@@ -1,5 +1,5 @@
 import type { Auction, AuctionCondition, Sticker } from '../types/auction';
-import { apiFetch, mapSubasta, type BackendSubasta, type BackendOferta } from './api';
+import { apiFetch, mapSubasta, type BackendSubasta } from './api';
 
 export const auctionService = {
 
@@ -18,40 +18,45 @@ export const auctionService = {
     return data.map(s => mapSubasta(s, usuarioId));
   },
 
+  async finalizar(auctionId: string): Promise<Auction> {
+     const data = await apiFetch<BackendSubasta>(`/subastas/${auctionId}/finalizar`, {
+       method: 'PUT',
+     });
+     return mapSubasta(data);
+   },
+
   /** Crea una subasta. El sticker se construye a partir del objeto Sticker del frontend. */
   async create(payload: {
-    sticker: Sticker;
-    durationHours: number;
-    conditions: AuctionCondition[];
-    userId: string;
-    username: string;
-  }): Promise<Auction> {
-    const now = new Date();
-    const end = new Date(now.getTime() + payload.durationHours * 3_600_000);
+  sticker: Sticker;
+  durationHours: number;
+  conditions: AuctionCondition[];
+  userId: string;
+  username: string;
+}): Promise<Auction> {
+  const now = new Date();
+  const end = new Date(now.getTime() + payload.durationHours * 3_600_000);
 
-    const body = {
-      usuario: { id: payload.userId, username: payload.username },
-      figurita: {
-        figuritaBase: {
-          numero: payload.sticker.number,
-          jugador: { nombre: payload.sticker.playerName },
-          seleccion: { nombre: payload.sticker.country },
-        },
-      },
-      duracion: payload.durationHours,
-      condiciones: payload.conditions.map(c => ({ tipo: c.type, valor: String(c.value) })),
-      estado: 'EN_CURSO',
-      horaInicio: now.toISOString().slice(0, 19),
-      horaFin: end.toISOString().slice(0, 19),
-      ofertas: [],
-    };
+  const body = {
+    usuario: { id: payload.userId, username: payload.username },  
+    figurita: {
+        numero: payload.sticker.number,
+        jugador: { nombre: payload.sticker.playerName },
+        seleccion: { nombre: payload.sticker.country },
+      }, 
+    duracion: payload.durationHours,
+    condiciones: payload.conditions.map(c => ({ tipo: c.type, valor: String(c.value) })),
+    estado: 'EN_CURSO',
+    horaInicio: now.toISOString().slice(0, 19),
+    horaFin: end.toISOString().slice(0, 19),
+    ofertas: [],
+  };
 
-    const data = await apiFetch<BackendSubasta>('/subastas', {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    return mapSubasta(data, payload.userId);
-  },
+  const data = await apiFetch<BackendSubasta>('/subastas', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  return mapSubasta(data, payload.userId);
+},
 
   /**
    * Agrega una oferta a una subasta.
@@ -59,36 +64,17 @@ export const auctionService = {
    * (el backend no tiene endpoint dedicado para agregar ofertas a una subasta)
    */
   async placeBid(auctionId: string, payload: {
-    stickers: Sticker[];
-    userId: string;
-    username: string;
-  }): Promise<void> {
-    const ofertaBody = {
-      figuritas: payload.stickers.map(s => ({
-        figuritaBase: {
-          numero: s.number,
-          jugador: { nombre: s.playerName },
-          seleccion: { nombre: s.country },
-        },
-      })),
-      usuario: { id: payload.userId, username: payload.username },
-      estado: 'PENDIENTE',
-      fechaOferta: new Date().toISOString().slice(0, 19),
-    };
-
-    const createdOferta = await apiFetch<BackendOferta>('/ofertas', {
-      method: 'POST',
-      body: JSON.stringify(ofertaBody),
-    });
-
-    const current = await apiFetch<BackendSubasta>(`/subastas/${auctionId}`);
-
-    await apiFetch(`/subastas/${auctionId}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        ...current,
-        ofertas: [...(current.ofertas ?? []), createdOferta],
-      }),
-    });
-  },
+  stickers: Sticker[];
+  userId: string;
+  username: string;
+}): Promise<void> {
+  // Single atomic call to backend
+  await apiFetch(`/ofertas/subasta/${auctionId}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      usuarioId: payload.userId,
+      figuritaIds: payload.stickers.map(s => s.id),
+    }),
+  });
+},
 };

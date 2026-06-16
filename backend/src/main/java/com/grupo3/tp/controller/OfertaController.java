@@ -1,5 +1,7 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.OfertaDTO;
+import com.grupo3.tp.dtos.SubastaDTO;
 import com.grupo3.tp.models.Oferta;
 import com.grupo3.tp.service.OfertaService;
 import org.springframework.http.HttpStatus;
@@ -30,10 +32,20 @@ public class OfertaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<Oferta> create(@RequestBody Oferta oferta) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(oferta));
+    @PostMapping("/subasta/{subastaId}")
+    public ResponseEntity<Oferta> create(
+            @PathVariable String subastaId,
+            @RequestBody OfertaDTO ofertaDTO) {
+
+        SubastaDTO subastaDTO = new SubastaDTO();
+        subastaDTO.setSubastaId(subastaId);
+
+        Oferta oferta = service.crear(ofertaDTO, subastaDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(oferta);
     }
+
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Oferta> update(@PathVariable String id, @RequestBody Oferta oferta) {

@@ -1,7 +1,7 @@
 package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.LoginRequestDTO;
-import com.grupo3.tp.dtos.Usuariodto;
+import com.grupo3.tp.dtos.UsuarioDTO;
 import com.grupo3.tp.models.Role;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.service.UsuarioService;
@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody Usuariodto usuariodto) {
+    public ResponseEntity<Void> register(@RequestBody UsuarioDTO usuariodto) {
         Usuario usuario = Usuario.builder()
                 .username(usuariodto.getUsername())
                 .password(passwordEncoder.encode(usuariodto.getPassword()))

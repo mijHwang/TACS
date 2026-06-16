@@ -1,22 +1,41 @@
-import { useState } from 'react';
-import type { AuctionCondition } from '../../types/auction';
+import { useState, useEffect } from 'react';
+import type { AuctionCondition, Sticker } from '../../types/auction';
 import CreateAuctionForm from './components/CreateAuctionForm';
-import { MOCK_MY_STICKERS } from '../../data/mockAuctions';
 import { auctionService } from '../../services/auctionService';
 import { useAuth } from '../../auth/useAuth';
+import api from '../../services/api';
+import { MOCK_MY_STICKERS } from '../../data/mockAuctions';
 
 const RED = '#D82D31';
 const GREEN = '#05B15A';
 
 export default function SubastasNuevaPage() {
   const { user } = useAuth();
+  const [myStickers, setMyStickers] = useState<Sticker[]>([]);
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // FETCH REAL STICKERS
+  useEffect(() => {
+    if (!user?.username) { setLoading(false); return; }
+    api.get(`/api/usuarios/${user.username}/figuritas/repetidas`)
+      .then(res => {
+        setMyStickers(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('No se pudieron cargar tus figuritas repetidas.');
+        setLoading(false);
+      });
+  }, [user?.username]);
+
   const handleSubmit = async (stickerId: string, durationHours: number, conditions: AuctionCondition[]) => {
     if (!user) return;
-    const sticker = MOCK_MY_STICKERS.find(s => s.id === stickerId);
+
+    const stickersList = myStickers.length > 0 ? myStickers : MOCK_MY_STICKERS;
+    const sticker = stickersList.find(s => s.id === stickerId);
     if (!sticker) return;
 
     setSubmitting(true);
@@ -30,6 +49,8 @@ export default function SubastasNuevaPage() {
       setSubmitting(false);
     }
   };
+
+  if (loading) return <p className="text-muted">Cargando figuritas...</p>;
 
   if (success) {
     return (
@@ -73,10 +94,10 @@ export default function SubastasNuevaPage() {
         </p>
       )}
       <CreateAuctionForm
-        myStickers={MOCK_MY_STICKERS}
-        onSubmit={handleSubmit}
-        isSubmitting={submitting}
-      />
+  myStickers={myStickers}  // ✅ Only real stickers
+  onSubmit={handleSubmit}
+  isSubmitting={submitting}
+/>
     </div>
   );
 }

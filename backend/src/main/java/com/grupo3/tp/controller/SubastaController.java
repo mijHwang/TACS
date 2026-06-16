@@ -1,11 +1,13 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.models.EstadoSubasta;
 import com.grupo3.tp.models.Subasta;
 import com.grupo3.tp.service.SubastaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -38,6 +40,26 @@ public class SubastaController {
         return service.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/iniciar")
+    public ResponseEntity<Subasta> iniciar(@PathVariable String id) {
+        Subasta subasta = service.obtenerPorId(id)
+                .orElseThrow(() -> new RuntimeException("Subasta not found"));
+
+        if (subasta.getEstado() != EstadoSubasta.PENDIENTE) {
+            throw new RuntimeException("Subasta no está en estado PENDIENTE");
+        }
+
+        subasta.setEstado(EstadoSubasta.EN_CURSO);
+        subasta.setHoraInicio(LocalDateTime.now());
+
+        // Recalculate horaFin
+        if (subasta.getDuracion() != null) {
+            subasta.setHoraFin(LocalDateTime.now().plusMinutes(subasta.getDuracion()));
+        }
+
+        return ResponseEntity.ok(service.actualizar(id, subasta).orElse(null));
     }
 
     @PostMapping

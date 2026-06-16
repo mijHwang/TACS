@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FiguritaRepositoryCustomImpl implements FiguritaRepositoryCustom {
 
@@ -21,6 +22,22 @@ public class FiguritaRepositoryCustomImpl implements FiguritaRepositoryCustom {
                 Query.query(Criteria.where("owner").is(new ObjectId(usuarioId))),
                 Figurita.class
         );
+    }
+
+    @Override
+    public List<Figurita> findRepetidas(String usuarioId) {
+        List<Figurita> all = mongoTemplate.find(
+                Query.query(Criteria.where("owner").is(new ObjectId(usuarioId))),
+                Figurita.class
+        );
+
+        // Group by figuritaBase and filter for duplicates (2+)
+        return all.stream()
+                .collect(Collectors.groupingBy(f -> f.getFiguritaBase().getId()))
+                .values().stream()
+                .filter(group -> group.size() > 1)
+                .flatMap(List::stream)
+                .toList();
     }
 
 }
