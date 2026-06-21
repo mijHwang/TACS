@@ -1,6 +1,7 @@
 package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.FiguritaRequestDTO;
+import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
@@ -30,8 +31,8 @@ public class FiguritaController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Figurita>> getAll() {
+    @GetMapping()
+    public ResponseEntity<List<FiguritaResponseDTO>> getAll() {
         return ResponseEntity.ok(service.obtenerTodas());
     }
 
@@ -43,7 +44,7 @@ public class FiguritaController {
     }
 
     @GetMapping("/usuario/{userId}")
-    public ResponseEntity<List<Figurita>> getByUser(@PathVariable String userId) {
+    public ResponseEntity<List<FiguritaResponseDTO>> getByUser(@PathVariable String userId) {
         return ResponseEntity.ok(service.obtenerPorUserId(userId));
     }
 
@@ -64,6 +65,8 @@ public class FiguritaController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(figurita));
     }
+
+
 
     //I am beginning to wonder why would I use this.
     @PutMapping("/{id}")

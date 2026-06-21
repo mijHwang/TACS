@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -37,9 +38,9 @@ public class UsuarioController {
     }
 
     @GetMapping("/{userName}/figuritas")
-    public ResponseEntity<List<Figurita>> getFiguritasByUsuario(@PathVariable String userName) {
+    public ResponseEntity<List<FiguritaResponseDTO>> getFiguritasByUsuario(@PathVariable String userName) {
         Usuario usuario = service.loadUserByUsername(userName);
-        List<Figurita> figuritas = figuritaService.obtenerPorUserId(usuario.getId());
+        List<FiguritaResponseDTO> figuritas = figuritaService.obtenerPorUserId(usuario.getId());
         return ResponseEntity.ok(figuritas);
     }
 
@@ -47,7 +48,7 @@ public class UsuarioController {
     public ResponseEntity<Usuario> getByUserName(@PathVariable String userName) {
          Usuario usuario = service.loadUserByUsername(userName);
 
-        List<Figurita> figuritas = figuritaService.obtenerPorUserId(usuario.getId());
+        List<Figurita> figuritas = figuritaService.obtenerTodasInternaPorUserId(usuario.getId());
         usuario.setFiguritas(figuritas);
 
         return  ResponseEntity.ok(usuario);
@@ -72,6 +73,13 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{userName}/figuritas/faltantes")
+    public ResponseEntity<List<FiguritaResponseDTO>> getFaltantes(@PathVariable String userName) {
+        Usuario usuario = service.loadUserByUsername(userName);
+        List<FiguritaResponseDTO> faltantes = figuritaService.obtenerFaltantes(usuario.getId());
+        return ResponseEntity.ok(faltantes);
     }
 
     @GetMapping("/{userName}/figuritas/repetidas")

@@ -10,8 +10,12 @@ import lombok.NoArgsConstructor;
 public class FiguritaResponseDTO {
     private String id;
     private int numero;
+    private String figuritaBaseId;
+    private int count;
     private String jugadorNombre;
     private String seleccionNombre;
     private String equipoNombre;
     private String categoriaNombre;
+    private String ownerId;
+    private String ownerName;
 }

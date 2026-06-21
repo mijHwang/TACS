@@ -1,28 +1,25 @@
-
 import { NavLink, Outlet, useMatch } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import api from '../../services/api';
 
-interface FiguritaBase {
+interface FiguritaResponseDTO {
   id: string;
-  numero?: number;
-  seleccion: { id: string; nombre: string; grupo: string };
-  equipo: { id: string; nombre: string };
-  categoria: { id: string; nombre: string };
-  jugador: { id: string; nombre: string };
-}
-
-interface Figurita {
-  id: string;
-  figuritaBase: FiguritaBase;
-  owner?: { id: string; username: string };
+  figuritaBaseId: string;
+  numero: number;
+  jugadorNombre: string;
+  seleccionNombre: string;
+  equipoNombre: string;
+  categoriaNombre: string;
+  count: number;
+  ownerId: string;
+  ownerName: string;
 }
 
 export default function ColeccionPage() {
   const { user } = useAuth();
   const isIndex = useMatch('/coleccion');
-  const [figuritas, setFiguritas] = useState<Figurita[]>([]);
+  const [figuritas, setFiguritas] = useState<FiguritaResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSeleccion, setFilterSeleccion] = useState('');
@@ -34,6 +31,7 @@ export default function ColeccionPage() {
 
     api.get(`/api/usuarios/${user.username}/figuritas`)
       .then(res => {
+        console.log(res.data[0]);
         setFiguritas(res.data);
         setLoading(false);
       })
@@ -51,7 +49,6 @@ export default function ColeccionPage() {
       <nav className="flex gap-2 mb-8 flex-wrap">
         {[
           { to: '', label: 'Todas' },
-          { to: 'repetidas', label: 'Repetidas' },
           { to: 'faltantes', label: 'Faltantes' },
         ].map(({ to, label }) => (
           <NavLink
@@ -71,7 +68,6 @@ export default function ColeccionPage() {
 
       {isIndex ? (
         <>
-          {/* Search bar */}
           <div className="mb-6">
             <input
               type="text"
@@ -82,7 +78,6 @@ export default function ColeccionPage() {
             />
           </div>
 
-          {/* Filters */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             <input
               type="text"
@@ -114,36 +109,40 @@ export default function ColeccionPage() {
           ) : (
             <div className="grid grid-cols-4 gap-4">
               {figuritas.filter(figurita => {
-                const matchesSearch = figurita.figuritaBase.jugador.nombre
+                const matchesSearch = (figurita.jugadorNombre || '')
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase());
 
                 const matchesSeleccion = filterSeleccion === '' ||
-                  figurita.figuritaBase.seleccion.nombre.toLowerCase()
-                  .includes(filterSeleccion.toLowerCase());
+                  (figurita.seleccionNombre || '').toLowerCase()
+                    .includes(filterSeleccion.toLowerCase());
 
                 const matchesEquipo = filterEquipo === '' ||
-                  figurita.figuritaBase.equipo.nombre.toLowerCase()
-                  .includes(filterEquipo.toLowerCase());
+                  (figurita.equipoNombre || '').toLowerCase()
+                    .includes(filterEquipo.toLowerCase());
 
                 const matchesCategoria = filterCategoria === '' ||
-                  figurita.figuritaBase.categoria.nombre.toLowerCase()
-                  .includes(filterCategoria.toLowerCase());
+                  (figurita.categoriaNombre || '').toLowerCase()
+                    .includes(filterCategoria.toLowerCase());
 
                 return matchesSearch && matchesSeleccion && matchesEquipo && matchesCategoria;
               })
               .map((figurita) => (
-                <div key={figurita.id} className="bg-surface p-4 rounded-lg border border-border flex flex-col">
-                  {/* Image placeholder */}
+                <div key={figurita.figuritaBaseId} className="bg-surface p-4 rounded-lg border border-border flex flex-col">
                   <div className="w-full aspect-square bg-surface2 rounded-md mb-3 flex items-center justify-center">
                     <p className="text-xs text-muted">Imagen</p>
                   </div>
 
-                  {/* Info */}
-                  <p className="text-xs text-muted mb-2">{figurita.figuritaBase.seleccion.nombre}</p>
-                  <p className="text-sm font-bold text-primary mb-2">{figurita.figuritaBase.jugador.nombre}</p>
-                  <p className="text-xs text-text mb-2">{figurita.figuritaBase.equipo.nombre}</p>
-                  <p className="text-xs text-muted">{figurita.figuritaBase.categoria.nombre}</p>
+                  <p className="text-xs text-muted mb-2">{figurita.seleccionNombre}</p>
+                  <p className="text-sm font-bold text-primary mb-2">{figurita.jugadorNombre}</p>
+                  <p className="text-xs text-text mb-2">{figurita.equipoNombre}</p>
+                  <p className="text-xs text-muted mb-3">{figurita.categoriaNombre}</p>
+
+                  <div className="mt-auto">
+                    <span className="inline-block px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded">
+                      x{figurita.count}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

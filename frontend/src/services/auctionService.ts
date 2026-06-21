@@ -4,7 +4,7 @@ import { apiFetch, mapSubasta, type BackendSubasta } from './api';
 
 function mapFiguritaToSticker(figurita: any): Sticker {
   return {
-    id: figurita.id,
+    id: figurita.figuritaBaseId,  // Use figuritaBaseId, not id
     number: figurita.numero,
     playerName: figurita.jugadorNombre,
     country: figurita.seleccionNombre,

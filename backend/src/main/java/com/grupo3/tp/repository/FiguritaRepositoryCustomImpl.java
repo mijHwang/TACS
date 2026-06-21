@@ -36,30 +36,24 @@ public class FiguritaRepositoryCustomImpl implements FiguritaRepositoryCustom {
         );
         System.out.println("Found figuritas count: " + all.size());
 
-        List<Figurita> repetidas = all.stream()
+        // Map GROUPS, not individual figuritas
+        return all.stream()
                 .collect(Collectors.groupingBy(f -> f.getFiguritaBase().getId()))
                 .values().stream()
                 .filter(group -> group.size() > 1)
-                .flatMap(List::stream)
-                .toList();
-
-
-        System.out.println("Repetidas count after filter: " + repetidas.size());
-        System.out.println("Figuritas " + repetidas);
-
-        // Eagerly load and map to DTO
-        return repetidas.stream()
-                .map(f -> new FiguritaResponseDTO(
-                        f.getId(),
-                        f.getFiguritaBase().getNumero(),
-                        f.getFiguritaBase().getJugador().getNombre(),
-                        f.getFiguritaBase().getSeleccion().getNombre(),
-                        f.getFiguritaBase().getEquipo().getNombre(),
-                        f.getFiguritaBase().getCategoria().getNombre()
+                .map(group -> new FiguritaResponseDTO(
+                        group.get(0).getId(),
+                        group.get(0).getFiguritaBase().getNumero(),
+                        group.get(0).getFiguritaBase().getId(),
+                        group.size(),  // count
+                        group.get(0).getFiguritaBase().getJugador().getNombre(),
+                        group.get(0).getFiguritaBase().getSeleccion().getNombre(),
+                        group.get(0).getFiguritaBase().getEquipo().getNombre(),
+                        group.get(0).getFiguritaBase().getCategoria().getNombre(),
+                        group.get(0).getOwner().getId(),
+                        group.get(0).getOwner().getUsername()
                 ))
                 .toList();
-
-
     }
 
 }

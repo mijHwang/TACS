@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
-interface FiguritaBase {
+interface FiguritaResponseDTO {
   id: string;
-  numero?: number;
-  seleccion: { id: string; nombre: string; grupo: string };
-  equipo: { id: string; nombre: string };
-  categoria: { id: string; nombre: string };
-  jugador: { id: string; nombre: string };
-}
-
-interface Figurita {
-  id: string;
-  figuritaBase: FiguritaBase;
-  owner?: { id: string; username: string };
+  figuritaBaseId: string;
+  numero: number;
+  jugadorNombre: string;
+  seleccionNombre: string;
+  equipoNombre: string;
+  categoriaNombre: string;
+  count: number;
+  ownerId: string;
+  onwerName: string;
 }
 
 export default function ColeccionFaltantesPage() {
   const { user } = useAuth();
-  const [faltantes, setFaltantes] = useState<Figurita[]>([]);
+  const navigate = useNavigate();
+  const [faltantes, setFaltantes] = useState<FiguritaResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSeleccion, setFilterSeleccion] = useState('');
@@ -29,20 +29,9 @@ export default function ColeccionFaltantesPage() {
   useEffect(() => {
     if (!user?.username) return;
 
-    Promise.all([
-      api.get('/api/figuritas'),
-      api.get(`/api/usuarios/${user.username}/figuritas`)
-    ])
-      .then(([allRes, userRes]) => {
-        // Get IDs of figuritas user owns
-        const ownedIds = new Set(userRes.data.map((f: Figurita) => f.figuritaBase.id));
-
-        // Filter to only ones user doesn't have
-        const faltantesList = allRes.data.filter((figurita: Figurita) =>
-          !ownedIds.has(figurita.figuritaBase.id)
-        );
-
-        setFaltantes(faltantesList);
+    api.get(`/api/usuarios/${user.username}/figuritas/faltantes`)
+      .then(res => {
+        setFaltantes(res.data);
         setLoading(false);
       })
       .catch(error => {
@@ -102,41 +91,45 @@ export default function ColeccionFaltantesPage() {
       ) : (
         <div className="grid grid-cols-4 gap-4">
           {faltantes.filter(figurita => {
-            const matchesSearch = figurita.figuritaBase.jugador.nombre
+            const matchesSearch = figurita.jugadorNombre
               .toLowerCase()
               .includes(searchTerm.toLowerCase());
 
             const matchesSeleccion = filterSeleccion === '' ||
-              figurita.figuritaBase.seleccion.nombre.toLowerCase()
-              .includes(filterSeleccion.toLowerCase());
+              figurita.seleccionNombre.toLowerCase()
+                .includes(filterSeleccion.toLowerCase());
 
             const matchesEquipo = filterEquipo === '' ||
-              figurita.figuritaBase.equipo.nombre.toLowerCase()
-              .includes(filterEquipo.toLowerCase());
+              figurita.equipoNombre.toLowerCase()
+                .includes(filterEquipo.toLowerCase());
 
             const matchesCategoria = filterCategoria === '' ||
-              figurita.figuritaBase.categoria.nombre.toLowerCase()
-              .includes(filterCategoria.toLowerCase());
+              figurita.categoriaNombre.toLowerCase()
+                .includes(filterCategoria.toLowerCase());
 
             return matchesSearch && matchesSeleccion && matchesEquipo && matchesCategoria;
           })
           .map((figurita) => (
-            <div key={figurita.id} className="bg-surface p-4 rounded-lg border border-border flex flex-col">
+            <div key={figurita.figuritaBaseId} 
+            onClick={() => navigate('/buscar', { 
+            state: { filterByBaseId: figurita.figuritaBaseId, figuritaInfo: figurita } 
+            })}
+            className="bg-surface p-4 rounded-lg border border-border flex flex-col">
               {/* Image placeholder */}
               <div className="w-full aspect-square bg-surface2 rounded-md mb-3 flex items-center justify-center">
                 <p className="text-xs text-muted">Imagen</p>
               </div>
 
               {/* Info */}
-              <p className="text-xs text-muted mb-2">{figurita.figuritaBase.seleccion.nombre}</p>
-              <p className="text-sm font-bold text-primary mb-2">{figurita.figuritaBase.jugador.nombre}</p>
-              <p className="text-xs text-text mb-2">{figurita.figuritaBase.equipo.nombre}</p>
-              <p className="text-xs text-muted mb-3">{figurita.figuritaBase.categoria.nombre}</p>
+              <p className="text-xs text-muted mb-2">{figurita.seleccionNombre}</p>
+              <p className="text-sm font-bold text-primary mb-2">{figurita.jugadorNombre}</p>
+              <p className="text-xs text-text mb-2">{figurita.equipoNombre}</p>
+              <p className="text-xs text-muted mb-3">{figurita.categoriaNombre}</p>
 
               {/* Owner info */}
               <div className="mt-auto">
                 <p className="text-xs text-muted">
-                  Posee: {figurita.owner?.username || 'Desconocido'}
+                  Número: {figurita.numero}
                 </p>
               </div>
             </div>

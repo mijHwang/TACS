@@ -3,27 +3,17 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import api from '../../services/api';
 
-interface Usuario {
+interface FiguritaResponseDTO {
   id: string;
-  username: string;
-  password?: string;
-  email?: string;
-  figuritas?: Figurita[];
-}
-
-interface FiguritaBase {
-  id: string;
-  numero?: number;
-  seleccion: { id: string; nombre: string; grupo: string };
-  equipo: { id: string; nombre: string };
-  categoria: { id: string; nombre: string };
-  jugador: { id: string; nombre: string };
-}
-
-interface Figurita {
-  id: string;
-  figuritaBase: FiguritaBase;
-  owner?: Usuario;
+  figuritaBaseId: string;
+  numero: number;
+  jugadorNombre: string;
+  seleccionNombre: string;
+  equipoNombre: string;
+  categoriaNombre: string;
+  count: number;
+  ownerId: string;  // ADD THIS
+  ownerName: string;
 }
 
 export default function PropuestasNuevaPage() {
@@ -31,9 +21,8 @@ export default function PropuestasNuevaPage() {
   const navigate = useNavigate();
   const { user } = useAuth();  
 
-  
-  const figuritaDelLink = location.state?.figuritaSeleccionada as Figurita | undefined;
-  const [misFiguritas, setMisFiguritas] = useState<Figurita[]>([]);
+  const figuritaDelLink = location.state?.figuritaSeleccionada as FiguritaResponseDTO | undefined;
+  const [misFiguritas, setMisFiguritas] = useState<FiguritaResponseDTO[]>([]);
   const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || "");
   const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>([]);
   const [expandedMias, setExpandedMias] = useState<boolean>(false);
@@ -49,15 +38,10 @@ export default function PropuestasNuevaPage() {
 
   // Handle submit
   const handleSubmit = () => {
-
-
-  
-
-    if (figuritaSeleccionada === user?.id) {
-    alert("No puedes querer tu propia figurita");
-    return;
+    if (figuritaDelLink?.ownerId === user?.id) {
+      alert("No puedes querer tu propia figurita");
+      return;
     }
-
 
     if (!figuritaSeleccionada || figuritasOfrecidas.length === 0) {
       alert("Debes seleccionar una figurita que quieres y al menos una que ofreces");
@@ -66,41 +50,38 @@ export default function PropuestasNuevaPage() {
 
     const newSolicitud = {
       usuarioId: user?.id,
+      usuarioDestino: figuritaDelLink?.ownerId,
       figuritaId: figuritaSeleccionada,
       figuritasOfrecidas: figuritasOfrecidas,
       estado: "pendiente"
     };
 
-    api.post('/api/solicitudes-intercambio',newSolicitud)
-    .then(res => {
-      console.log("Propuesta enviada:", res.data);
-      alert("¡Propuesta enviada!");
-      navigate('/propuestas/enviadas');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      console.log(newSolicitud);
-      alert("Error al enviar propuesta");
-    });
+    api.post('/api/solicitudes-intercambio', newSolicitud)
+      .then(res => {
+        console.log("Propuesta enviada:", res.data);
+        alert("¡Propuesta enviada!");
+        navigate('/propuestas/enviadas');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        console.log(newSolicitud);
+        alert("Error al enviar propuesta");
+      });
   };
 
-
   useEffect(() => {
-  if (!user?.username) return;  
+    if (!user?.username) return;  
 
-   console.log("Fetching figuritas for:", user.username);
+    console.log("Fetching figuritas for:", user.username);
   
-  api.get(`/api/usuarios/by-username/${user.username}`)  // Use username endpoint
-    .then(res => {
-    
-      setMisFiguritas(res.data.figuritas || []);
-    })
-    .catch(error => {
-      console.error('Error fetching figuritas:', error);
-    });
-}, [user?.username]);
-
- 
+    api.get(`/api/usuarios/${user.username}/figuritas`)
+      .then(res => {
+        setMisFiguritas(res.data || []);
+      })
+      .catch(error => {
+        console.error('Error fetching figuritas:', error);
+      });
+  }, [user?.username]);
 
   return (
     <div className="page-enter">
@@ -119,7 +100,7 @@ export default function PropuestasNuevaPage() {
           <div className="mt-4 p-3 bg-surface rounded-lg border border-border">
             <p className="text-sm text-muted mb-1">Figurita seleccionada:</p>
             <p className="text-text font-semibold">
-              {figuritaDelLink.figuritaBase.jugador.nombre} - {figuritaDelLink.id}
+              {figuritaDelLink.jugadorNombre} - {figuritaDelLink.id}
             </p>
           </div>
         )}
@@ -146,7 +127,7 @@ export default function PropuestasNuevaPage() {
                   className="w-4 h-4 cursor-pointer"
                 />
                 <span className="ml-3 text-text">
-                  {fig.figuritaBase.jugador.nombre} - {fig.figuritaBase.seleccion.nombre}
+                  {fig.jugadorNombre} - {fig.seleccionNombre}
                 </span>
               </label>
             ))}
