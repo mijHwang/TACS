@@ -4,6 +4,7 @@ import com.grupo3.tp.models.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,22 @@ import java.util.List;
 
 @Service
 public class JwtService {
-    private static final String SECRET = "mi_clave_secreta_super_larga_de_256_bits_minimo";
+    private final SecretKey signingKey;
+    private final long expirationMs;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    /**
+     * Construye el servicio de JWT tomando el secreto y la expiración desde la
+     * configuración (variables de entorno), no del código fuente.
+     *
+     * @param secret       clave HMAC para firmar/verificar tokens (HS256 requiere ≥256 bits / 32 chars).
+     *                     Se inyecta vía {@code jwt.secret} (env {@code JWT_SECRET}).
+     * @param expirationMs vigencia del token en milisegundos. Default 86400000 (24 h).
+     */
+    public JwtService(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration-ms:86400000}") long expirationMs) {
+        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.expirationMs = expirationMs;
     }
 
     public String generateToken(Usuario usuario) {
@@ -27,8 +40,8 @@ public class JwtService {
                         .map(a -> a.getAuthority())
                         .toList())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-                .signWith(getSigningKey())
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -51,7 +64,7 @@ public class JwtService {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(signingKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

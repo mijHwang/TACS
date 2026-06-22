@@ -19,8 +19,13 @@ con otros usuarios, realicen propuestas de intercambio, completen operaciones de
 - Historial de intercambios completados
 - Subastas de figuritas (crear, listar, participar, pujar)
 
-**Roadmap:**
-Subastas (parcialmente), sugerencias automáticas, sistema de reputación, alertas de figuritas faltantes.
+**Pendientes principales** (detalle en [Cobertura de User Stories](#cobertura-de-user-stories)):
+
+- US4 — sugerencias automáticas de intercambio (no implementado)
+- US10 — sistema de reputación (hoy solo CRUD de calificaciones, sin promedio)
+- US11 — alertas proactivas (figurita faltante / subasta por finalizar)
+- US3 — búsqueda con filtros del lado del servidor
+- **Integración con Telegram** y **load test (Vegeta/wrk)** — requeridos para promoción
 
 ## Equipo
 
@@ -57,9 +62,9 @@ http://34.195.221.240/
 
 ### Usuarios de prueba
 
-> El sistema usa persistencia en memoria. Los datos se reinician al bajar los contenedores.
+> Los datos se persisten en **MongoDB Atlas**, por lo que **sobreviven** al reinicio de los contenedores.
 
-Se puede crear usuarios a través del formulario de registro en la UI.
+Se puede crear usuarios a través del formulario de registro en la UI. El usuario con username `admin` recibe rol ADMIN; el resto, rol USER.
 
 ### Comandos útiles
 
@@ -112,10 +117,13 @@ Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla d
 
 ### Persistencia
 
-- **MongoDB**: A highly scalable, document-oriented NoSQL database that stores data in JSON-like formats.
-- **Cluster**: cluster0.nqxun4d.mongodb.net
-- **Database**: tacs
-- **Connection**: mongodb+srv://test:<db_password>@cluster0.nqxun4d.mongodb.net/tacs?appName=Cluster0
+- **MongoDB**: base NoSQL orientada a documentos (formato tipo JSON), escalable.
+- **Database**: `tacs`
+- **Connection string**: se inyecta por la variable de entorno `SPRING_MONGODB_URI` (ver `.env.example`). **Nunca** se versiona la cadena real ni credenciales en el repo:
+
+  ```
+  SPRING_MONGODB_URI=mongodb+srv://<usuario>:<password_url_encoded>@<cluster>.mongodb.net/<database>?appName=<app>
+  ```
 
 **Colecciones**
 El sistema actualmente utiliza las siguientes colecciones en MongoDB:
@@ -132,31 +140,59 @@ El sistema actualmente utiliza las siguientes colecciones en MongoDB:
 
 
 
+## Cobertura de User Stories
+
+Leyenda: ✅ completo · ⚠️ parcial · ❌ no implementado
+
+| US | Descripción | Backend | Frontend | Estado |
+|---|---|---|---|---|
+| US1 | Publicar figurita (nº, selección/equipo/categoría, jugador, **cantidad**, **modalidad** directo/subasta) | ⚠️ | ❌ sin alta | ⚠️ el modelo `Figurita` no guarda cantidad ni modalidad; no hay form de publicación |
+| US2 | Registrar figuritas faltantes | ✅ | ✅ | ✅ |
+| US3 | Buscar con filtros (nº, selección, jugador…) | ⚠️ | ✅ | ⚠️ no hay búsqueda con filtros server-side; el frontend filtra el `getAll` |
+| US4 | Sugerencias automáticas de intercambio | ❌ stub | ❌ mock | ❌ no implementado |
+| US5 | Proponer intercambio (1+ figuritas ofrecidas) | ✅ | ✅ | ✅ |
+| US6 | Publicar subasta (duración + condiciones) | ✅ | ✅ | ✅ |
+| US7 | Ofertar en subasta | ✅ | ⚠️ | ⚠️ backend OK; la UI oferta con `MOCK_MY_STICKERS` |
+| US8 | Ver publicaciones/propuestas/subastas y estado | ⚠️ | ⚠️ | ⚠️ páginas reales, pero el Dashboard central es 100% mock |
+| US9 | Aceptar / rechazar propuestas | ✅ | ✅ | ✅ aceptar transfiere figuritas, crea `Intercambio` y notifica |
+| US10 | Calificar / reputación | ⚠️ CRUD | ❌ mock | ❌ sin cálculo de reputación ni validación de intercambio previo |
+| US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ⚠️ | ⚠️ | ⚠️ solo notificaciones in-app por evento; alertas proactivas son stubs |
+| US12 | Estadísticas de admin | ✅ | ✅ | ⚠️ stats limitadas a subastas/ofertas/usuarios |
+
+**Requisitos de promoción aún ausentes:** integración con **Telegram** (cero código) y **load test** (Vegeta/wrk). **NFR pendiente:** Javadoc en métodos no triviales.
+
 ## Testing
 
-**Status**: [WIP] En desarrollo
+Estado actual: **78 tests unitarios** de services (JUnit 5 + Mockito con mocks de repositorios): `UsuarioServiceTest`, `SolicitudDeIntercambioServiceTest`, `FiguritaServiceTest`, `NotificacionServiceTest`, `FiguritaBaseServiceTest`, `IntercambioServiceTest`, `OfertaServiceTest`.
 
-Estrategia:
-- Tests unitarios para services (lógica de negocio) usando mocks de repositories
-- Integration tests para flujos críticos (propuestas, intercambios)
-- Spring Data MongoDB tested implícitamente a través de integration tests
-- Coverage target: 70%+ en services
+```bash
+cd backend && ./mvnw test
+```
+
+**Pendiente:**
+- Tests de controllers (`@WebMvcTest` / `MockMvc`) e integración (`@DataMongoTest` / Testcontainers) — hoy inexistentes.
+- Ampliar cobertura de subastas/ofertas (hoy 1 test).
+- El CI (`.github/workflows/docker-build.yml`) solo valida el build de imágenes Docker; no corre `./mvnw test` ni `npm run lint`.
 
 ## Seguridad
 
-**Status**: [WIP] Por documentar
+- **Contraseñas**: hasheadas con **BCrypt** (`BCryptPasswordEncoder`) antes de persistir; nunca en texto plano.
+- **Autenticación**: JWT (HS256) emitido en `/auth/login`; el resto de endpoints requiere `Authorization: Bearer <token>` (salvo `/auth/register`). Sesiones STATELESS.
+- **Secreto JWT**: se inyecta por la variable de entorno `JWT_SECRET` (binding `jwt.secret`, ver `.env.example`); **no** está hardcodeado. Vigencia del token: 24 h.
+- **Credenciales**: `SPRING_MONGODB_URI` y `JWT_SECRET` viven solo en `.env` (gitignored). El repo solo versiona `.env.example` con placeholders.
+- **Autorización**: endpoints de administración protegidos con `@PreAuthorize("hasRole('ADMIN')")`.
 
-Notas para próxima revisión:
-- Revisar estrategia de DTOs implementada
-- Documentar gestión de contraseñas (BCrypt)
-- Verificar variables de entorno para credenciales
+**Pendiente (hardening):**
+- Restringir CORS (hoy permisivo: todos los orígenes/métodos/headers).
+- Derivar el `owner` de las operaciones desde el JWT autenticado en vez del body/path.
+- Reemplazar el `printStackTrace` del filtro JWT por logging.
 
 
 ---
 
 ## Uso de IA
 
-Durante el desarrollo se utilizó **Claude Sonnet 4.6** como asistente de pair programming para:
+Durante el desarrollo se utilizó **Claude (familia 4.x, Sonnet/Opus) a través de Claude Code** —el CLI agéntico de Anthropic— como asistente de pair programming. Los archivos `CLAUDE.md` (raíz, `backend/`, `frontend/`) y `frontend/frontend-guidelines.md` son el contexto que consumen esos asistentes. Se utilizó para:
 
 - Desarrollo de los endpoints del backend.
 - Desarrollo de las interfaces de usuario de frontend.
@@ -176,7 +212,7 @@ TACS/
 │   ├── src/main/java/...
 │   │   ├── controller/       # REST controllers
 │   │   ├── service/          # Lógica de negocio
-│   │   ├── repository/       # Persistencia en memoria
+│   │   ├── repository/       # Repositorios MongoDB (Spring Data)
 │   │   └── models/           # Entidades del dominio
 │   ├── Dockerfile
 │   └── pom.xml
@@ -193,3 +229,6 @@ TACS/
 ```
 
 
+Debemos levantarlo en nube, meterle un cloudflare para evitar constantes requests.
+
+Que arme escenarios reales para tests. 
