@@ -19,6 +19,8 @@ const HistorialPage = lazy(() => import('../pages/perfil/HistorialPage'));
 
 // Colección
 const ColeccionPage = lazy(() => import('../pages/coleccion/ColeccionPage'));
+const TodasPage = lazy(() => import('../pages/coleccion/TodasPage'));
+const RepetidasPage = lazy(() => import('../pages/coleccion/RepetidasPage'));
 const FaltantesPage = lazy(() => import('../pages/coleccion/FaltantesPage'));
 
 // Propuestas
@@ -69,6 +71,8 @@ const router = createBrowserRouter([
             path: 'coleccion',
             element: <ColeccionPage />,
             children: [
+              { index: true, element: <TodasPage /> },
+              { path: 'repetidas', element: <RepetidasPage /> },
               { path: 'faltantes', element: <FaltantesPage /> },
             ],
           },

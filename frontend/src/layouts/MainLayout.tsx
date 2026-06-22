@@ -54,7 +54,7 @@ const icons: Record<string, JSX.Element> = {
 
 const navLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { to: '/coleccion', label: 'Colección', icon: 'coleccion' },
+  { to: '/coleccion', label: 'Mi Colección', icon: 'coleccion' },
   { to: '/buscar', label: 'Buscar', icon: 'buscar' },
   { to: '/intercambios', label: 'Intercambios', icon: 'intercambios' },
   { to: '/propuestas', label: 'Propuestas', icon: 'propuestas' },

@@ -1,53 +1,58 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useFiltrosFigurita } from './components/useFiltrosFigurita';
 import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
 
-interface FiguritaBaseDTO {
+interface FiguritaResponseDTO {
   id: string;
+  figuritaBaseId: string;
   numero: number;
   jugadorNombre: string;
   seleccionNombre: string;
   equipoNombre: string;
   categoriaNombre: string;
+  count: number;
+  ownerId: string;
+  ownerName: string;
 }
 
-/** Vista "Mis faltantes": figuritas que el usuario no tiene. Click → /buscar para encontrarla. */
-export default function ColeccionFaltantesPage() {
+/** Vista "Todas": la colección completa del usuario, agrupada, con badge de cantidad. */
+export default function TodasPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const [faltantes, setFaltantes] = useState<FiguritaBaseDTO[]>([]);
+  const [figuritas, setFiguritas] = useState<FiguritaResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const filtros = useFiltrosFigurita();
 
   useEffect(() => {
     if (!user?.username) return;
-    api.get(`/api/usuarios/${user.username}/figuritas/faltantes`)
-      .then((res) => { setFaltantes(res.data); setLoading(false); })
-      .catch((error) => { console.error('Error fetching faltantes:', error); setLoading(false); });
+    api.get(`/api/usuarios/${user.username}/figuritas`)
+      .then((res) => { setFiguritas(res.data); setLoading(false); })
+      .catch((error) => { console.error('Error fetching figuritas:', error); setLoading(false); });
   }, [user?.username]);
 
-  if (loading) return <p className="text-text">Cargando faltantes...</p>;
+  if (loading) return <p className="text-text">Cargando figuritas...</p>;
 
-  const visibles = filtros.filtrar(faltantes);
+  const visibles = filtros.filtrar(figuritas);
 
   return (
     <>
       <FiltrosFigurita filtros={filtros} />
-      <GrillaFiguritas isEmpty={visibles.length === 0} emptyMessage="¡Tienes todas las figuritas!">
+      <GrillaFiguritas isEmpty={visibles.length === 0} emptyMessage="No tienes figuritas aún">
         {visibles.map((f) => (
           <TarjetaColeccion
-            key={f.id}
+            key={f.figuritaBaseId}
             seleccionNombre={f.seleccionNombre}
             jugadorNombre={f.jugadorNombre}
             equipoNombre={f.equipoNombre}
             categoriaNombre={f.categoriaNombre}
-            onClick={() => navigate('/buscar', { state: { filterByBaseId: f.id, figuritaInfo: f } })}
-            footer={<p className="text-xs text-muted">#{f.numero}</p>}
+            footer={
+              <span className="inline-block px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded">
+                x{f.count}
+              </span>
+            }
           />
         ))}
       </GrillaFiguritas>
