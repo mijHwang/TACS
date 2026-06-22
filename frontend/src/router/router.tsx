@@ -12,6 +12,7 @@ const RegisterPage = lazy(() => import('../pages/registro/RegisterPage'));
 // ── Páginas protegidas ────────────────────────────────────────────────────────
 const DashboardPage = lazy(() => import('../pages/home/DashboardPage'));
 const BuscarPage = lazy(() => import('../pages/buscar/BuscarPage'));
+const SugerenciasPage = lazy(() => import('../pages/sugerencias/SugerenciasPage'));
 const IntercambiosPage = lazy(() => import('../pages/intercambios/IntercambiosPage'));
 const NotificacionesPage = lazy(() => import('../pages/notificaciones/NotificacionesPage'));
 const PerfilPage = lazy(() => import('../pages/perfil/PerfilPage'));
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
           { index: true, element: <Navigate to="/dashboard" replace /> },
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'buscar', element: <BuscarPage /> },
+          { path: 'sugerencias', element: <SugerenciasPage /> },
           { path: 'intercambios', element: <IntercambiosPage /> },
           { path: 'notificaciones', element: <NotificacionesPage /> },
           { path: 'perfil', element: <PerfilPage /> },

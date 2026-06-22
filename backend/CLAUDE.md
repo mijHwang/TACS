@@ -84,7 +84,7 @@ The connection string comes from `SPRING_MONGODB_URI` (set in the repo-root `.en
 
 All entities use `@Data @NoArgsConstructor @AllArgsConstructor @Builder` (Lombok), are annotated `@Document` with a `@Id private String id` assigned by MongoDB on save. `Usuario` implements `UserDetails` for Spring Security — `getAuthorities()` defaults to `ROLE_USER` if `role` is null.
 
-**Not real entities (stubs):** `Sugerencia`/`GestionadorSugerencias` and `Alerta`/`GeneradorAlerta` under `models/` are plain POJOs (no `@Document`, no `@Id`); their generator methods `return null` and have no repository/service/controller. They are placeholders for US4/US11-proactive, not working features.
+**Not real entities (stubs):** `Alerta`/`GeneradorAlerta` under `models/` are plain POJOs (no `@Document`, no `@Id`); their generator methods `return null` and have no repository/service/controller. They are placeholders for US11-proactive, not working features. (`Sugerencia` used to be such a stub but is now a real `@Document` backing US4 — see `SugerenciaService`/`SugerenciaRepository`/`SugerenciaController`/`SugerenciaScheduler`; `GestionadorSugerencias` was removed.)
 
 ## CORS
 

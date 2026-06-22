@@ -22,6 +22,7 @@ export default function PropuestasNuevaPage() {
   const { user } = useAuth();  
 
   const figuritaDelLink = location.state?.figuritaSeleccionada as FiguritaResponseDTO | undefined;
+  const offeredBaseIds = location.state?.figuritasOfrecidasBaseIds as string[] | undefined;
   const [misFiguritas, setMisFiguritas] = useState<FiguritaResponseDTO[]>([]);
   const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || "");
   const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>([]);
@@ -76,11 +77,23 @@ export default function PropuestasNuevaPage() {
   
     api.get(`/api/usuarios/${user.username}/figuritas`)
       .then(res => {
-        setMisFiguritas(res.data || []);
+        const figs: FiguritaResponseDTO[] = res.data || [];
+        setMisFiguritas(figs);
+        // Prefill: si venimos desde una sugerencia, pre-tildar las figuritas a ofrecer (por base id)
+        if (offeredBaseIds && offeredBaseIds.length > 0) {
+          const ids = figs
+            .filter((f) => offeredBaseIds.includes(f.figuritaBaseId))
+            .map((f) => f.id);
+          if (ids.length > 0) {
+            setFiguritasOfrecidas(ids);
+            setExpandedMias(true);
+          }
+        }
       })
       .catch(error => {
         console.error('Error fetching figuritas:', error);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.username]);
 
   return (

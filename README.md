@@ -21,7 +21,6 @@ con otros usuarios, realicen propuestas de intercambio, completen operaciones de
 
 **Pendientes principales** (detalle en [Cobertura de User Stories](#cobertura-de-user-stories)):
 
-- US4 — sugerencias automáticas de intercambio (no implementado)
 - US10 — sistema de reputación (hoy solo CRUD de calificaciones, sin promedio)
 - US11 — alertas proactivas (figurita faltante / subasta por finalizar)
 - US3 — búsqueda con filtros del lado del servidor
@@ -136,6 +135,7 @@ El sistema actualmente utiliza las siguientes colecciones en MongoDB:
 - `notificaciones` — Notificaciones para usuarios
 - `subastas` — Subastas de figuritas (WIP) 
 - `ofertas` — Ofertas/pujas en subastas (WIP) 
+- `sugerencias` — Sugerencias de intercambio bidireccional (US4), regeneradas a diario
 - Datos de referencia: `selecciones`, `equipos`, `jugadores`, `categorias_figurita`
 
 
@@ -149,11 +149,11 @@ Leyenda: ✅ completo · ⚠️ parcial · ❌ no implementado
 | US1 | Publicar figurita (nº, selección/equipo/categoría, jugador, **cantidad**, **modalidad** directo/subasta) | ⚠️ | ❌ sin alta | ⚠️ el modelo `Figurita` no guarda cantidad ni modalidad; no hay form de publicación |
 | US2 | Registrar figuritas faltantes | ✅ | ✅ | ✅ |
 | US3 | Buscar con filtros (nº, selección, jugador…) | ⚠️ | ✅ | ⚠️ no hay búsqueda con filtros server-side; el frontend filtra el `getAll` |
-| US4 | Sugerencias automáticas de intercambio | ❌ stub | ❌ mock | ❌ no implementado |
+| US4 | Sugerencias automáticas de intercambio | ✅ | ✅ | ✅ matching bidireccional persistido (colección `sugerencias`), job diario 3 AM + endpoint admin `/api/sugerencias/regenerar`, página `/sugerencias` que prearma la propuesta |
 | US5 | Proponer intercambio (1+ figuritas ofrecidas) | ✅ | ✅ | ✅ |
 | US6 | Publicar subasta (duración + condiciones) | ✅ | ✅ | ✅ |
 | US7 | Ofertar en subasta | ✅ | ⚠️ | ⚠️ backend OK; la UI oferta con `MOCK_MY_STICKERS` |
-| US8 | Ver publicaciones/propuestas/subastas y estado | ⚠️ | ⚠️ | ⚠️ páginas reales, pero el Dashboard central es 100% mock |
+| US8 | Ver publicaciones/propuestas/subastas y estado | ⚠️ | ⚠️ | ⚠️ páginas reales; el Dashboard ya muestra Sugerencias reales (Propuestas/Subastas/Alertas siguen mock) |
 | US9 | Aceptar / rechazar propuestas | ✅ | ✅ | ✅ aceptar transfiere figuritas, crea `Intercambio` y notifica |
 | US10 | Calificar / reputación | ⚠️ CRUD | ❌ mock | ❌ sin cálculo de reputación ni validación de intercambio previo |
 | US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ⚠️ | ⚠️ | ⚠️ solo notificaciones in-app por evento; alertas proactivas son stubs |

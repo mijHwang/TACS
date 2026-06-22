@@ -2,10 +2,12 @@ package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
+import com.grupo3.tp.dtos.SugerenciaResponseDTO;
 import com.grupo3.tp.dtos.UsuarioDTO;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.service.FiguritaService;
+import com.grupo3.tp.service.SugerenciaService;
 import com.grupo3.tp.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,12 @@ public class UsuarioController {
 
     private final UsuarioService service;
     private final FiguritaService figuritaService;
+    private final SugerenciaService sugerenciaService;
 
-    public UsuarioController(UsuarioService service, FiguritaService figuritaService ) {
+    public UsuarioController(UsuarioService service, FiguritaService figuritaService, SugerenciaService sugerenciaService) {
         this.service = service;
         this.figuritaService = figuritaService;
+        this.sugerenciaService = sugerenciaService;
     }
 
     @GetMapping
@@ -92,5 +96,11 @@ public class UsuarioController {
     public ResponseEntity<List<FiguritaResponseDTO>> getRepetidas(@PathVariable String userName) {
         Usuario usuario = service.loadUserByUsername(userName);
         return ResponseEntity.ok(figuritaService.obtenerRepetidas(usuario.getId()));
+    }
+
+    @GetMapping("/{userName}/sugerencias")
+    public ResponseEntity<List<SugerenciaResponseDTO>> getSugerencias(@PathVariable String userName) {
+        Usuario usuario = service.loadUserByUsername(userName);
+        return ResponseEntity.ok(sugerenciaService.obtenerPorUsuario(usuario.getId()));
     }
 }

@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/useAuth';
+import api from '../../services/api';
 import Carousel from './components/Carousel';
-import Figurita from '../../components/Figurita';
 import PropuestaCard from './components/PropuestaCard';
 import SubastaCard from './components/SubastaCard';
 import AlertaCard from './components/AlertaCard';
@@ -9,17 +11,28 @@ const BLUE  = '#03BAE9';
 const RED   = '#D82D31';
 const GREEN = '#05B15A';
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
-// Figuritas que te faltan y otros usuarios tienen disponibles para intercambio
-const FIGURITAS = [
-  { id: 1, name: 'K. Mbappé',     age: 25, number: 7,  position: 'Attacker',   photo: 'https://media.api-sports.io/football/players/278.png'  },
-  { id: 2, name: 'E. Haaland',    age: 23, number: 9,  position: 'Attacker',   photo: 'https://media.api-sports.io/football/players/1100.png' },
-  { id: 3, name: 'J. Bellingham', age: 20, number: 5,  position: 'Midfielder', photo: 'https://media.api-sports.io/football/players/1478.png' },
-  { id: 4, name: 'K. De Bruyne',  age: 32, number: 17, position: 'Midfielder', photo: 'https://media.api-sports.io/football/players/627.png'  },
-  { id: 5, name: 'M. Salah',      age: 31, number: 11, position: 'Attacker',   photo: 'https://media.api-sports.io/football/players/306.png'  },
-  { id: 6, name: 'R. Lewandowski',age: 35, number: 9,  position: 'Attacker',   photo: 'https://media.api-sports.io/football/players/174.png'  },
-];
+// ── Tipos de sugerencias (datos reales) ─────────────────────────────────────────
+interface FiguritaResponseDTO {
+  id: string;
+  figuritaBaseId: string;
+  numero: number;
+  jugadorNombre: string;
+  seleccionNombre: string;
+  equipoNombre: string;
+  categoriaNombre: string;
+  count: number;
+  ownerId: string;
+  ownerName: string;
+}
 
+interface SugerenciaResponseDTO {
+  contraparteId: string;
+  contraparteNombre: string;
+  figuritasARecibir: FiguritaResponseDTO[];
+  figuritasAOfrecer: FiguritaResponseDTO[];
+}
+
+// ── Mock data (secciones aún no migradas: fuera de alcance) ──────────────────────
 const PROPUESTAS = [
   { id: 1, usuario: 'carlitos99',   ofrecidas: ['Messi #10'],          solicitadas: ['Mbappé #7', 'Pedri #8'], tipo: 'enviada'  as const, fecha: 'hoy' },
   { id: 2, usuario: 'sofi_fig',     ofrecidas: ['Haaland #9'],         solicitadas: ['Kane #9'],               tipo: 'recibida' as const, fecha: 'ayer' },
@@ -81,6 +94,22 @@ function Section({
 
 // ── Página ────────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [sugeridas, setSugeridas] = useState<{ s: SugerenciaResponseDTO; f: FiguritaResponseDTO }[]>([]);
+
+  useEffect(() => {
+    if (!user?.username) return;
+    api.get(`/api/usuarios/${user.username}/sugerencias`)
+      .then((res) => {
+        const flat = (res.data as SugerenciaResponseDTO[])
+          .flatMap((s) => s.figuritasARecibir.map((f) => ({ s, f })))
+          .slice(0, 8);
+        setSugeridas(flat);
+      })
+      .catch((err) => console.error('Error fetching sugerencias:', err));
+  }, [user?.username]);
+
   return (
     <div
       className="page-enter flex flex-col gap-10"
@@ -91,11 +120,25 @@ export default function DashboardPage() {
         <p className="text-sm text-gray-500">Resumen de tu actividad</p>
       </div>
 
-      {/* Sugerencias de figuritas faltantes disponibles para intercambio */}
-      <Section title="Disponibles para intercambio" color={BLUE} to="/buscar" toLabel="Buscar más">
-        {FIGURITAS.map((f) => (
-          <Figurita key={f.id} name={f.name} age={f.age} number={f.number} position={f.position} photo={f.photo} estado="faltante" />
-        ))}
+      {/* Sugerencias de intercambio reales (US4) */}
+      <Section title="Sugerencias para vos" color={BLUE} to="/sugerencias" toLabel="Ver todas">
+        {sugeridas.length === 0 ? (
+          <p className="text-sm text-gray-400">Sin sugerencias por ahora.</p>
+        ) : (
+          sugeridas.map(({ s, f }) => (
+            <button
+              key={`${s.contraparteId}-${f.id}`}
+              onClick={() => navigate('/propuestas/nueva', { state: { figuritaSeleccionada: f, figuritasOfrecidasBaseIds: s.figuritasAOfrecer.map((x) => x.figuritaBaseId) } })}
+              className="text-left min-w-[180px] p-4 rounded-2xl bg-white hover:-translate-y-0.5 transition-transform"
+              style={{ border: `1.5px solid ${BLUE}30` }}
+            >
+              <p className="text-sm font-bold text-gray-900">{f.jugadorNombre} <span className="text-gray-400 font-normal">#{f.numero}</span></p>
+              <p className="text-xs text-gray-500">{f.seleccionNombre} · {f.equipoNombre}</p>
+              <p className="text-xs text-gray-400 mt-2">De @{s.contraparteNombre}</p>
+              <p className="text-xs mt-2 font-semibold" style={{ color: BLUE }}>Proponer →</p>
+            </button>
+          ))
+        )}
       </Section>
 
       {/* Propuestas */}

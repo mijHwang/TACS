@@ -60,7 +60,7 @@ cd backend
 
 **Key domain entities:** `Usuario`, `Figurita`, `FiguritaBase`, `Subasta` (auction), `Oferta` (bid), `Intercambio` (trade), `SolicitudDeIntercambio`, `Seleccion`, `Equipo`, `Calificacion`, `Alerta`.
 
-> **Implementation status (do not over-trust the entity list):** `Alerta`/`GeneradorAlerta` and `Sugerencia`/`GestionadorSugerencias` are **stubs** — plain POJOs without `@Document`, whose generators return `null`, with no repository/service/controller wiring. `Calificacion` has CRUD only (no reputation/average computation). So US4 (auto-suggestions), US10 (reputation) and the proactive part of US11 (alerts) are **not** implemented. Full US coverage map lives in `README.md` (§ Cobertura de User Stories).
+> **Implementation status (do not over-trust the entity list):** `Alerta`/`GeneradorAlerta` are **stubs** — plain POJOs without `@Document`, whose generators return `null`, with no repository/service/controller wiring. `Calificacion` has CRUD only (no reputation/average computation). So US10 (reputation) and the proactive part of US11 (alerts) are **not** implemented. **US4 (auto-suggestions) IS implemented**: `Sugerencia` is now a real `@Document` with `SugerenciaService` (bidirectional matching), `SugerenciaRepository`, `SugerenciaController` (`POST /api/sugerencias/regenerar`, admin), a daily `@Scheduled` job (`SugerenciaScheduler`, 3 AM) and `GET /api/usuarios/{userName}/sugerencias`; the old `GestionadorSugerencias` stub was removed. Full US coverage map lives in `README.md` (§ Cobertura de User Stories).
 
 ## Tech Stack
 

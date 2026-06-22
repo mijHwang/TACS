@@ -30,6 +30,11 @@ const icons: Record<string, JSX.Element> = {
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   ),
+  sugerencias: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M9.663 17h4.673M12 3v1M5.6 6.6l.7.7M18.4 6.6l-.7.7M4 12H3m18 0h-1M7 12a5 5 0 1 1 10 0c0 2-1.5 3-2 4H9c-.5-1-2-2-2-4z" />
+    </svg>
+  ),
   subastas: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" /><path d="m13 13 6 6" />
@@ -58,6 +63,7 @@ const navLinks = [
   { to: '/buscar', label: 'Buscar', icon: 'buscar' },
   { to: '/intercambios', label: 'Intercambios', icon: 'intercambios' },
   { to: '/propuestas', label: 'Propuestas', icon: 'propuestas' },
+  { to: '/sugerencias', label: 'Sugerencias', icon: 'sugerencias' },
   { to: '/subastas', label: 'Subastas', icon: 'subastas' },
   { to: '/notificaciones', label: 'Notificaciones', icon: 'notificaciones' },
   { to: '/perfil', label: 'Perfil', icon: 'perfil' },
