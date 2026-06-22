@@ -36,6 +36,7 @@ const SubParticipandoPage = lazy(() => import('../pages/subastas/ParticipandoPag
 
 // Admin (solo rol "admin")
 const AdminPage = lazy(() => import('../pages/admin/AdminPage'));
+const AdminGiftPage = lazy(() => import('../pages/admin/AdminGiftPage'));
 
 // ── Router ────────────────────────────────────────────────────────────────────
 const router = createBrowserRouter([
@@ -108,6 +109,7 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           { path: 'admin', element: <AdminPage /> },
+          { path: 'admin/gift', element: <AdminGiftPage /> },
         ],
       },
     ],

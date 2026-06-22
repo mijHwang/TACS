@@ -1,5 +1,6 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.UsuarioDTO;
 import com.grupo3.tp.models.Figurita;
@@ -54,6 +55,11 @@ public class UsuarioController {
         return  ResponseEntity.ok(usuario);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Usuario>> searchByUsername(@RequestParam String search) {
+        return ResponseEntity.ok(service.searchByUsername(search));
+    }
+
     @PostMapping
     public ResponseEntity<Usuario> create(@RequestBody UsuarioDTO usuariodto) {
         Usuario usuario = new Usuario(usuariodto.getUsername(),usuariodto.getPassword(),usuariodto.getEmail());
@@ -76,9 +82,9 @@ public class UsuarioController {
     }
 
     @GetMapping("/{userName}/figuritas/faltantes")
-    public ResponseEntity<List<FiguritaResponseDTO>> getFaltantes(@PathVariable String userName) {
+    public ResponseEntity<List<FiguritaBaseDTO>> getFaltantes(@PathVariable String userName) {
         Usuario usuario = service.loadUserByUsername(userName);
-        List<FiguritaResponseDTO> faltantes = figuritaService.obtenerFaltantes(usuario.getId());
+        List<FiguritaBaseDTO> faltantes = figuritaService.obtenerFaltantes(usuario.getId());
         return ResponseEntity.ok(faltantes);
     }
 

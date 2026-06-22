@@ -85,4 +85,6 @@ public class FiguritaBaseController {
         }
         return ResponseEntity.notFound().build();
     }
+
+
 }

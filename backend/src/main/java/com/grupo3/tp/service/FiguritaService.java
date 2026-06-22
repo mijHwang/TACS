@@ -1,8 +1,11 @@
 package com.grupo3.tp.service;
 
+import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.models.Figurita;
+import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
+import com.grupo3.tp.repository.FiguritaBaseRepository;
 import com.grupo3.tp.repository.FiguritaRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +18,11 @@ import java.util.stream.Collectors;
 public class FiguritaService {
 
     private final FiguritaRepository repository;
+    private final FiguritaBaseRepository figuritaBaseRepository;
 
-    public FiguritaService(FiguritaRepository repository) {
+    public FiguritaService(FiguritaRepository repository,  FiguritaBaseRepository figuritaRepository) {
         this.repository = repository;
+        this.figuritaBaseRepository = figuritaRepository;
     }
 
     public Figurita crear(Figurita figurita) {
@@ -49,27 +54,24 @@ public class FiguritaService {
                 .toList();
     }
 
-    public List<FiguritaResponseDTO> obtenerFaltantes(String userId) {
+    public List<FiguritaBaseDTO> obtenerFaltantes(String userId) {
+        List<FiguritaBase> todasBases = figuritaBaseRepository.findAll();
 
-        List<FiguritaResponseDTO> todas = obtenerTodas();
-
-        System.out.println("=== FALTANTES DEBUG ===");
-        System.out.println("User has (IDs): ");
-        System.out.println("All figuritas (count): " + todas.size());
-        System.out.println("All IDs: " + todas.stream().map(FiguritaResponseDTO::getFiguritaBaseId).collect(Collectors.toSet()));
-
-
-
-        List<FiguritaResponseDTO> misFiguritas = obtenerPorUserId(userId);
+        List<Figurita> misFiguritas = repository.findByFiguritaOwnerId(userId);
         Set<String> misFiguritasBaseIds = misFiguritas.stream()
-                .map(FiguritaResponseDTO::getFiguritaBaseId)
+                .map(f -> f.getFiguritaBase().getId())
                 .collect(Collectors.toSet());
 
-        System.out.println("Faltantes (count): ");
-        System.out.println("======================");
-
-        return todas.stream()
-                .filter(f -> !misFiguritasBaseIds.contains(f.getFiguritaBaseId()))
+        return todasBases.stream()
+                .filter(base -> !misFiguritasBaseIds.contains(base.getId()))
+                .map(base -> new FiguritaBaseDTO(
+                        base.getId(),
+                        base.getNumero(),
+                        base.getJugador().getNombre(),
+                        base.getSeleccion().getNombre(),
+                        base.getEquipo().getNombre(),
+                        base.getCategoria().getNombre()
+                ))
                 .toList();
     }
 

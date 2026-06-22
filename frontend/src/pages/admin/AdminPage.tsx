@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { adminService, type PlatformStats } from '../../services/adminService';
 import { PageLoading, PageError } from '../subastas/ActivasPage';
 import {
@@ -50,8 +51,8 @@ const ICONS = {
   ),
 };
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
+  const navigate = useNavigate();
   const [stats, setStats]     = useState<PlatformStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
@@ -87,6 +88,14 @@ export default function AdminPage() {
         <p className="text-xs text-muted mt-0.5">
           Datos en tiempo real sobre el uso y actividad del sistema.
         </p>
+        
+        {/* Navigation button */}
+        <button
+          onClick={() => navigate('/admin/gift')}
+          className="mt-4 px-4 py-2 bg-primary text-text font-bold rounded-lg hover:opacity-90 transition-opacity"
+        >
+          Regalar Figurita
+        </button>
       </div>
 
       {/* ── KPI cards ───────────────────────────────────────────────────────── */}

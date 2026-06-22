@@ -3,23 +3,19 @@ import { useAuth } from '../../auth/useAuth';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
-interface FiguritaResponseDTO {
+interface FiguritaBaseDTO {
   id: string;
-  figuritaBaseId: string;
   numero: number;
   jugadorNombre: string;
   seleccionNombre: string;
   equipoNombre: string;
   categoriaNombre: string;
-  count: number;
-  ownerId: string;
-  onwerName: string;
 }
 
 export default function ColeccionFaltantesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [faltantes, setFaltantes] = useState<FiguritaResponseDTO[]>([]);
+  const [faltantes, setFaltantes] = useState<FiguritaBaseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSeleccion, setFilterSeleccion] = useState('');
@@ -50,7 +46,6 @@ export default function ColeccionFaltantesPage() {
 
   return (
     <div>
-      {/* Search bar */}
       <div className="mb-6">
         <input
           type="text"
@@ -61,7 +56,6 @@ export default function ColeccionFaltantesPage() {
         />
       </div>
 
-      {/* Filters */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <input
           type="text"
@@ -110,26 +104,23 @@ export default function ColeccionFaltantesPage() {
             return matchesSearch && matchesSeleccion && matchesEquipo && matchesCategoria;
           })
           .map((figurita) => (
-            <div key={figurita.figuritaBaseId} 
+            <div key={figurita.id} 
             onClick={() => navigate('/buscar', { 
-            state: { filterByBaseId: figurita.figuritaBaseId, figuritaInfo: figurita } 
+            state: { filterByBaseId: figurita.id, figuritaInfo: figurita } 
             })}
-            className="bg-surface p-4 rounded-lg border border-border flex flex-col">
-              {/* Image placeholder */}
+            className="bg-surface p-4 rounded-lg border border-border flex flex-col cursor-pointer hover:bg-surface/80 transition-colors">
               <div className="w-full aspect-square bg-surface2 rounded-md mb-3 flex items-center justify-center">
                 <p className="text-xs text-muted">Imagen</p>
               </div>
 
-              {/* Info */}
               <p className="text-xs text-muted mb-2">{figurita.seleccionNombre}</p>
               <p className="text-sm font-bold text-primary mb-2">{figurita.jugadorNombre}</p>
               <p className="text-xs text-text mb-2">{figurita.equipoNombre}</p>
               <p className="text-xs text-muted mb-3">{figurita.categoriaNombre}</p>
 
-              {/* Owner info */}
               <div className="mt-auto">
                 <p className="text-xs text-muted">
-                  Número: {figurita.numero}
+                  #{figurita.numero}
                 </p>
               </div>
             </div>

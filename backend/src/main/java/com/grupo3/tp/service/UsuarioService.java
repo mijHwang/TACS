@@ -25,6 +25,10 @@ public class UsuarioService {
         return usuario.get();
     }
 
+    public List<Usuario> searchByUsername(String search) {
+        return repository.findByUsernameContainingIgnoreCase(search);
+    }
+
     public Usuario crear(Usuario usuario) {
         return repository.save(usuario);
     }
