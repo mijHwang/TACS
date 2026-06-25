@@ -32,6 +32,7 @@ interface SolicitudDeIntercambio {
   figuritasOfrecidas: Figurita[];
   cantidadDisponible: number;
   estado: string;
+  destinatarioUsername: string;
 }
 
 
@@ -105,8 +106,8 @@ export default function PropuestasEnviadasPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-sm text-muted">Enviado a:</p>
-                  <p className="text-text font-semibold">{propuesta.figurita.owner?.username || 'Usuario desconocido'}</p>
-                </div>                                      {/* propuesta.usuario?.username */}
+                  <p className="text-text font-semibold">{propuesta.destinatarioUsername || 'Usuario desconocido'}</p>
+                </div>                                    
                 <p className={`font-semibold ${getStatusColor(propuesta.estado)}`}>
                   {getStatusText(propuesta.estado)}
                 </p>

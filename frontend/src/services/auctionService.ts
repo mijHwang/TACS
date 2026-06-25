@@ -4,7 +4,7 @@ import { apiFetch, mapSubasta, type BackendSubasta } from './api';
 
 function mapFiguritaToSticker(figurita: any): Sticker {
   return {
-    id: figurita.figuritaBaseId,  // Use figuritaBaseId, not id
+    id: figurita.id,
     number: figurita.numero,
     playerName: figurita.jugadorNombre,
     country: figurita.seleccionNombre,
@@ -45,31 +45,19 @@ export const auctionService = {
   userId: string;
   username: string;
 }): Promise<Auction> {
-  const now = new Date();
-  const end = new Date(now.getTime() + payload.durationHours * 3_600_000);
-
+  // FIXED: Send correct SubastaDTO structure
   const body = {
-    usuario: { id: payload.userId, username: payload.username },  
-    figurita: {
-        numero: payload.sticker.number,
-        jugador: { nombre: payload.sticker.playerName },
-        seleccion: { nombre: payload.sticker.country },
-      }, 
+    usuarioId: payload.userId,
+    figuritaId: payload.sticker.id,  // Use the sticker ID (figuritaBaseId)
     duracion: payload.durationHours,
     condiciones: payload.conditions.map(c => ({ tipo: c.type, valor: String(c.value) })),
-    estado: 'EN_CURSO',
-    horaInicio: now.toISOString().slice(0, 19),
-    horaFin: end.toISOString().slice(0, 19),
-    ofertas: [],
   };
-  
 
   const data = await apiFetch<BackendSubasta>('/subastas', {
     method: 'POST',
     body: JSON.stringify(body),
   });
   return mapSubasta(data, payload.userId);
-
 },
 
 

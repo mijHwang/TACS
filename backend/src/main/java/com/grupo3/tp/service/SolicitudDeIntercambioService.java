@@ -88,12 +88,15 @@ public class SolicitudDeIntercambioService {
     public Optional<SolicitudDeIntercambio> aceptar(String id) {
         Optional<SolicitudDeIntercambio> solicitud = repository.findById(id);
 
+
+
         if (solicitud.isPresent()) {
 
-            solicitud.get().setEstado(SolicitudDeIntercambio.EstadoSolicitud.ACEPTADO);
-            repository.save(solicitud.get());
-
             SolicitudDeIntercambio aux = solicitud.get();
+            aux.setEstado(SolicitudDeIntercambio.EstadoSolicitud.ACEPTADO);
+            repository.save(aux);
+
+
             Usuario owner = aux.getFigurita().getOwner();
 
             //petitioner to owner
@@ -104,7 +107,10 @@ public class SolicitudDeIntercambioService {
                 }
             }
             //owner to petitioner
-            Optional<Figurita> result = figuritaService.transferir(aux.getFigurita().getId(), aux.getUsuario());
+            Optional<Figurita> result = figuritaService.transferir(
+                    aux.getFigurita().getId(),
+                    aux.getUsuario());
+
             if (result.isEmpty()) {
                 throw new RuntimeException("Failed to transfer figurita: " + aux.getFigurita().getId());
             }
@@ -125,7 +131,7 @@ public class SolicitudDeIntercambioService {
                     .usuario(solicitud.get().getUsuario())
                     .tipo("propuesta")
                     .titulo("propuesta aceptada")
-                    .mensaje(solicitud.get().getFigurita().getOwner().getUsername() + " acepto tu propuesta")
+                    .mensaje(owner.getUsername() + " acepto tu propuesta")
                     .enlace("/propuestas/enviadas")
                     .leida(false)
                     .fecha(LocalDateTime.now())

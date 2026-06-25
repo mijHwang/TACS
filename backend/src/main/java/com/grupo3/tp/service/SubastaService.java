@@ -1,10 +1,13 @@
 package com.grupo3.tp.service;
 
+import com.grupo3.tp.dtos.SubastaDTO;
+import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.SubastaRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -19,20 +22,38 @@ public class SubastaService {
     private final SubastaRepository repository;
     private final FiguritaService figuritaService;
     private final NotificacionService notificacionService;
+    private final UsuarioService usuarioService;
 
 
 
     public SubastaService(SubastaRepository repository,
                           FiguritaService figuritaService,
-                          NotificacionService notificacionService) {
+                          NotificacionService notificacionService,
+                          UsuarioService usuarioService) {
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.notificacionService = notificacionService;
+        this.usuarioService = usuarioService;
     }
 
-    public Subasta crear(Subasta subasta) {
+    public Subasta crear(SubastaDTO dto) {
 
-        subasta.setEstado(EstadoSubasta.PENDIENTE);
+        Usuario usuario = usuarioService.obtenerPorId(dto.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Figurita figurita = figuritaService.obtenerPorId(dto.getFiguritaId())
+                .orElseThrow(() -> new RuntimeException("Figurita no encontrada"));
+
+
+
+        Subasta subasta = Subasta.builder()
+                .usuario(usuario)
+                .figurita(figurita)
+                .estado(EstadoSubasta.PENDIENTE)
+                .duracion(dto.getDuracion())
+                .condiciones(dto.getCondiciones())
+                .build();
+
 
         if (subasta.getHoraInicio() == null) {
             subasta.setHoraInicio(LocalDateTime.now());
@@ -41,7 +62,9 @@ public class SubastaService {
             subasta.setHoraFin(subasta.getHoraInicio().plusMinutes(subasta.getDuracion()));
         }
 
-        return repository.save(subasta);
+        repository.save(subasta);
+
+        return repository.findById(subasta.getId()).orElse(subasta);
 
     }
 
@@ -83,9 +106,19 @@ public class SubastaService {
     }
 
 
+    // FIXED: Added @Transactional to ensure atomicity when transferring figuritas
+    // If any transfer fails, entire transaction rolls back
+    @Transactional
     public void finalizar(String subastaId) {
         Subasta subasta = repository.findById(subastaId)
                 .orElseThrow(() -> new RuntimeException("Subasta not found"));
+
+        // FIXED: Added null check for ofertas before filtering
+        if (subasta.getOfertas() == null || subasta.getOfertas().isEmpty()) {
+            subasta.setEstado(EstadoSubasta.FINALIZADA);
+            repository.save(subasta);
+            return;
+        }
 
         List<Oferta> ofertasValidas = filtrarOfertasValidas(subasta);
 
@@ -257,5 +290,36 @@ public class SubastaService {
         }
     }
 
+
+    // FIXED: Added null checks to prevent NPE when mapping
+    // Validates that required nested objects exist before accessing them
+    public SubastaResponseDTO mapToDTO(Subasta s) {
+        if (s == null) {
+            throw new RuntimeException("Subasta cannot be null");
+        }
+        if (s.getFigurita() == null || s.getFigurita().getFiguritaBase() == null) {
+            throw new RuntimeException("Subasta must have valid Figurita and FiguritaBase");
+        }
+        if (s.getUsuario() == null) {
+            throw new RuntimeException("Subasta must have valid Usuario");
+        }
+
+        return new SubastaResponseDTO(
+                s.getId(),
+                s.getUsuario().getId(),
+                s.getUsuario().getUsername(),
+                s.getFigurita().getId(),
+                s.getFigurita().getFiguritaBase().getNumero(),
+                s.getFigurita().getFiguritaBase().getJugador().getNombre(),
+                s.getFigurita().getFiguritaBase().getSeleccion().getNombre(),
+                s.getFigurita().getFiguritaBase().getEquipo().getNombre(),
+                s.getFigurita().getFiguritaBase().getCategoria().getNombre(),
+                s.getEstado(),
+                s.getDuracion(),
+                s.getHoraInicio(),
+                s.getHoraFin(),
+                s.getOfertas() != null ? s.getOfertas().size() : 0
+        );
+    }
 
 }

@@ -12,5 +12,5 @@ public class SolicitudDeIntercambioDTO {
     private String figuritaId;
     private List<String> figuritasOfrecidas;
     private String estado;
-
+ 
 }

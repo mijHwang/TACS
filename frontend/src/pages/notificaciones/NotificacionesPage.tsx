@@ -54,7 +54,12 @@ export default function NotificacionesPage() {
   
     api.get(`/api/notificaciones/usuario/${user.id}`)
       .then(res => {
-        setNotificaciones(res.data);
+
+        const ordered = [...res.data].sort(
+        (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        );
+
+        setNotificaciones(ordered);
         setLoading(false);
       })
       .catch(error => {

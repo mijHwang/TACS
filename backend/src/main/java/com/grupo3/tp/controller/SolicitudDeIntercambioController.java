@@ -69,6 +69,7 @@ public class SolicitudDeIntercambioController {
                 .figurita(figurita)
                 .figuritasOfrecidas(figuritasOfrecidas)
                 .estado(SolicitudDeIntercambio.EstadoSolicitud.PENDIENTE)
+                .destinatarioUsername(figurita.getOwner().getUsername())
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(solicitud));

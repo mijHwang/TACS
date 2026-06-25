@@ -33,4 +33,8 @@ public class SolicitudDeIntercambio {
     @DocumentReference(lazy = true)
     private List<Figurita> figuritasOfrecidas;
     private EstadoSolicitud estado;
+    private String destinatarioUsername;
+
+
+
 }

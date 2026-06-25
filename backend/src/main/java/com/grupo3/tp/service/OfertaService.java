@@ -1,14 +1,10 @@
+// OfertaService.java
 package com.grupo3.tp.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.grupo3.tp.dtos.OfertaDTO;
 import com.grupo3.tp.models.*;
-import com.grupo3.tp.repository.NotificacionRepository;
 import com.grupo3.tp.repository.OfertaRepository;
 import com.grupo3.tp.repository.SubastaRepository;
-import com.grupo3.tp.dtos.SubastaDTO;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,9 +33,11 @@ public class OfertaService {
         this.figuritaService = figuritaService;
     }
 
-    public Oferta crear(OfertaDTO ofertaDTO, SubastaDTO subastaDTO) {
+    // FIXED: Removed SubastaDTO parameter, get subastaId from OfertaDTO
+    public Oferta crear(OfertaDTO ofertaDTO) {
 
-        Optional<Subasta> subastaOpt = subastaRepository.findById(subastaDTO.getSubastaId());
+        // FIXED: Get subastaId directly from OfertaDTO
+        Optional<Subasta> subastaOpt = subastaRepository.findById(ofertaDTO.getSubastaId());
         if (!subastaOpt.isPresent()) {
             throw new RuntimeException("Subasta not found");
         }
@@ -48,23 +46,19 @@ public class OfertaService {
         Usuario usuario = usuarioService.obtenerPorId(ofertaDTO.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario not found"));
 
-
         List<Figurita> figuritas = ofertaDTO.getFiguritaIds().stream()
                 .map(id -> figuritaService.obtenerPorId(id)
                         .orElseThrow(() -> new RuntimeException("Figurita " + id + " not found")))
                 .collect(Collectors.toList());
 
-
         Oferta oferta = Oferta.builder()
                 .usuario(usuario)
                 .figuritas(figuritas)
-                .estado(Estado.PENDIENTE)  // Default state
+                .estado(Estado.PENDIENTE)
                 .fechaOferta(LocalDateTime.now())
                 .build();
 
-        // 5. Save the oferta
         Oferta ofertaGuardada = repository.save(oferta);
-
 
         // Check if user already has a bid on this auction
         Optional<Oferta> ofertaExistente = repository.findAll().stream()
@@ -78,22 +72,21 @@ public class OfertaService {
             repository.delete(ofertaExistente.get());
         }
 
-        // 6. Add to subasta's list// for the time we just add the new one not replace or update
+        // Add to subasta's list
         subasta.getOfertas().add(ofertaGuardada);
         subastaRepository.save(subasta);
 
-            Notificacion notif = Notificacion.builder()
-                    .usuario(subasta.getUsuario())
-                    .tipo("subasta")
-                    .titulo("nueva oferta")
-                    .mensaje(ofertaDTO.getUsuarioId() + " te manda una nueva oferta.")
-                    .enlace("/subastas/" + subastaDTO.getSubastaId())
-                    .leida(false)
-                    .fecha(LocalDateTime.now())
-                    .build();
+        Notificacion notif = Notificacion.builder()
+                .usuario(subasta.getUsuario())
+                .tipo("subasta")
+                .titulo("nueva oferta")
+                .mensaje(ofertaDTO.getUsuarioId() + " te manda una nueva oferta.")
+                .enlace("/subastas/" + ofertaDTO.getSubastaId())
+                .leida(false)
+                .fecha(LocalDateTime.now())
+                .build();
 
-            notificacionService.crear(notif);
-
+        notificacionService.crear(notif);
 
         return repository.save(oferta);
     }

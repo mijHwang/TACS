@@ -1,5 +1,7 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.SubastaDTO;
+import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.EstadoSubasta;
 import com.grupo3.tp.models.Subasta;
 import com.grupo3.tp.service.SubastaService;
@@ -20,30 +22,44 @@ public class SubastaController {
         this.service = service;
     }
 
+    // FIXED: Changed return type from List<Subasta> to List<SubastaResponseDTO>
+    // Maps each Subasta to DTO with flattened figurita data
     @GetMapping
-    public ResponseEntity<List<Subasta>> getAll() {
-        return ResponseEntity.ok(service.obtenerTodas());
+    public ResponseEntity<List<SubastaResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.obtenerTodas().stream()
+                .map(service::mapToDTO)
+                .toList());
     }
 
+    // FIXED: Changed return type to SubastaResponseDTO and added mapping
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<Subasta>> getByUsuario(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerPorUsuario(usuarioId));
+    public ResponseEntity<List<SubastaResponseDTO>> getByUsuario(@PathVariable String usuarioId) {
+        return ResponseEntity.ok(service.obtenerPorUsuario(usuarioId).stream()
+                .map(service::mapToDTO)
+                .toList());
     }
 
+    // FIXED: Changed return type to SubastaResponseDTO and added mapping
     @GetMapping("/participando/{usuarioId}")
-    public ResponseEntity<List<Subasta>> getParticipando(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerParticipando(usuarioId));
+    public ResponseEntity<List<SubastaResponseDTO>> getParticipando(@PathVariable String usuarioId) {
+        return ResponseEntity.ok(service.obtenerParticipando(usuarioId).stream()
+                .map(service::mapToDTO)
+                .toList());
     }
 
+    // FIXED: Changed return type to SubastaResponseDTO and added mapping
     @GetMapping("/{id}")
-    public ResponseEntity<Subasta> getById(@PathVariable String id) {
+    public ResponseEntity<SubastaResponseDTO> getById(@PathVariable String id) {
         return service.obtenerPorId(id)
-                .map(ResponseEntity::ok)
+                .map(s -> ResponseEntity.ok(service.mapToDTO(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // FIXED: Fixed horaFin calculation bug
+    // Was: LocalDateTime.now().plusMinutes() — recalculates from NOW
+    // Now: Uses original horaInicio + duracion to preserve intended end time
     @PutMapping("/{id}/iniciar")
-    public ResponseEntity<Subasta> iniciar(@PathVariable String id) {
+    public ResponseEntity<SubastaResponseDTO> iniciar(@PathVariable String id) {
         Subasta subasta = service.obtenerPorId(id)
                 .orElseThrow(() -> new RuntimeException("Subasta not found"));
 
@@ -54,23 +70,29 @@ public class SubastaController {
         subasta.setEstado(EstadoSubasta.EN_CURSO);
         subasta.setHoraInicio(LocalDateTime.now());
 
-        // Recalculate horaFin
+        // FIXED: Use horaInicio + duracion, not now + duracion
         if (subasta.getDuracion() != null) {
-            subasta.setHoraFin(LocalDateTime.now().plusMinutes(subasta.getDuracion()));
+            subasta.setHoraFin(subasta.getHoraInicio().plusMinutes(subasta.getDuracion()));
         }
 
-        return ResponseEntity.ok(service.actualizar(id, subasta).orElse(null));
-    }
-
-    @PostMapping
-    public ResponseEntity<Subasta> create(@RequestBody Subasta subasta) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(subasta));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Subasta> update(@PathVariable String id, @RequestBody Subasta subasta) {
         return service.actualizar(id, subasta)
-                .map(ResponseEntity::ok)
+                .map(s -> ResponseEntity.ok(service.mapToDTO(s)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // FIXED: Changed return type to SubastaResponseDTO
+    // Now returns full DTO instead of raw Subasta
+    @PostMapping
+    public ResponseEntity<SubastaResponseDTO> create(@RequestBody SubastaDTO subasta) {
+        Subasta created = service.crear(subasta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.mapToDTO(created));
+    }
+
+    // FIXED: Changed return type to SubastaResponseDTO and added mapping
+    @PutMapping("/{id}")
+    public ResponseEntity<SubastaResponseDTO> update(@PathVariable String id, @RequestBody Subasta subasta) {
+        return service.actualizar(id, subasta)
+                .map(s -> ResponseEntity.ok(service.mapToDTO(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

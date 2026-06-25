@@ -32,6 +32,7 @@ interface SolicitudDeIntercambio {
   figuritasOfrecidas: Figurita[];
   cantidadDisponible: number;
   estado: string;
+  destinatarioUsername: string;
 }
 
 export default function PropuestasRecibidasPage() {

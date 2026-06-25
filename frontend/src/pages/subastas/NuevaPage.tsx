@@ -34,23 +34,27 @@ export default function SubastasNuevaPage() {
   }, [user?.username]);
 
   const handleSubmit = async (stickerId: string, durationHours: number, conditions: AuctionCondition[]) => {
-    if (!user) return;
+  if (!user) return;
+  
+  const sticker = myStickers.find(s => s.id === stickerId);
+  if (!sticker) return;
 
+  setSubmitting(true);
+  setError(null);
+  try {
+    // Create the subasta
+    const created = await auctionService.create({ sticker, durationHours, conditions, userId: user.id, username: user.username });
     
-    const sticker = myStickers.find(s => s.id === stickerId);
-    if (!sticker) return;
-
-    setSubmitting(true);
-    setError(null);
-    try {
-      await auctionService.create({ sticker, durationHours, conditions, userId: user.id, username: user.username });
-      setSuccess(true);
-    } catch {
-      setError('No se pudo publicar la subasta. Verificá que el servidor esté corriendo.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    // FIXED: Automatically start it after creation
+    await api.put(`/api/subastas/${created.id}/iniciar`);
+    
+    setSuccess(true);
+  } catch {
+    setError('No se pudo publicar la subasta. Verificá que el servidor esté corriendo.');
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   if (loading) return <p className="text-muted">Cargando figuritas...</p>;
 

@@ -1,7 +1,6 @@
 package com.grupo3.tp.service;
 
 import com.grupo3.tp.dtos.OfertaDTO;
-import com.grupo3.tp.dtos.SubastaDTO;
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -107,16 +106,14 @@ public class OfertaServiceTest {
         when(figuritaService.obtenerPorId(ofrecida.getId()))
                 .thenReturn(java.util.Optional.of(ofrecida));
 
-        // Create DTO
+        // FIXED: Create OfertaDTO with subastaId directly (removed SubastaDTO)
         OfertaDTO ofertaDTO = new OfertaDTO();
+        ofertaDTO.setSubastaId(subasta.getId());  // ADDED: subastaId now in OfertaDTO
         ofertaDTO.setUsuarioId(usuario1.getId());
         ofertaDTO.setFiguritaIds(List.of(ofrecida.getId()));
 
-        SubastaDTO subastaDTO = new SubastaDTO();
-        subastaDTO.setSubastaId(subasta.getId());
-
-        // Call service
-        Oferta result = ofertaService.crear(ofertaDTO, subastaDTO);
+        // FIXED: Call service with only OfertaDTO parameter
+        Oferta result = ofertaService.crear(ofertaDTO);
 
         // Assert
         assertNotNull(result.getId());
