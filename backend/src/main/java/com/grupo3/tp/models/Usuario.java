@@ -1,5 +1,7 @@
 package com.grupo3.tp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +26,11 @@ public class Usuario implements UserDetails {
     @Id
     private String id;
     private String username;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+
     private String email;
     private Role role;
     @DocumentReference(lazy = true)

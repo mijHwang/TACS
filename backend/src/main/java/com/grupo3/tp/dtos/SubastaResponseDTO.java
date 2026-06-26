@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,4 +32,8 @@ public class SubastaResponseDTO {
     private LocalDateTime horaInicio;
     private LocalDateTime horaFin;
     private int ofertasCount;
+
+    private String liderId;
+    private String liderUsername;
+    private List<String> liderFiguritasNombres;
 }

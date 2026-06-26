@@ -1,6 +1,7 @@
-// SubastasActivasPage.tsx
 import { useState, useEffect } from 'react';
+import type { Sticker } from '../../types/auction';
 import { useAuth } from '../../auth/useAuth';
+import { mapFiguritaToSticker } from '../../services/auctionService';
 import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
@@ -20,6 +21,9 @@ interface SubastaResponseDTO {
   horaInicio: string;
   horaFin: string;
   ofertasCount: number;
+  liderId: string | null;
+  liderUsername: string;
+  liderFiguritasNombres: string[];
 }
 
 const RED = '#D82D31';
@@ -31,7 +35,10 @@ export default function SubastasActivasPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
+  
+  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [fetchingStickers, setFetchingStickers] = useState(false);
 
   useEffect(() => {
     if (!user?.id) { 
@@ -47,21 +54,43 @@ export default function SubastasActivasPage() {
       .finally(() => setLoading(false));
   }, [user?.id]);
 
+  const handleSelectAuction = async (auction: SubastaResponseDTO) => {
+    setSelected(auction);
+    
+    if (user?.username) {
+      setFetchingStickers(true);
+      try {
+        const res = await api.get(`/api/usuarios/${user.username}/figuritas/repetidas`);
+        const mapped = res.data.map(mapFiguritaToSticker);
+        setBidFormStickers(mapped);
+      } catch (err) {
+        console.error('Error fetching stickers:', err);
+        setBidFormStickers([]);
+      } finally {
+        setFetchingStickers(false);
+      }
+    }
+  };
+
+  // CHANGED: Fixed error handling to prevent application crashes on invalid bids
   const handleBid = async (auctionId: string, stickerIds: string[]) => {
     if (!user) return;
     setSubmitting(true);
     try {
       await api.post(`/api/subastas/${auctionId}/ofertar`, { 
         usuarioId: user.id,
-        figuritasOfrecidas: stickerIds 
+        figuritaIds: stickerIds
       });
       
       const res = await api.get('/api/subastas');
       setAuctions(res.data.filter((dto: SubastaResponseDTO) => dto.estado === 'EN_CURSO'));
       setSelected(null);
-    } catch (err) {
+      setBidFormStickers([]);
+    } catch (err: any) {
       console.error('Error placing bid:', err);
-      setError('Error al enviar la oferta.');
+      // Extracts exact error message from Spring Boot without unmounting the view
+      const serverMessage = err.response?.data?.message || 'Error al enviar la oferta.';
+      alert(serverMessage);
     } finally {
       setSubmitting(false);
     }
@@ -95,7 +124,7 @@ export default function SubastasActivasPage() {
             <AuctionCard 
               key={auction.id} 
               auction={auction} 
-              onViewDetail={setSelected}
+              onViewDetail={handleSelectAuction}
             />
           ))}
         </div>
@@ -104,31 +133,24 @@ export default function SubastasActivasPage() {
       {selected && (
         <AuctionDetailModal
           auction={selected}
-          myStickers={[]} // TODO: Fetch user's stickers
-          onClose={() => setSelected(null)}
+          myStickers={bidFormStickers}
+          onClose={() => {
+            setSelected(null);
+            setBidFormStickers([]);
+          }}
           onBid={handleBid}
           isSubmitting={submitting}
+          isFetchingStickers={fetchingStickers}
         />
       )}
     </div>
   );
 }
 
-function EmptyState({
-  title,
-  subtitle,
-  accentColor,
-}: {
-  title: string;
-  subtitle: string;
-  accentColor: string;
-}) {
+function EmptyState({ title, subtitle, accentColor }: { title: string; subtitle: string; accentColor: string; }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-      <div
-        className="w-14 h-14 rounded-full flex items-center justify-center"
-        style={{ background: `${accentColor}12`, border: `1.5px solid ${accentColor}30` }}
-      >
+      <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `${accentColor}12`, border: `1.5px solid ${accentColor}30` }}>
         <svg viewBox="0 0 24 24" fill="none" stroke={accentColor} strokeWidth="1.8" className="w-6 h-6">
           <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
         </svg>

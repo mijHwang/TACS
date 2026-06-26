@@ -16,6 +16,11 @@ interface SubastaResponseDTO {
   horaInicio: string;
   horaFin: string;
   ofertasCount: number;
+
+  // NEW: Fields added to match the updated Java Backend DTO
+  liderId: string | null;
+  liderUsername: string;
+  liderFiguritasNombres: string[];
 }
 
 interface AuctionCardProps {
@@ -99,6 +104,34 @@ export default function AuctionCard({ auction, onViewDetail }: AuctionCardProps)
           @{auction.usuarioUsername} · {auction.ofertasCount} oferta{auction.ofertasCount !== 1 ? 's' : ''}
         </p>
       </div>
+
+      {/* NEW: Displays the winning leader box if active offers exist */}
+      {auction.ofertasCount > 0 && auction.liderUsername && auction.liderUsername !== 'Nadie' && (
+        <div 
+          className="p-2.5 rounded-xl text-[0.7rem] flex flex-col gap-1.5 border mt-1"
+          style={{ background: '#FFF9E6', borderColor: '#FFEAA7' }}
+          onClick={(e) => e.stopPropagation()} // Prevents card opening when clicking on leader details directly
+        >
+          <div className="flex items-center gap-1 font-bold text-amber-900">
+            <span>👑</span>
+            <span className="uppercase tracking-wider text-[0.6rem] text-amber-800">Líder actual:</span>
+            <span className="text-gray-900 font-semibold font-mono">@{auction.liderUsername}</span>
+          </div>
+
+          {auction.liderFiguritasNombres && auction.liderFiguritasNombres.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-0.5">
+              {auction.liderFiguritasNombres.map((name, index) => (
+                <span 
+                  key={index} 
+                  className="bg-white px-1.5 py-0.5 rounded border border-amber-200 text-amber-950 font-medium text-[0.62rem] shadow-sm max-w-full truncate"
+                >
+                  {name}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </article>
   );
 }

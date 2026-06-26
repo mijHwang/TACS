@@ -20,11 +20,17 @@ function formatCountdown(ms: number): string {
 }
 
 export default function CountdownBadge({ endTime }: CountdownBadgeProps) {
-  const [ms, setMs] = useState(() => new Date(endTime).getTime() - Date.now());
+
+  
+  const formatTargetTime = (isoString: string) => {
+    return isoString.endsWith('Z') ? isoString : `${isoString}Z`;
+  };
+
+  const [ms, setMs] = useState(() => new Date(formatTargetTime(endTime)).getTime() - Date.now());
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setMs(new Date(endTime).getTime() - Date.now());
+      setMs(new Date(formatTargetTime(endTime)).getTime() - Date.now());
     }, 1000);
     return () => clearInterval(timer);
   }, [endTime]);

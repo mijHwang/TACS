@@ -19,6 +19,9 @@ interface SubastaResponseDTO {
   horaInicio: string;
   horaFin: string;
   ofertasCount: number;
+  liderId: string | null;
+  liderUsername: string;
+  liderFiguritasNombres: string[];
 }
 
 interface AuctionDetailModalProps {
@@ -27,6 +30,7 @@ interface AuctionDetailModalProps {
   onClose: () => void;
   onBid: (auctionId: string, stickerIds: string[]) => void;
   isSubmitting?: boolean;
+  isFetchingStickers?: boolean;
 }
 
 export default function AuctionDetailModal({
@@ -35,6 +39,7 @@ export default function AuctionDetailModal({
   onClose,
   onBid,
   isSubmitting = false,
+  isFetchingStickers = false,
 }: AuctionDetailModalProps) {
   const { user } = useAuth();
   const isOwner = user?.username === auction.usuarioUsername;
@@ -102,19 +107,50 @@ export default function AuctionDetailModal({
             </div>
           </div>
 
-          {/* Ofertas actual */}
-          <div className="bg-surface2 border border-border rounded-lg px-4 py-3">
-            <p className="text-[0.65rem] text-muted uppercase tracking-wider mb-1.5">Ofertas recibidas</p>
-            <p className="text-sm font-medium text-text">
-              {auction.ofertasCount} oferta{auction.ofertasCount !== 1 ? 's' : ''}
-            </p>
+          {/* Ofertas actual + Leaderboard Block */}
+          <div className="bg-surface2 border border-border rounded-lg px-4 py-3 flex flex-col gap-2.5">
+            <div>
+              <p className="text-[0.65rem] text-muted uppercase tracking-wider mb-1">Ofertas recibidas</p>
+              <p className="text-sm font-semibold text-text">
+                {auction.ofertasCount} oferta{auction.ofertasCount !== 1 ? 's' : ''}
+              </p>
+            </div>
+
+            {/* NEW: Live leader tracking added directly inside the modal panel */}
+            {auction.ofertasCount > 0 && auction.liderUsername && auction.liderUsername !== 'Nadie' && (
+              <div 
+                className="p-2.5 rounded-xl text-[0.7rem] flex flex-col gap-1.5 border"
+                style={{ background: '#FFF9E6', borderColor: '#FFEAA7' }}
+              >
+                <div className="flex items-center gap-1 font-bold text-amber-900">
+                  <span>👑</span>
+                  <span className="uppercase tracking-wider text-[0.6rem] text-amber-800">Líder de la puja:</span>
+                  <span className="text-gray-900 font-semibold font-mono">@{auction.liderUsername}</span>
+                </div>
+
+                {auction.liderFiguritasNombres && auction.liderFiguritasNombres.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-0.5">
+                    {auction.liderFiguritasNombres.map((name, index) => (
+                      <span 
+                        key={index} 
+                        className="bg-white px-1.5 py-0.5 rounded border border-amber-200 text-amber-950 font-medium text-[0.62rem] shadow-sm max-w-full truncate"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* BidForm */}
           {canBid && (
             <div className="border-t border-border pt-4">
               <p className="text-xs font-semibold text-text mb-3">Hacer una oferta</p>
-              {myStickers.length > 0 ? (
+              {isFetchingStickers ? (
+                <p className="text-xs text-muted text-center py-3">Cargando figuritas…</p>
+              ) : myStickers.length > 0 ? (
                 <BidForm
                   myStickers={myStickers}
                   conditions={[]}

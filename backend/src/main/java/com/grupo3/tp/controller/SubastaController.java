@@ -1,15 +1,19 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.OfertaDTO;
 import com.grupo3.tp.dtos.SubastaDTO;
 import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.EstadoSubasta;
+import com.grupo3.tp.models.Oferta;
 import com.grupo3.tp.models.Subasta;
+import com.grupo3.tp.service.OfertaService;
 import com.grupo3.tp.service.SubastaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,9 +21,11 @@ import java.util.List;
 public class SubastaController {
 
     private final SubastaService service;
+    private final OfertaService ofertaService;
 
-    public SubastaController(SubastaService service) {
+    public SubastaController(SubastaService service, OfertaService ofertaService) {
         this.service = service;
+        this.ofertaService = ofertaService;
     }
 
     // FIXED: Changed return type from List<Subasta> to List<SubastaResponseDTO>
@@ -72,7 +78,7 @@ public class SubastaController {
 
         // FIXED: Use horaInicio + duracion, not now + duracion
         if (subasta.getDuracion() != null) {
-            subasta.setHoraFin(subasta.getHoraInicio().plusMinutes(subasta.getDuracion()));
+            subasta.setHoraFin(subasta.getHoraInicio().plusHours(subasta.getDuracion()));
         }
 
         return service.actualizar(id, subasta)
@@ -103,4 +109,50 @@ public class SubastaController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/{id}/ofertar")
+    public ResponseEntity<SubastaResponseDTO> ofertar(
+            @PathVariable String id,
+            @RequestBody OfertaDTO ofertaDTO) {
+
+        // 1. Guard Clause: Make sure they actually sent cards
+        List<String> incomingStickerIds = ofertaDTO.getFiguritaIds();
+        if (incomingStickerIds == null || incomingStickerIds.isEmpty()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "La oferta debe incluir al menos una figurita.");
+        }
+
+        // 2. Guard Clause: Stop internal duplicates within the exact same submission array
+        long cantidadIdsUnicos = incomingStickerIds.stream().distinct().count();
+        if (cantidadIdsUnicos != incomingStickerIds.size()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "No podés incluir la misma figurita repetida en la misma oferta.");
+        }
+
+        try {
+
+            // Set the subastaId in the DTO
+            ofertaDTO.setSubastaId(id);
+
+            // Create the oferta
+            Oferta oferta = ofertaService.crear(ofertaDTO);
+
+            // Get the subasta and add the oferta
+            Subasta subasta = service.obtenerPorId(id)
+                    .orElseThrow(() -> new RuntimeException("Subasta no encontrada"));
+
+            if (subasta.getOfertas() == null) {
+                subasta.setOfertas(new ArrayList<>());
+            }
+            subasta.getOfertas().add(oferta);
+            service.actualizar(id, subasta);
+
+            return ResponseEntity.ok(service.mapToDTO(subasta));
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Error al procesar la oferta: " + e.getMessage());
+        }
+    }
+
+
 }

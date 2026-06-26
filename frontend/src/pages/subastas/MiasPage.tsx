@@ -21,6 +21,9 @@ interface SubastaResponseDTO {
   horaInicio: string;
   horaFin: string;
   ofertasCount: number;
+  liderId: string | null;
+  liderUsername: string;
+  liderFiguritasNombres: string[];
 }
 
 const RED = '#D82D31';

@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -59,7 +57,7 @@ public class SubastaService {
             subasta.setHoraInicio(LocalDateTime.now());
         }
         if (subasta.getDuracion() != null) {
-            subasta.setHoraFin(subasta.getHoraInicio().plusMinutes(subasta.getDuracion()));
+            subasta.setHoraFin(subasta.getHoraInicio().plusHours(subasta.getDuracion()));
         }
 
         repository.save(subasta);
@@ -73,19 +71,16 @@ public class SubastaService {
     public void finalizarSubastasExpiradas() {
         LocalDateTime ahora = LocalDateTime.now();
 
-        List<Subasta> subastas = repository.findAll();
+        List<Subasta> subastasExpiradas = repository.findByEstadoAndHoraFinBefore(EstadoSubasta.EN_CURSO, ahora);
 
-        subastas.stream()
-                .filter(s -> s.getEstado() == EstadoSubasta.EN_CURSO)
-                .filter(s -> s.getHoraFin() != null && s.getHoraFin().isBefore(ahora))
-                .forEach(s -> {
-                    try {
-                        finalizar(s.getId());
-                        System.out.println("Subasta " + s.getId() + " finalizada automáticamente");
-                    } catch (Exception e) {
-                        System.err.println("Error finalizando subasta " + s.getId() + ": " + e.getMessage());
-                    }
-                });
+        subastasExpiradas.forEach(s -> {
+            try {
+                finalizar(s.getId());
+                System.out.println("Subasta " + s.getId() + " finalizada automáticamente");
+            } catch (Exception e) {
+                System.err.println("Error finalizando subasta " + s.getId() + ": " + e.getMessage());
+            }
+        });
     }
 
     public List<Subasta> obtenerPorUsuario(String usuarioId) {
@@ -113,7 +108,10 @@ public class SubastaService {
         Subasta subasta = repository.findById(subastaId)
                 .orElseThrow(() -> new RuntimeException("Subasta not found"));
 
-        // FIXED: Added null check for ofertas before filtering
+        if (subasta.getEstado() == EstadoSubasta.FINALIZADA) {
+            return;
+        }
+
         if (subasta.getOfertas() == null || subasta.getOfertas().isEmpty()) {
             subasta.setEstado(EstadoSubasta.FINALIZADA);
             repository.save(subasta);
@@ -172,12 +170,14 @@ public class SubastaService {
                 .fecha(LocalDateTime.now())
                 .build());
 
-        // To losers
-        subasta.getOfertas().stream()
+        // POLISHED: Send exactly ONE notification per valid losing user
+        ofertasValidas.stream()
                 .filter(o -> !o.getId().equals(ganadora.getId()))
-                .forEach(oferta ->
+                .map(Oferta::getUsuario)
+                .distinct()
+                .forEach(usuarioPerdedor ->
                         notificacionService.crear(Notificacion.builder()
-                                .usuario(oferta.getUsuario())
+                                .usuario(usuarioPerdedor)
                                 .tipo("subasta")
                                 .titulo("No ganaste la subasta")
                                 .mensaje("Tu oferta no fue seleccionada en la subasta")
@@ -207,40 +207,61 @@ public class SubastaService {
     private List<Oferta> filtrarOfertasValidas(Subasta subasta) {
         List<CondicionImpl> condiciones = subasta.getCondiciones();
 
+        if (subasta.getOfertas() == null) {
+            return Collections.emptyList();
+        }
+
         return subasta.getOfertas().stream()
-                .filter(oferta -> {
-                    // No conditions = valid
-                    if (condiciones == null || condiciones.isEmpty()) {
-                        return true;
-                    }
-                    // At least one figurita must match all conditions
-                    return oferta.getFiguritas().stream().anyMatch(fig ->
-                            condiciones.stream().allMatch(cond -> matchesFiltros(fig, cond.getFiltros()))
-                    );
-                })
+                .filter(oferta ->
+                        ownsAllOfferedStickers(oferta) &&
+                                matchesAuctionConditions(oferta, condiciones)
+                )
                 .collect(Collectors.toList());
+    }
+
+    private boolean ownsAllOfferedStickers(Oferta oferta) {
+        String idOfertante = oferta.getUsuario().getId();
+
+        return oferta.getFiguritas().stream()
+                .allMatch(fig -> fig.getOwner().getId().equals(idOfertante));
+    }
+
+    private boolean matchesAuctionConditions(Oferta oferta, List<CondicionImpl> condiciones) {
+        // No conditions = valid
+        if (condiciones == null || condiciones.isEmpty()) {
+            return true;
+        }
+
+        // At least one sticker must satisfy all conditions
+        return oferta.getFiguritas().stream()
+                .anyMatch(fig ->
+                        condiciones.stream()
+                                .allMatch(cond -> matchesFiltros(fig, cond.getFiltros()))
+                );
     }
 
     private Comparator<Oferta> comparadorGanador(List<CondicionImpl> condiciones) {
         return (o1, o2) -> {
-            // Primary: most figuritas matching ALL conditions
+            // 1. Primary: Most matching figurines wins
             int match1 = contarFiguritasQueCoinciden(o1, condiciones);
             int match2 = contarFiguritasQueCoinciden(o2, condiciones);
 
             if (match1 != match2) {
-                return match2 - match1;  // Higher is better
+                return Integer.compare(match1, match2); // Corrected: Higher match count wins in .max()
             }
 
-            // Tiebreaker 1: most non-matching figuritas
+            // 2. Tiebreaker 1: Fewest extra "junk" figurines (Fewer is better for the seller!)
             int noMatch1 = o1.getFiguritas().size() - match1;
             int noMatch2 = o2.getFiguritas().size() - match2;
 
             if (noMatch1 != noMatch2) {
-                return noMatch2 - noMatch1;  // Higher is better
+                return Integer.compare(noMatch2, noMatch1); // Reversed on purpose: Lower junk count wins
             }
 
-            // Tiebreaker 2: earliest bid wins
-            return o1.getFechaOferta().compareTo(o2.getFechaOferta());
+            // 3. Tiebreaker 2: Earliest bid wins
+            // Because earlier dates are "smaller" chronological values, we want the smaller date to win.
+            // So we compare o2 to o1 to invert it for the .max() stream.
+            return o2.getFechaOferta().compareTo(o1.getFechaOferta());
         };
     }
 
@@ -293,6 +314,10 @@ public class SubastaService {
 
     // FIXED: Added null checks to prevent NPE when mapping
     // Validates that required nested objects exist before accessing them
+    /**
+     * Orchestrator Method: Calculates dynamic, transient presentation state
+     * (active valid offers, current leading bid, and leader details).
+     */
     public SubastaResponseDTO mapToDTO(Subasta s) {
         if (s == null) {
             throw new RuntimeException("Subasta cannot be null");
@@ -303,6 +328,50 @@ public class SubastaService {
         if (s.getUsuario() == null) {
             throw new RuntimeException("Subasta must have valid Usuario");
         }
+
+        // 1. Calculate dynamic business data on the fly
+        List<Oferta> ofertasValidas = filtrarOfertasValidas(s);
+        Oferta ganadoraActual = null;
+
+        if (ofertasValidas != null && !ofertasValidas.isEmpty()) {
+            ganadoraActual = ofertasValidas.stream()
+                    .max(comparadorGanador(s.getCondiciones()))
+                    .orElse(null);
+        }
+
+        // 2. Extract processed presentation fields
+        String liderId = (ganadoraActual != null && ganadoraActual.getUsuario() != null)
+                ? ganadoraActual.getUsuario().getId()
+                : null;
+
+        String liderUsername = (ganadoraActual != null && ganadoraActual.getUsuario() != null)
+                ? ganadoraActual.getUsuario().getUsername()
+                : "Nadie";
+
+        List<String> liderFiguritas = new ArrayList<>();
+        if (ganadoraActual != null && ganadoraActual.getFiguritas() != null) {
+            liderFiguritas = ganadoraActual.getFiguritas().stream()
+                    .filter(fig -> fig.getFiguritaBase() != null && fig.getFiguritaBase().getJugador() != null)
+                    .map(fig -> fig.getFiguritaBase().getJugador().getNombre() + " (#" + fig.getFiguritaBase().getNumero() + ")")
+                    .toList();
+        }
+
+        int cantidadOfertasActivas = (ofertasValidas != null) ? ofertasValidas.size() : 0;
+
+        // 3. Delegate to the pure mapper to assemble the DTO object
+        return buildPureSubastaResponseDTO(s, cantidadOfertasActivas, liderId, liderUsername, liderFiguritas);
+    }
+
+    /**
+     * Pure Mapper: A completely "dumb" data copier.
+     * Zero logic, zero evaluations—just mapping variables straight to fields.
+     */
+    private SubastaResponseDTO buildPureSubastaResponseDTO(
+            Subasta s,
+            int cantidadOfertasActivas,
+            String liderId,
+            String liderUsername,
+            List<String> liderFiguritas) {
 
         return new SubastaResponseDTO(
                 s.getId(),
@@ -318,7 +387,10 @@ public class SubastaService {
                 s.getDuracion(),
                 s.getHoraInicio(),
                 s.getHoraFin(),
-                s.getOfertas() != null ? s.getOfertas().size() : 0
+                cantidadOfertasActivas,
+                liderId,
+                liderUsername,
+                liderFiguritas
         );
     }
 
