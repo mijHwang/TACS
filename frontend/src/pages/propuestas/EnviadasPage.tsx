@@ -56,7 +56,7 @@ export default function PropuestasEnviadasPage() {
         console.error('Error fetching propuestas enviadas:', error);
         setLoading(false);
       });
-  }, []);
+  }, [user?.id]);
 
   const getStatusColor = (estado: string) => {
     switch (estado) {

@@ -26,7 +26,6 @@ export default function HistorialPage() {
   const PAGE_SIZE = 5;
 
   const filtered = useMemo(() => {
-    setPage(1);
     return transactions.filter((tx) => {
       const matchSearch = search.trim() === '' ||
         tx.stickers.some((s) => s.toLowerCase().includes(search.toLowerCase()));
@@ -88,7 +87,7 @@ export default function HistorialPage() {
             <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input
-            type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+            type="text" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             placeholder="Nombre figurita"
             className="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-800 outline-none transition-all duration-150 placeholder:text-gray-300 w-44"
             onFocus={(e) => e.currentTarget.style.borderColor = BLUE}
@@ -100,7 +99,7 @@ export default function HistorialPage() {
             <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
           <input
-            type="date" value={desde} onChange={(e) => setDesde(e.target.value)}
+            type="date" value={desde} onChange={(e) => { setDesde(e.target.value); setPage(1); }}
             className="pl-8 pr-2 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-700 outline-none transition-all duration-150 cursor-pointer"
             onFocus={(e) => e.currentTarget.style.borderColor = BLUE}
             onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
@@ -111,7 +110,7 @@ export default function HistorialPage() {
             <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
           <input
-            type="date" value={hasta} onChange={(e) => setHasta(e.target.value)}
+            type="date" value={hasta} onChange={(e) => { setHasta(e.target.value); setPage(1); }}
             className="pl-8 pr-2 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-700 outline-none transition-all duration-150 cursor-pointer"
             onFocus={(e) => e.currentTarget.style.borderColor = BLUE}
             onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
@@ -120,7 +119,7 @@ export default function HistorialPage() {
         {hasFilters && (
           <button
             type="button"
-            onClick={() => { setSearch(''); setDesde(''); setHasta(''); }}
+            onClick={() => { setSearch(''); setDesde(''); setHasta(''); setPage(1); }}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-150 hover:opacity-80"
             style={{ color: RED, borderColor: `${RED}40`, background: `${RED}08` }}
           >

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { Sticker } from '../../types/auction';
 import { useAuth } from '../../auth/useAuth';
 import { mapFiguritaToSticker } from '../../services/auctionService';
+import { getApiErrorMessage } from '../../services/errors';
 import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
@@ -33,7 +34,7 @@ const BLUE = '#03BAE9';
 export default function ParticipandoPage() {
   const { user } = useAuth();
   const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(user?.id));
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
   
@@ -42,10 +43,7 @@ export default function ParticipandoPage() {
   const [fetchingStickers, setFetchingStickers] = useState(false);
 
   useEffect(() => {
-    if (!user?.id) { 
-      setLoading(false); 
-      return; 
-    }
+    if (!user?.id) return;
     
     api.get(`/api/subastas/participando/${user.id}`)
       .then(res => {
@@ -87,10 +85,9 @@ export default function ParticipandoPage() {
       setAuctions(res.data);
       setSelected(null);
       setBidFormStickers([]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error placing bid:', err);
-      const serverMessage = err.response?.data?.message || 'Error al enviar la oferta.';
-      alert(serverMessage);
+      alert(getApiErrorMessage(err, 'Error al enviar la oferta.'));
     } finally {
       setSubmitting(false);
     }

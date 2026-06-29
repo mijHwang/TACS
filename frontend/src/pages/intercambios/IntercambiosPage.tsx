@@ -22,16 +22,13 @@ const BLUE = '#03BAE9';
 export default function IntercambiosPage() {
   const { user } = useAuth();
   const [intercambios, setIntercambios] = useState<IntercambioResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(user?.id && user.id !== user.username));
   const [error, setError] = useState<string | null>(null);
   const [hovered, setHovered] = useState<{ id: string; star: number } | null>(null);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user?.id || user.id === user.username) {
-      setLoading(false);
-      return;
-    }
+    if (!user?.id || user.id === user.username) return;
     api.get(`/api/intercambios/usuario/${user.id}`)
       .then(res => setIntercambios(res.data))
       .catch(() => setError('No se pudieron cargar los intercambios.'))
@@ -50,7 +47,7 @@ export default function IntercambiosPage() {
       setIntercambios(prev =>
         prev.map(i => i.id === intercambioId ? res.data : i)
       );
-    } catch (err) {
+    } catch {
       alert('Error al calificar. Intentá de nuevo.');
     } finally {
       setSubmittingId(null);

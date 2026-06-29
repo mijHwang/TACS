@@ -35,17 +35,14 @@ export default function SubastasMiasPage() {
   const { user } = useAuth();
   // FIXED: Changed state type to SubastaResponseDTO
   const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(user?.id));
   const [error, setError] = useState<string | null>(null);
   // FIXED: Changed selected type to SubastaResponseDTO
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
   // FIXED: Changed to use API endpoint instead of auctionService
   useEffect(() => {
-    if (!user?.id) { 
-      setLoading(false); 
-      return; 
-    }
+    if (!user?.id) return;
     
     api.get(`/api/subastas/usuario/${user.id}`)
       .then(res => {

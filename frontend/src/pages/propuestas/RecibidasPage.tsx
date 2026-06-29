@@ -47,10 +47,13 @@ export default function PropuestasRecibidasPage() {
     api.get(`/api/solicitudes-intercambio/recibidas/${user.id}`)
       .then(res => {
         setPropuestasRecibidas(res.data);
-        const initialState = res.data.reduce((acc: any, prop: any) => ({ 
-          ...acc, 
-          [prop.id]: prop.estado 
-        }), {});
+        const initialState = (res.data as SolicitudDeIntercambio[]).reduce(
+          (acc: Record<string, string>, prop: SolicitudDeIntercambio) => ({
+            ...acc,
+            [prop.id]: prop.estado,
+          }),
+          {} as Record<string, string>,
+        );
         setLocalState(initialState);
         setLoading(false);
       })
@@ -58,7 +61,7 @@ export default function PropuestasRecibidasPage() {
         console.error('Error fetching propuestas recibidas:', error);
         setLoading(false);
       });
-  }, []);
+  }, [user?.id]);
 
   const handleAceptar = (propuestaId: string) => {
     api.put(`/api/solicitudes-intercambio/${propuestaId}/aceptar`)

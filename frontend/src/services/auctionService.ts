@@ -2,7 +2,9 @@ import type { Auction, AuctionCondition, Sticker } from '../types/auction';
 import { apiFetch, mapSubasta, type BackendSubasta } from './api';
 
 
-function mapFiguritaToSticker(figurita: any): Sticker {
+function mapFiguritaToSticker(figurita: {
+  id: string; numero: number; jugadorNombre: string; seleccionNombre: string;
+}): Sticker {
   return {
     id: figurita.id,
     number: figurita.numero,

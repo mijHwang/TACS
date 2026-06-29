@@ -93,8 +93,7 @@ export default function PropuestasNuevaPage() {
       .catch(error => {
         console.error('Error fetching figuritas:', error);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.username]);
+  }, [user?.username, offeredBaseIds]);
 
   return (
     <div className="page-enter">

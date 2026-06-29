@@ -12,15 +12,14 @@ const GREEN = '#05B15A';
 export default function SubastasNuevaPage() {
   const { user } = useAuth();
   const [myStickers, setMyStickers] = useState<Sticker[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(user?.username));
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // FETCH REAL STICKERS
   useEffect(() => {
-
-    if (!user?.username) { setLoading(false); return; }
+    if (!user?.username) return;
     api.get(`/api/usuarios/${user.username}/figuritas/repetidas`)
       .then(res => {
         const mapped = res.data.map(mapFiguritaToSticker);

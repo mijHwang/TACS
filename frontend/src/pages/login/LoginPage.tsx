@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import { authService } from '../../services/auth/auth.service';
 import bgImage from '../../assets/mundial-2026-cartel-fifa.jpg';
@@ -9,6 +9,8 @@ type Mode = 'login' | 'forgot';
 export default function LoginPage() {
   const { loginWithToken } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/dashboard';
 
   const [mode, setMode] = useState<Mode>('login');
   const [username, setUsername] = useState('');
@@ -27,7 +29,7 @@ export default function LoginPage() {
       try {
         const token = await authService.login({ username, password });
         loginWithToken(token);
-        navigate('/dashboard', { replace: true });
+        navigate(from, { replace: true });
       } catch {
         setError('Usuario o contraseña incorrectos.');
       } finally {

@@ -1,6 +1,7 @@
 // AuctionDetailModal.tsx
 import { useEffect } from 'react';
 import { useAuth } from '../../../auth/useAuth';
+import type { Sticker } from '../../../types/auction';
 import CountdownBadge from './CountdownBadge';
 import BidForm from './BidForm';
 
@@ -26,7 +27,7 @@ interface SubastaResponseDTO {
 
 interface AuctionDetailModalProps {
   auction: SubastaResponseDTO;
-  myStickers: any[];
+  myStickers: Sticker[];
   onClose: () => void;
   onBid: (auctionId: string, stickerIds: string[]) => void;
   isSubmitting?: boolean;

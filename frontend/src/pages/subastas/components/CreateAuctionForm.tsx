@@ -23,6 +23,7 @@ export default function CreateAuctionForm({
   const [selectedSticker, setSelectedSticker] = useState<string>('');
   const [duration, setDuration] = useState<number>(24);
   const [conditions, setConditions] = useState<AuctionCondition[]>([]);
+  const [previewNow, setPreviewNow] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +63,7 @@ export default function CreateAuctionForm({
                 <button
                   key={sticker.id}
                   type="button"
-                  onClick={() => setSelectedSticker(sticker.id)}
+                  onClick={() => { setSelectedSticker(sticker.id); setPreviewNow(Date.now()); }}
                   className={
                     `flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-150 ` +
                     (isSelected
@@ -96,7 +97,7 @@ export default function CreateAuctionForm({
                 <button
                   key={hours}
                   type="button"
-                  onClick={() => setDuration(hours)}
+                  onClick={() => { setDuration(hours); setPreviewNow(Date.now()); }}
                   className={
                     `px-4 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ` +
                     (duration === hours
@@ -126,9 +127,9 @@ export default function CreateAuctionForm({
           </div>
 
           {/* Preview */}
-          {selectedSticker && (() => {
+          {selectedSticker && previewNow > 0 && (() => {
             const s = myStickers.find((st) => st.id === selectedSticker)!;
-            const end = new Date(Date.now() + duration * 3600 * 1000);
+            const end = new Date(previewNow + duration * 3600 * 1000);
             return (
               <div className="bg-surface2 border border-border rounded-lg px-4 py-3">
                 <p className="text-[0.65rem] text-muted uppercase tracking-wider mb-1">Vista previa</p>
