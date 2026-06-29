@@ -1,39 +1,17 @@
-import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
+import { useFiguritas } from '../../hooks/useFiguritas';
 import { useFiltrosFigurita } from './components/useFiltrosFigurita';
 import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
 
-interface FiguritaResponseDTO {
-  id: string;
-  figuritaBaseId: string;
-  numero: number;
-  jugadorNombre: string;
-  seleccionNombre: string;
-  equipoNombre: string;
-  categoriaNombre: string;
-  count: number;
-  ownerId: string;
-  ownerName: string;
-}
-
 /** Vista "Todas": la colección completa del usuario, agrupada, con badge de cantidad. */
 export default function TodasPage() {
   const { user } = useAuth();
-  const [figuritas, setFiguritas] = useState<FiguritaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: figuritas = [], isLoading } = useFiguritas(user?.username);
   const filtros = useFiltrosFigurita();
 
-  useEffect(() => {
-    if (!user?.username) return;
-    api.get(`/api/usuarios/${user.username}/figuritas`)
-      .then((res) => { setFiguritas(res.data); setLoading(false); })
-      .catch((error) => { console.error('Error fetching figuritas:', error); setLoading(false); });
-  }, [user?.username]);
-
-  if (loading) return <p className="text-text">Cargando figuritas...</p>;
+  if (isLoading) return <p className="text-text">Cargando figuritas...</p>;
 
   const visibles = filtros.filtrar(figuritas);
 

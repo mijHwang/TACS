@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Sticker } from '../../types/auction';
 import { useAuth } from '../../auth/useAuth';
 import { mapFiguritaToSticker } from '../../services/auctionService';
@@ -7,51 +7,19 @@ import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
 import { PageLoading, PageError } from './ActivasPage';
-
-interface SubastaResponseDTO {
-  id: string;
-  usuarioId: string;
-  usuarioUsername: string;
-  figuritaId: string;
-  figuritaNumero: number;
-  figuritaJugadorNombre: string;
-  figuritaSeleccionNombre: string;
-  figuritaEquipoNombre: string;
-  figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
-  duracion: number;
-  horaInicio: string;
-  horaFin: string;
-  ofertasCount: number;
-  liderId: string | null;
-  liderUsername: string;
-  liderFiguritasNombres: string[];
-}
+import { useSubastasParticipando, useOfertar, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
 
 export default function ParticipandoPage() {
   const { user } = useAuth();
-  const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(Boolean(user?.id));
-  const [error, setError] = useState<string | null>(null);
+  const { data: auctions = [], isLoading, isError } = useSubastasParticipando(user?.id);
+  const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
-  
-  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const [fetchingStickers, setFetchingStickers] = useState(false);
 
-  useEffect(() => {
-    if (!user?.id) return;
-    
-    api.get(`/api/subastas/participando/${user.id}`)
-      .then(res => {
-        setAuctions(res.data);
-      })
-      .catch(() => setError('No se pudieron cargar las subastas.'))
-      .finally(() => setLoading(false));
-  }, [user?.id]);
+  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
+  const [fetchingStickers, setFetchingStickers] = useState(false);
 
   const handleSelectAuction = async (auction: SubastaResponseDTO) => {
     setSelected(auction);
@@ -71,30 +39,20 @@ export default function ParticipandoPage() {
     }
   };
 
-  // CHANGED: Fixed body field key mapping and decoupled validation failures from global error page unmounts
   const handleBid = async (auctionId: string, stickerIds: string[]) => {
     if (!user) return;
-    setSubmitting(true);
     try {
-      await api.post(`/api/subastas/${auctionId}/ofertar`, { 
-        usuarioId: user.id,
-        figuritaIds: stickerIds // FIXED: Property matches backend expectations perfectly now
-      });
-      
-      const res = await api.get(`/api/subastas/participando/${user.id}`);
-      setAuctions(res.data);
+      await ofertar.mutateAsync({ auctionId, usuarioId: user.id, figuritaIds: stickerIds });
       setSelected(null);
       setBidFormStickers([]);
     } catch (err: unknown) {
       console.error('Error placing bid:', err);
       alert(getApiErrorMessage(err, 'Error al enviar la oferta.'));
-    } finally {
-      setSubmitting(false);
     }
   };
 
-  if (loading) return <PageLoading label="Cargando subastas…" />;
-  if (error) return <PageError message={error} />;
+  if (isLoading) return <PageLoading label="Cargando subastas…" />;
+  if (isError) return <PageError message="No se pudieron cargar las subastas." />;
 
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado !== 'EN_CURSO');
@@ -165,7 +123,7 @@ export default function ParticipandoPage() {
             setBidFormStickers([]);
           }}
           onBid={handleBid}
-          isSubmitting={submitting}
+          isSubmitting={ofertar.isPending}
           isFetchingStickers={fetchingStickers}
         />
       )}

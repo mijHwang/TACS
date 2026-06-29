@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Sticker } from '../../types/auction';
 import { useAuth } from '../../auth/useAuth';
 import { mapFiguritaToSticker } from '../../services/auctionService';
@@ -6,51 +6,19 @@ import { getApiErrorMessage } from '../../services/errors';
 import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
-
-interface SubastaResponseDTO {
-  id: string;
-  usuarioId: string;
-  usuarioUsername: string;
-  figuritaId: string;
-  figuritaNumero: number;
-  figuritaJugadorNombre: string;
-  figuritaSeleccionNombre: string;
-  figuritaEquipoNombre: string;
-  figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
-  duracion: number;
-  horaInicio: string;
-  horaFin: string;
-  ofertasCount: number;
-  liderId: string | null;
-  liderUsername: string;
-  liderFiguritasNombres: string[];
-}
+import { useSubastasActivas, useOfertar, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
 
 export default function SubastasActivasPage() {
   const { user } = useAuth();
-  const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(Boolean(user?.id));
-  const [error, setError] = useState<string | null>(null);
+  const { data: auctions = [], isLoading, isError } = useSubastasActivas();
+  const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
-  
-  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const [fetchingStickers, setFetchingStickers] = useState(false);
 
-  useEffect(() => {
-    if (!user?.id) return;
-    
-    api.get('/api/subastas')
-      .then(res => {
-        setAuctions(res.data.filter((dto: SubastaResponseDTO) => dto.estado === 'EN_CURSO'));
-      })
-      .catch(() => setError('No se pudieron cargar las subastas.'))
-      .finally(() => setLoading(false));
-  }, [user?.id]);
+  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
+  const [fetchingStickers, setFetchingStickers] = useState(false);
 
   const handleSelectAuction = async (auction: SubastaResponseDTO) => {
     setSelected(auction);
@@ -70,30 +38,20 @@ export default function SubastasActivasPage() {
     }
   };
 
-  // CHANGED: Fixed error handling to prevent application crashes on invalid bids
   const handleBid = async (auctionId: string, stickerIds: string[]) => {
     if (!user) return;
-    setSubmitting(true);
     try {
-      await api.post(`/api/subastas/${auctionId}/ofertar`, { 
-        usuarioId: user.id,
-        figuritaIds: stickerIds
-      });
-      
-      const res = await api.get('/api/subastas');
-      setAuctions(res.data.filter((dto: SubastaResponseDTO) => dto.estado === 'EN_CURSO'));
+      await ofertar.mutateAsync({ auctionId, usuarioId: user.id, figuritaIds: stickerIds });
       setSelected(null);
       setBidFormStickers([]);
     } catch (err: unknown) {
       console.error('Error placing bid:', err);
       alert(getApiErrorMessage(err, 'Error al enviar la oferta.'));
-    } finally {
-      setSubmitting(false);
     }
   };
 
-  if (loading) return <PageLoading label="Cargando subastas…" />;
-  if (error) return <PageError message={error} />;
+  if (isLoading) return <PageLoading label="Cargando subastas…" />;
+  if (isError) return <PageError message="No se pudieron cargar las subastas." />;
 
   return (
     <div className="page-enter flex flex-col gap-6">
@@ -135,7 +93,7 @@ export default function SubastasActivasPage() {
             setBidFormStickers([]);
           }}
           onBid={handleBid}
-          isSubmitting={submitting}
+          isSubmitting={ofertar.isPending}
           isFetchingStickers={fetchingStickers}
         />
       )}

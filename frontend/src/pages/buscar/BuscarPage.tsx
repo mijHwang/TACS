@@ -1,28 +1,12 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import api from '../../services/api';
- import { useAuth } from '../../auth/useAuth'; 
-
-
-interface FiguritaResponseDTO {
-  id: string;
-  figuritaBaseId: string;
-  numero: number;
-  jugadorNombre: string;
-  seleccionNombre: string;
-  equipoNombre: string;
-  categoriaNombre: string;
-  count: number;
-  ownerId: string;
-  ownerName: string;
-}
+import { useState } from 'react';
+import { useAuth } from '../../auth/useAuth';
+import { useCatalogoFiguritas } from '../../hooks/useCatalogoFiguritas';
 
 export default function BuscarPage() {
-   const { user } = useAuth(); 
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [figuritas, setFiguritas] = useState<FiguritaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterNumero, setFilterNumero] = useState('');
   const [filterSeleccion, setFilterSeleccion] = useState('');
@@ -30,19 +14,9 @@ export default function BuscarPage() {
   const [filterCategoria, setFilterCategoria] = useState('');
   const filterByBaseId = location.state?.filterByBaseId;
 
-  useEffect(() => {
-    api.get('/api/figuritas')
-      .then(res => {
-        setFiguritas(res.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching figuritas:', error);
-        setLoading(false);
-      });
-  }, []);
+  const { data: figuritas = [], isLoading } = useCatalogoFiguritas();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="page-enter">
         <p className="text-text">Cargando figuritas...</p>
@@ -104,22 +78,22 @@ export default function BuscarPage() {
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
 
-          const matchesNumero = filterNumero === '' || 
+          const matchesNumero = filterNumero === '' ||
             figurita.numero.toString().includes(filterNumero);
 
-          const matchesSeleccion = filterSeleccion === '' || 
+          const matchesSeleccion = filterSeleccion === '' ||
             figurita.seleccionNombre.toLowerCase()
               .includes(filterSeleccion.toLowerCase());
 
-          const matchesEquipo = filterEquipo === '' || 
+          const matchesEquipo = filterEquipo === '' ||
             figurita.equipoNombre.toLowerCase()
               .includes(filterEquipo.toLowerCase());
 
-          const matchesCategoria = filterCategoria === '' || 
+          const matchesCategoria = filterCategoria === '' ||
             figurita.categoriaNombre.toLowerCase()
               .includes(filterCategoria.toLowerCase());
 
-          return matchesBaseId && matchesSearch && matchesNumero && matchesSeleccion && 
+          return matchesBaseId && matchesSearch && matchesNumero && matchesSeleccion &&
             matchesEquipo && matchesCategoria && figurita.ownerId !== user?.id;;
         })
         .map((figurita) => (
@@ -130,7 +104,7 @@ export default function BuscarPage() {
             <p className="text-sm text-text mb-3">{figurita.equipoNombre}</p>
             <p className="text-xs text-muted mb-4">{figurita.categoriaNombre}</p>
             <p className="text-xs text-muted mb-2">De: {figurita.ownerName}</p>
-            <button 
+            <button
               onClick={() => navigate('/propuestas/nueva', { state: { figuritaSeleccionada: figurita } })}
               className="w-full p-2 bg-primary text-text font-bold rounded-lg hover:opacity-90 transition-opacity">
               Hacer Propuesta

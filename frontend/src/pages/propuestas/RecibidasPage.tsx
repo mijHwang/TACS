@@ -1,91 +1,15 @@
-import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
-
-interface Usuario {
-  id: string;
-  username: string;
-  password?: string;
-  email?: string;
-  figuritas?: Figurita[];
-}
-
-interface FiguritaBase {
-  id: string;
-  numero?: number;
-  seleccion: { id: string; nombre: string; grupo: string };
-  equipo: { id: string; nombre: string };
-  categoria: { id: string; nombre: string };
-  jugador: { id: string; nombre: string };
-}
-
-interface Figurita {
-  id: string;
-  figuritaBase: FiguritaBase;
-  owner?: Usuario;
-}
-
-interface SolicitudDeIntercambio {
-  id: string;
-  usuario: Usuario;
-  figurita: Figurita;
-  figuritasOfrecidas: Figurita[];
-  cantidadDisponible: number;
-  estado: string;
-  destinatarioUsername: string;
-}
+import { usePropuestasRecibidas, useResponderPropuesta } from '../../hooks/usePropuestas';
 
 export default function PropuestasRecibidasPage() {
   const { user } = useAuth();
-  const [propuestasRecibidas, setPropuestasRecibidas] = useState<SolicitudDeIntercambio[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [localState, setLocalState] = useState<{ [key: string]: string }>({});
+  const { data: propuestasRecibidas = [], isLoading } = usePropuestasRecibidas(user?.id);
+  const responder = useResponderPropuesta();
 
-  useEffect(() => {
-    if (!user?.id) return;
-
-    api.get(`/api/solicitudes-intercambio/recibidas/${user.id}`)
-      .then(res => {
-        setPropuestasRecibidas(res.data);
-        const initialState = (res.data as SolicitudDeIntercambio[]).reduce(
-          (acc: Record<string, string>, prop: SolicitudDeIntercambio) => ({
-            ...acc,
-            [prop.id]: prop.estado,
-          }),
-          {} as Record<string, string>,
-        );
-        setLocalState(initialState);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching propuestas recibidas:', error);
-        setLoading(false);
-      });
-  }, [user?.id]);
-
-  const handleAceptar = (propuestaId: string) => {
-    api.put(`/api/solicitudes-intercambio/${propuestaId}/aceptar`)
-    .then(() => {
-      setLocalState(prev => ({ ...prev, [propuestaId]: "ACEPTADO" }));
-      console.log(`Propuesta ${propuestaId} aceptada`);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert("Error al aceptar propuesta");
-    });
-  };
-
-  const handleRechazar = (propuestaId: string) => {
-    api.put(`/api/solicitudes-intercambio/${propuestaId}/rechazar`)
-    .then(() => {
-      setLocalState(prev => ({ ...prev, [propuestaId]: "RECHAZADO" }));
-      console.log(`Propuesta ${propuestaId} rechazada`);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert("Error al rechazar propuesta");
-    });
-  };
+  const handleAceptar = (propuestaId: string) =>
+    responder.mutate({ propuestaId, accion: 'aceptar' }, { onError: () => alert('Error al aceptar propuesta') });
+  const handleRechazar = (propuestaId: string) =>
+    responder.mutate({ propuestaId, accion: 'rechazar' }, { onError: () => alert('Error al rechazar propuesta') });
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -113,7 +37,7 @@ export default function PropuestasRecibidasPage() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="page-enter">
         <p className="text-text">Cargando propuestas...</p>
@@ -137,8 +61,8 @@ export default function PropuestasRecibidasPage() {
                   <p className="text-sm text-muted">De:</p>
                   <p className="text-text font-semibold">{propuesta.usuario?.username || 'Usuario desconocido'}</p>
                 </div>
-                <p className={`font-semibold ${getStatusColor(localState[propuesta.id])}`}>
-                  {getStatusText(localState[propuesta.id])}
+                <p className={`font-semibold ${getStatusColor(propuesta.estado)}`}>
+                  {getStatusText(propuesta.estado)}
                 </p>
               </div>
 
@@ -167,7 +91,7 @@ export default function PropuestasRecibidasPage() {
               </div>
 
               {/* Buttons - Only show if pending */}
-              {localState[propuesta.id] === "PENDIENTE" && (
+              {propuesta.estado === "PENDIENTE" && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleAceptar(propuesta.id)}

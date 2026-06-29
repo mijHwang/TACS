@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import api from '../../services/api';
@@ -45,59 +45,55 @@ function Section({ title, color, to, toLabel, error, children }: {
 export default function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!user?.id || !user?.username) return;
-    let cancelled = false;
-    queueMicrotask(() => {
-      if (!cancelled) setLoading(true);
-    });
-    getDashboardData(user.id, user.username)
-      .then((result) => {
-        if (!cancelled) {
-          setData(result);
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setData(null);
-          setLoading(false);
-        }
-      });
-    return () => { cancelled = true; };
-  }, [user?.id, user?.username]);
+  const dashboardKey = ['dashboard', user?.id, user?.username];
 
-  const loadDashboard = useCallback(() => {
-    if (!user?.id || !user?.username) return;
-    queueMicrotask(() => {
-      setLoading(true);
-    });
-    getDashboardData(user.id, user.username)
-      .then((result) => {
-        setData(result);
-        setLoading(false);
-      })
-      .catch(() => {
-        setData(null);
-        setLoading(false);
-      });
-  }, [user]);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: dashboardKey,
+    queryFn: () => getDashboardData(user!.id, user!.username),
+    enabled: !!user?.id && !!user?.username,
+  });
 
-  const responder = (id: string, accion: 'aceptar' | 'rechazar') => {
-    api.put(`/api/solicitudes-intercambio/${id}/${accion}`)
-      .then(() => setData((prev) => prev && {
-        ...prev,
-        recibidas: { ...prev.recibidas, data: prev.recibidas.data.map(p => p.id === id ? { ...p, estado: accion === 'aceptar' ? 'ACEPTADO' : 'RECHAZADO' } : p) },
-      }))
-      .catch((e) => { console.error(e); alert('No se pudo procesar la propuesta'); });
-  };
+  const responderMut = useMutation({
+    mutationFn: (vars: { id: string; accion: 'aceptar' | 'rechazar' }) =>
+      api.put(`/api/solicitudes-intercambio/${vars.id}/${vars.accion}`),
+    // Update optimista: la tarjeta cambia al instante; si falla, se revierte.
+    onMutate: async (vars) => {
+      await queryClient.cancelQueries({ queryKey: dashboardKey });
+      const prev = queryClient.getQueryData<DashboardData>(dashboardKey);
+      queryClient.setQueryData<DashboardData>(dashboardKey, (old) =>
+        old && {
+          ...old,
+          recibidas: {
+            ...old.recibidas,
+            data: old.recibidas.data.map((p) =>
+              p.id === vars.id
+                ? { ...p, estado: vars.accion === 'aceptar' ? 'ACEPTADO' : 'RECHAZADO' }
+                : p,
+            ),
+          },
+        });
+      return { prev };
+    },
+    onError: (e, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(dashboardKey, ctx.prev);
+      console.error(e);
+      alert('No se pudo procesar la propuesta');
+    },
+    // Reconciliar con el backend e impactar el resto de la app (lista de propuestas).
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['propuestas'] });
+    },
+  });
+
+  const responder = (id: string, accion: 'aceptar' | 'rechazar') =>
+    responderMut.mutate({ id, accion });
 
   const wrap = { margin: '-1.75rem', padding: '1.75rem', minHeight: 'calc(100% + 3.5rem)', background: 'white' };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="page-enter flex flex-col gap-8" style={wrap}>
         <div><h1 className="text-2xl font-bold text-gray-900 mb-1">Inicio</h1><p className="text-sm text-gray-500">Cargando tu resumen…</p></div>
@@ -107,7 +103,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (!data) {
+  if (isError || !data) {
     return (
       <div className="page-enter flex flex-col gap-8" style={wrap}>
         <div><h1 className="text-2xl font-bold text-gray-900 mb-1">Inicio</h1><p className="text-sm text-gray-500">Resumen de tu actividad</p></div>
@@ -115,7 +111,7 @@ export default function DashboardPage() {
           <p className="text-base font-semibold" style={{ color: RED }}>No pudimos cargar tu dashboard.</p>
           <button
             type="button"
-            onClick={loadDashboard}
+            onClick={() => refetch()}
             className="px-6 py-2 rounded-lg font-semibold text-white transition-opacity hover:opacity-90"
             style={{ background: RED }}
           >

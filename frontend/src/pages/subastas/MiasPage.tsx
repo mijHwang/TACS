@@ -1,30 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
 import { PageLoading, PageError } from './ActivasPage';
-
-// FIXED: Changed from Auction type to SubastaResponseDTO
-interface SubastaResponseDTO {
-  id: string;
-  usuarioId: string;
-  usuarioUsername: string;
-  figuritaId: string;
-  figuritaNumero: number;
-  figuritaJugadorNombre: string;
-  figuritaSeleccionNombre: string;
-  figuritaEquipoNombre: string;
-  figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
-  duracion: number;
-  horaInicio: string;
-  horaFin: string;
-  ofertasCount: number;
-  liderId: string | null;
-  liderUsername: string;
-  liderFiguritasNombres: string[];
-}
+import { useMisSubastas, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
 
@@ -33,29 +12,12 @@ const RED = '#D82D31';
 
 export default function SubastasMiasPage() {
   const { user } = useAuth();
-  // FIXED: Changed state type to SubastaResponseDTO
-  const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(Boolean(user?.id));
-  const [error, setError] = useState<string | null>(null);
-  // FIXED: Changed selected type to SubastaResponseDTO
+  const { data: auctions = [], isLoading, isError } = useMisSubastas(user?.id);
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
-  // FIXED: Changed to use API endpoint instead of auctionService
-  useEffect(() => {
-    if (!user?.id) return;
-    
-    api.get(`/api/subastas/usuario/${user.id}`)
-      .then(res => {
-        setAuctions(res.data);
-      })
-      .catch(() => setError('No se pudieron cargar tus subastas.'))
-      .finally(() => setLoading(false));
-  }, [user?.id]);
+  if (isLoading) return <PageLoading label="Cargando tus subastas…" />;
+  if (isError) return <PageError message="No se pudieron cargar tus subastas." />;
 
-  if (loading) return <PageLoading label="Cargando tus subastas…" />;
-  if (error) return <PageError message={error} />;
-
-  // FIXED: Simplified status grouping based on DTO estado field
   const pending = auctions.filter(a => a.estado === 'PENDIENTE');
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado === 'FINALIZADA');
@@ -91,7 +53,6 @@ export default function SubastasMiasPage() {
         </span>
       </div>
 
-      {/* FIXED: Simplified status pills based on DTO estado */}
       <div className="flex gap-2 flex-wrap -mt-2">
         {pending.length > 0 && (
           <span
