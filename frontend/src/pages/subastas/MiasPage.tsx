@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
-import { PageLoading, PageError } from './ActivasPage';
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
 import { useMisSubastas, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
@@ -12,11 +13,11 @@ const RED = '#D82D31';
 
 export default function SubastasMiasPage() {
   const { user } = useAuth();
-  const { data: auctions = [], isLoading, isError } = useMisSubastas(user?.id);
+  const { data: auctions = [], isLoading, isError, refetch } = useMisSubastas(user?.id);
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
-  if (isLoading) return <PageLoading label="Cargando tus subastas…" />;
-  if (isError) return <PageError message="No se pudieron cargar tus subastas." />;
+  if (isLoading) return <Spinner label="Cargando tus subastas…" />;
+  if (isError) return <ErrorState message="No se pudieron cargar tus subastas." onRetry={() => refetch()} />;
 
   const pending = auctions.filter(a => a.estado === 'PENDIENTE');
   const active = auctions.filter(a => a.estado === 'EN_CURSO');

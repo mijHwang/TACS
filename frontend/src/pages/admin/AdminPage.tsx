@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminService, type PlatformStats } from '../../services/adminService';
-import { PageLoading, PageError } from '../subastas/ActivasPage';
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
 import {
   StatCard,
   SectionHeader,
@@ -64,8 +65,8 @@ export default function AdminPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <PageLoading label="Cargando estadísticas…" />;
-  if (error || !stats) return <PageError message={error ?? 'Error inesperado.'} />;
+  if (loading) return <Spinner label="Cargando estadísticas…" />;
+  if (error || !stats) return <ErrorState message={error ?? 'Error inesperado.'} />;
 
   const engagementRate = stats.totalAuctions > 0
     ? Math.round((stats.auctionsWithBids / stats.totalAuctions) * 100)

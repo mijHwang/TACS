@@ -1,23 +1,11 @@
-import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
+import { useRepetidas } from '../../hooks/useFiguritas';
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
 import { useFiltrosFigurita } from './components/useFiltrosFigurita';
 import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
-
-interface FiguritaResponseDTO {
-  id: string;
-  figuritaBaseId: string;
-  numero: number;
-  jugadorNombre: string;
-  seleccionNombre: string;
-  equipoNombre: string;
-  categoriaNombre: string;
-  count: number;
-  ownerId: string;
-  ownerName: string;
-}
 
 /**
  * Vista "Mis repetidas": solo figuritas con count>1. Muestra total y excedente
@@ -25,18 +13,11 @@ interface FiguritaResponseDTO {
  */
 export default function RepetidasPage() {
   const { user } = useAuth();
-  const [repetidas, setRepetidas] = useState<FiguritaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: repetidas = [], isLoading, isError, refetch } = useRepetidas(user?.username);
   const filtros = useFiltrosFigurita();
 
-  useEffect(() => {
-    if (!user?.username) return;
-    api.get(`/api/usuarios/${user.username}/figuritas/repetidas`)
-      .then((res) => { setRepetidas(res.data); setLoading(false); })
-      .catch((error) => { console.error('Error fetching repetidas:', error); setLoading(false); });
-  }, [user?.username]);
-
-  if (loading) return <p className="text-text">Cargando repetidas...</p>;
+  if (isLoading) return <Spinner label="Cargando repetidas…" />;
+  if (isError) return <ErrorState message="No se pudieron cargar tus repetidas." onRetry={() => refetch()} />;
 
   const visibles = filtros.filtrar(repetidas);
 

@@ -1,6 +1,8 @@
-const GREEN = '#05B15A';
+import StarRating from './StarRating';
+
 const BLUE  = '#03BAE9';
 const RED   = '#D82D31';
+const GREEN = '#05B15A';
 
 export interface UserPreview {
   username: string;
@@ -21,33 +23,6 @@ const MOCK_USERS: Record<string, UserPreview> = {
   juanma_f:     { username: 'juanma_f',     score: 4.1, totalReviews: 9  },
 };
 
-function StarRating({ score }: { score: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => {
-        const fill = Math.min(Math.max(score - (star - 1), 0), 1);
-        const id = `modal-star-${star}`;
-        return (
-          <svg key={star} className="w-5 h-5" viewBox="0 0 24 24">
-            <defs>
-              <linearGradient id={id}>
-                <stop offset={`${fill * 100}%`} stopColor={GREEN} />
-                <stop offset={`${fill * 100}%`} stopColor="#E5E7EB" />
-              </linearGradient>
-            </defs>
-            <polygon
-              points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-              fill={`url(#${id})`}
-              stroke={GREEN}
-              strokeWidth="1"
-              strokeLinejoin="round"
-            />
-          </svg>
-        );
-      })}
-    </div>
-  );
-}
 
 interface Props {
   username: string;
@@ -112,7 +87,7 @@ export default function UserProfileModal({ username, onClose }: Props) {
             <span className="text-4xl font-black leading-none" style={{ color: GREEN }}>
               {userData.score.toFixed(1)}
             </span>
-            <StarRating score={userData.score} />
+            <StarRating score={userData.score} size={20} />
             <span className="text-xs text-gray-400">
               {userData.totalReviews} {userData.totalReviews === 1 ? 'reseña' : 'reseñas'}
             </span>

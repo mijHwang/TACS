@@ -73,6 +73,7 @@ export default function ConditionsBuilder({ conditions, onChange }: ConditionsBu
     if (type === 'country') {
       return (
         <select
+          aria-label="País"
           value={country} onChange={(e) => setCountry(e.target.value)}
           className="bg-surface border border-border rounded-lg px-3 py-2 text-sm text-text focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
         >
@@ -116,6 +117,7 @@ export default function ConditionsBuilder({ conditions, onChange }: ConditionsBu
       {/* Fila para agregar */}
       <div className="flex items-center gap-2 flex-wrap">
         <select
+          aria-label="Tipo de condición"
           value={type} onChange={(e) => setType(e.target.value as AuctionCondition['type'])}
           className="flex-1 min-w-[180px] bg-surface border border-border rounded-lg px-3 py-2 text-sm text-text focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
         >

@@ -89,9 +89,7 @@ export default function HistorialPage() {
           <input
             type="text" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             placeholder="Nombre figurita"
-            className="pl-8 pr-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-800 outline-none transition-all duration-150 placeholder:text-gray-300 w-44"
-            onFocus={(e) => e.currentTarget.style.borderColor = BLUE}
-            onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
+            className="pl-8 pr-3 py-1.5 rounded-lg border border-[#e5e7eb] focus:border-[#03BAE9] text-xs text-gray-800 outline-none transition-all duration-150 placeholder:text-gray-300 w-44"
           />
         </div>
         <div className="relative">
@@ -100,9 +98,7 @@ export default function HistorialPage() {
           </svg>
           <input
             type="date" value={desde} onChange={(e) => { setDesde(e.target.value); setPage(1); }}
-            className="pl-8 pr-2 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-700 outline-none transition-all duration-150 cursor-pointer"
-            onFocus={(e) => e.currentTarget.style.borderColor = BLUE}
-            onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
+            className="pl-8 pr-2 py-1.5 rounded-lg border border-[#e5e7eb] focus:border-[#03BAE9] text-xs text-gray-700 outline-none transition-all duration-150 cursor-pointer"
           />
         </div>
         <div className="relative">
@@ -111,9 +107,7 @@ export default function HistorialPage() {
           </svg>
           <input
             type="date" value={hasta} onChange={(e) => { setHasta(e.target.value); setPage(1); }}
-            className="pl-8 pr-2 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-700 outline-none transition-all duration-150 cursor-pointer"
-            onFocus={(e) => e.currentTarget.style.borderColor = BLUE}
-            onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
+            className="pl-8 pr-2 py-1.5 rounded-lg border border-[#e5e7eb] focus:border-[#03BAE9] text-xs text-gray-700 outline-none transition-all duration-150 cursor-pointer"
           />
         </div>
         {hasFilters && (

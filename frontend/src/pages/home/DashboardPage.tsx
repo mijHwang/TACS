@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
@@ -46,6 +47,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [accionError, setAccionError] = useState<string | null>(null);
 
   const dashboardKey = ['dashboard', user?.id, user?.username];
 
@@ -60,6 +62,7 @@ export default function DashboardPage() {
       api.put(`/api/solicitudes-intercambio/${vars.id}/${vars.accion}`),
     // Update optimista: la tarjeta cambia al instante; si falla, se revierte.
     onMutate: async (vars) => {
+      setAccionError(null);
       await queryClient.cancelQueries({ queryKey: dashboardKey });
       const prev = queryClient.getQueryData<DashboardData>(dashboardKey);
       queryClient.setQueryData<DashboardData>(dashboardKey, (old) =>
@@ -79,7 +82,7 @@ export default function DashboardPage() {
     onError: (e, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(dashboardKey, ctx.prev);
       console.error(e);
-      alert('No se pudo procesar la propuesta');
+      setAccionError('No se pudo procesar la propuesta.');
     },
     // Reconciliar con el backend e impactar el resto de la app (lista de propuestas).
     onSettled: () => {
@@ -130,6 +133,10 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Inicio</h1>
         <p className="text-sm text-gray-500">Resumen de tu actividad{user?.username ? `, ${user.username}` : ''}</p>
       </div>
+
+      {accionError && (
+        <p className="text-sm font-semibold" style={{ color: RED }}>{accionError}</p>
+      )}
 
       <CollectionProgress owned={data.progreso.owned} total={data.progreso.total} faltan={data.progreso.faltan} />
 

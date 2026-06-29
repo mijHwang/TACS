@@ -1,53 +1,20 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import { TX_CONFIG, type TxType } from './transacciones';
 import TransactionCard from './components/TransactionCard';
 import TransactionDetailModal from './components/TransactionDetailModal';
 import type { Transaction } from './transacciones';
-import api from '../../services/api';
 import { useTransactions } from './components/useTransactions';
+import StarRating from '../../components/StarRating';
+import ErrorState from '../../components/ErrorState';
+import { useReputacion } from '../../hooks/useReputacion';
 
 const BLUE  = '#03BAE9';
 const RED   = '#D82D31';
 const GREEN = '#05B15A';
 
 const PREVIEW_COUNT = 5;
-
-interface Reputacion {
-  score: number;
-  total: number;
-  cincoEstrellas: number;
-  cuatroEstrellas: number;
-  tresEstrellas: number;
-  dosEstrellas: number;
-  unaEstrella: number;
-}
-
-function StarRating({ score }: { score: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => {
-        const fill = Math.min(Math.max(score - (star - 1), 0), 1);
-        const id = `star-grad-${star}`;
-        return (
-          <svg key={star} className="w-6 h-6" viewBox="0 0 24 24">
-            <defs>
-              <linearGradient id={id}>
-                <stop offset={`${fill * 100}%`} stopColor={GREEN} />
-                <stop offset={`${fill * 100}%`} stopColor="#D1FAE5" />
-              </linearGradient>
-            </defs>
-            <polygon
-              points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-              fill={`url(#${id})`} stroke={GREEN} strokeWidth="1" strokeLinejoin="round"
-            />
-          </svg>
-        );
-      })}
-    </div>
-  );
-}
 
 export default function PerfilPage() {
   const { user, updateUser } = useAuth();
@@ -58,18 +25,11 @@ export default function PerfilPage() {
   const [email, setEmail]         = useState(user?.email ?? '');
   const [saved, setSaved]         = useState(false);
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
-  const [reputacion, setReputacion] = useState<Reputacion | null>(null);
 
-  const { transactions, loading } = useTransactions(user?.id, user?.username);
+  const { transactions, loading, error: transactionsError } = useTransactions(user?.id, user?.username);
+  const { data: reputacion, isError: reputacionError, refetch: refetchReputacion } = useReputacion(user?.id, user?.username);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!user?.id || user.id === user.username) return;
-    api.get(`/api/intercambios/usuario/${user.id}/reputacion`)
-      .then(res => setReputacion(res.data))
-      .catch(err => console.error('Error fetching reputacion:', err));
-  }, [user?.id, user?.username]);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -225,42 +185,48 @@ export default function PerfilPage() {
               <span className="w-3 h-3 rounded-full shrink-0" style={{ background: GREEN }} />
               <span className="text-sm font-bold" style={{ color: GREEN }}>Reputación</span>
             </div>
-            <div className="flex items-center gap-6 px-5 py-5">
-              <div className="flex flex-col items-center gap-1.5 shrink-0">
-                <span className="text-5xl font-black leading-none" style={{ color: GREEN }}>
-                  {reputacion ? reputacion.score.toFixed(1) : '—'}
-                </span>
-                <StarRating score={reputacion?.score ?? 0} />
-                <span className="text-xs text-gray-400 mt-0.5">
-                  {reputacion ? `${reputacion.total} ${reputacion.total === 1 ? 'reseña' : 'reseñas'}` : 'Sin reseñas'}
-                </span>
+            {reputacionError ? (
+              <div className="px-5 py-6">
+                <ErrorState message="No se pudo cargar la reputación." onRetry={() => refetchReputacion()} color={GREEN} />
               </div>
-              <div className="flex-1 flex flex-col gap-2">
-                {[
-                  { star: 5, count: reputacion?.cincoEstrellas ?? 0 },
-                  { star: 4, count: reputacion?.cuatroEstrellas ?? 0 },
-                  { star: 3, count: reputacion?.tresEstrellas ?? 0 },
-                  { star: 2, count: reputacion?.dosEstrellas ?? 0 },
-                  { star: 1, count: reputacion?.unaEstrella ?? 0 },
-                ].map(({ star, count }) => {
-                  const pct = reputacion && reputacion.total > 0
-                    ? Math.round((count / reputacion.total) * 100)
-                    : 0;
-                  return (
-                    <div key={star} className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 w-3 text-right shrink-0">{star}</span>
-                      <svg className="w-3 h-3 shrink-0" style={{ color: GREEN }} viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                      </svg>
-                      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: `${GREEN}20` }}>
-                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: GREEN }} />
+            ) : (
+              <div className="flex items-center gap-6 px-5 py-5">
+                <div className="flex flex-col items-center gap-1.5 shrink-0">
+                  <span className="text-5xl font-black leading-none" style={{ color: GREEN }}>
+                    {reputacion ? reputacion.score.toFixed(1) : '—'}
+                  </span>
+                  <StarRating score={reputacion?.score ?? 0} emptyColor="#D1FAE5" />
+                  <span className="text-xs text-gray-400 mt-0.5">
+                    {reputacion ? `${reputacion.total} ${reputacion.total === 1 ? 'reseña' : 'reseñas'}` : 'Sin reseñas'}
+                  </span>
+                </div>
+                <div className="flex-1 flex flex-col gap-2">
+                  {[
+                    { star: 5, count: reputacion?.cincoEstrellas ?? 0 },
+                    { star: 4, count: reputacion?.cuatroEstrellas ?? 0 },
+                    { star: 3, count: reputacion?.tresEstrellas ?? 0 },
+                    { star: 2, count: reputacion?.dosEstrellas ?? 0 },
+                    { star: 1, count: reputacion?.unaEstrella ?? 0 },
+                  ].map(({ star, count }) => {
+                    const pct = reputacion && reputacion.total > 0
+                      ? Math.round((count / reputacion.total) * 100)
+                      : 0;
+                    return (
+                      <div key={star} className="flex items-center gap-2">
+                        <span className="text-xs text-gray-400 w-3 text-right shrink-0">{star}</span>
+                        <svg className="w-3 h-3 shrink-0" style={{ color: GREEN }} viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                        </svg>
+                        <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: `${GREEN}20` }}>
+                          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: GREEN }} />
+                        </div>
+                        <span className="text-xs text-gray-400 w-5 shrink-0">{count}</span>
                       </div>
-                      <span className="text-xs text-gray-400 w-5 shrink-0">{count}</span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {saved && (
@@ -296,6 +262,8 @@ export default function PerfilPage() {
                 </svg>
                 Cargando…
               </div>
+            ) : transactionsError ? (
+              <p className="text-xs text-center py-8" style={{ color: RED }}>No se pudieron cargar las transacciones.</p>
             ) : transactions.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-8">Sin transacciones aún.</p>
             ) : (

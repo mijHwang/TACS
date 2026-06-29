@@ -143,8 +143,9 @@ export default function AdminGiftPage() {
         
         {/* User Search */}
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-text mb-2">Selecciona Usuario</label>
+          <label htmlFor="gift-user-search" className="block text-sm font-semibold text-text mb-2">Selecciona Usuario</label>
           <input
+            id="gift-user-search"
             type="text"
             placeholder="Buscar por nombre de usuario..."
             value={userSearch}
@@ -178,8 +179,9 @@ export default function AdminGiftPage() {
 
         {/* FiguritaBase Dropdown */}
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-text mb-2">Selecciona Figurita</label>
+          <label htmlFor="gift-figurita" className="block text-sm font-semibold text-text mb-2">Selecciona Figurita</label>
           <select
+            id="gift-figurita"
             value={selectedBaseId}
             onChange={(e) => setSelectedBaseId(e.target.value)}
             className="w-full p-3 bg-surface border border-border rounded-lg text-text focus:outline-none focus:border-primary"

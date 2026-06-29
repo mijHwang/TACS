@@ -28,18 +28,12 @@ export default function SubastasPage() {
           >
             {({ isActive }) => (
               <span
-                className="inline-block px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150"
+                className={`inline-block px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150${isActive ? '' : ' hover:bg-gray-100'}`}
                 style={
                   isActive
                     ? { background: `${RED}15`, color: RED, fontWeight: 600 }
                     : { color: '#6b7280' }
                 }
-                onMouseEnter={e => {
-                  if (!isActive) (e.currentTarget as HTMLElement).style.background = '#f3f4f6';
-                }}
-                onMouseLeave={e => {
-                  if (!isActive) (e.currentTarget as HTMLElement).style.background = '';
-                }}
               >
                 {label}
               </span>

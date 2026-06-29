@@ -1,27 +1,9 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
-
-interface FiguritaResponseDTO {
-  id: string;
-  figuritaBaseId: string;
-  numero: number;
-  jugadorNombre: string;
-  seleccionNombre: string;
-  equipoNombre: string;
-  categoriaNombre: string;
-  count: number;
-  ownerId: string;
-  ownerName: string;
-}
-
-interface SugerenciaResponseDTO {
-  contraparteId: string;
-  contraparteNombre: string;
-  figuritasARecibir: FiguritaResponseDTO[];
-  figuritasAOfrecer: FiguritaResponseDTO[];
-}
+import { useSugerencias, type SugerenciaResponseDTO } from '../../hooks/useSugerencias';
+import type { FiguritaResponseDTO } from '../../hooks/useFiguritas';
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
 
 /**
  * Página de Sugerencias de Intercambio (US4): muestra intercambios bidireccionales posibles
@@ -31,15 +13,7 @@ interface SugerenciaResponseDTO {
 export default function SugerenciasPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [sugerencias, setSugerencias] = useState<SugerenciaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!user?.username) return;
-    api.get(`/api/usuarios/${user.username}/sugerencias`)
-      .then((res) => { setSugerencias(res.data || []); setLoading(false); })
-      .catch((error) => { console.error('Error fetching sugerencias:', error); setLoading(false); });
-  }, [user?.username]);
+  const { data: sugerencias = [], isLoading, isError, refetch } = useSugerencias(user?.username);
 
   const proponer = (s: SugerenciaResponseDTO, f: FiguritaResponseDTO) => {
     navigate('/propuestas/nueva', {
@@ -50,10 +24,13 @@ export default function SugerenciasPage() {
     });
   };
 
-  if (loading) {
+  if (isLoading) {
+    return <div className="page-enter"><Spinner label="Cargando sugerencias…" /></div>;
+  }
+  if (isError) {
     return (
       <div className="page-enter">
-        <p className="text-text">Cargando sugerencias...</p>
+        <ErrorState message="No se pudieron cargar las sugerencias." onRetry={() => refetch()} />
       </div>
     );
   }

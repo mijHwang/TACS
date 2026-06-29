@@ -6,10 +6,8 @@ export default function PropuestasRecibidasPage() {
   const { data: propuestasRecibidas = [], isLoading } = usePropuestasRecibidas(user?.id);
   const responder = useResponderPropuesta();
 
-  const handleAceptar = (propuestaId: string) =>
-    responder.mutate({ propuestaId, accion: 'aceptar' }, { onError: () => alert('Error al aceptar propuesta') });
-  const handleRechazar = (propuestaId: string) =>
-    responder.mutate({ propuestaId, accion: 'rechazar' }, { onError: () => alert('Error al rechazar propuesta') });
+  const handleAceptar = (propuestaId: string) => responder.mutate({ propuestaId, accion: 'aceptar' });
+  const handleRechazar = (propuestaId: string) => responder.mutate({ propuestaId, accion: 'rechazar' });
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -48,6 +46,12 @@ export default function PropuestasRecibidasPage() {
   return (
     <div className="page-enter">
       <h2 className="text-xl font-semibold text-text mb-6">Propuestas · Recibidas</h2>
+
+      {responder.isError && (
+        <p className="mb-4 text-sm font-semibold" style={{ color: '#D82D31' }}>
+          No se pudo procesar la propuesta. Intentá de nuevo.
+        </p>
+      )}
 
       {propuestasRecibidas.length === 0 ? (
         <p className="text-muted">No hay propuestas recibidas</p>

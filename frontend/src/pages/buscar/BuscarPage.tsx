@@ -31,6 +31,7 @@ export default function BuscarPage() {
       <div className="mb-6">
         <input
           type="text"
+          aria-label="Buscar figurita"
           placeholder="Buscar figurita..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -41,6 +42,7 @@ export default function BuscarPage() {
       <div className="grid grid-cols-4 gap-4 mb-6">
         <input
           type="text"
+          aria-label="Número"
           placeholder="Número"
           value={filterNumero}
           onChange={(e) => setFilterNumero(e.target.value)}
@@ -48,6 +50,7 @@ export default function BuscarPage() {
         />
         <input
           type="text"
+          aria-label="Selección"
           placeholder="Selección"
           value={filterSeleccion}
           onChange={(e) => setFilterSeleccion(e.target.value)}
@@ -55,6 +58,7 @@ export default function BuscarPage() {
         />
         <input
           type="text"
+          aria-label="Equipo"
           placeholder="Equipo"
           value={filterEquipo}
           onChange={(e) => setFilterEquipo(e.target.value)}
@@ -62,6 +66,7 @@ export default function BuscarPage() {
         />
         <input
           type="text"
+          aria-label="Categoria"
           placeholder="Categoria"
           value={filterCategoria}
           onChange={(e) => setFilterCategoria(e.target.value)}

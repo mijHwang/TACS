@@ -70,8 +70,9 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Username */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</label>
+              <label htmlFor="register-username" className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</label>
               <input
+                id="register-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -83,8 +84,9 @@ export default function RegisterPage() {
 
             {/* Email */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</label>
+              <label htmlFor="register-email" className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</label>
               <input
+                id="register-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -96,8 +98,9 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contraseña</label>
+              <label htmlFor="register-password" className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contraseña</label>
               <input
+                id="register-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -109,8 +112,9 @@ export default function RegisterPage() {
 
             {/* Confirmar password */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Confirmar contraseña</label>
+              <label htmlFor="register-confirm" className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Confirmar contraseña</label>
               <input
+                id="register-confirm"
                 type="password"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}

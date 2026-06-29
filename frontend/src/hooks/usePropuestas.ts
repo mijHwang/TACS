@@ -44,3 +44,20 @@ export function useResponderPropuesta() {
     },
   });
 }
+
+export function useCrearPropuesta() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: {
+      usuarioId: string;
+      usuarioDestino: string;
+      figuritaId: string;
+      figuritasOfrecidas: string[];
+      estado: string;
+    }) => api.post('/api/solicitudes-intercambio', payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['propuestas'] });
+      qc.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+}
