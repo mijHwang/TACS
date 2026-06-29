@@ -17,6 +17,7 @@ export function useTransactions(userId: string | undefined, username: string | u
     if (!userId || !username || userId === username) return;
 
     const fetchAll = async () => {
+      setError(false);
       try {
         const [intercambiosRes, participandoRes, misSubastasRes] = await Promise.all([
           api.get<IntercambioResponseDTO[]>(`/api/intercambios/usuario/${userId}`),

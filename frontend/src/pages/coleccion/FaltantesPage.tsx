@@ -1,6 +1,6 @@
 import { useAuth } from '../../auth/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { useFaltantes, type FiguritaBaseDTO } from '../../hooks/useFiguritas';
+import { useFaltantes } from '../../hooks/useFiguritas';
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import { useFiltrosFigurita } from './components/useFiltrosFigurita';
@@ -24,7 +24,7 @@ export default function ColeccionFaltantesPage() {
     <>
       <FiltrosFigurita filtros={filtros} />
       <GrillaFiguritas isEmpty={visibles.length === 0} emptyMessage="¡Tienes todas las figuritas!">
-        {visibles.map((f: FiguritaBaseDTO) => (
+        {visibles.map((f) => (
           <TarjetaColeccion
             key={f.id}
             seleccionNombre={f.seleccionNombre}

@@ -58,6 +58,8 @@ export function useCrearPropuesta() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['propuestas'] });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
+      // crear una propuesta suele originarse en una sugerencia, así que se refresca esa lista
+      qc.invalidateQueries({ queryKey: ['sugerencias'] });
     },
   });
 }
