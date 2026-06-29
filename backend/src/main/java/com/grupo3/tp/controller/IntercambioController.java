@@ -1,5 +1,7 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.IntercambioResponseDTO;
+import com.grupo3.tp.dtos.ReputacionResponseDTO;
 import com.grupo3.tp.models.Intercambio;
 import com.grupo3.tp.service.IntercambioService;
 import org.springframework.http.HttpStatus;
@@ -19,25 +21,30 @@ public class IntercambioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Intercambio>> getAll() {
-        return ResponseEntity.ok(service.obtenerTodos());
+    public ResponseEntity<List<IntercambioResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.obtenerTodos().stream()
+                .map(service::mapToDTO)
+                .toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Intercambio> getById(@PathVariable String id) {
+    public ResponseEntity<IntercambioResponseDTO> getById(@PathVariable String id) {
         return service.obtenerPorId(id)
+                .map(service::mapToDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Intercambio> create(@RequestBody Intercambio intercambio) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(intercambio));
+    public ResponseEntity<IntercambioResponseDTO> create(@RequestBody Intercambio intercambio) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.mapToDTO(service.crear(intercambio)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Intercambio> update(@PathVariable String id, @RequestBody Intercambio intercambio) {
+    public ResponseEntity<IntercambioResponseDTO> update(@PathVariable String id, @RequestBody Intercambio intercambio) {
         return service.actualizar(id, intercambio)
+                .map(service::mapToDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -48,5 +55,29 @@ public class IntercambioController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<IntercambioResponseDTO>> getByUsuario(@PathVariable String usuarioId) {
+        return ResponseEntity.ok(service.obtenerPorUsuarioId(usuarioId));
+    }
+
+    @PatchMapping("/{id}/calificar")
+    public ResponseEntity<IntercambioResponseDTO> calificar(
+            @PathVariable String id,
+            @RequestParam String calificadorId,
+            @RequestParam Integer puntaje) {
+        try {
+            return ResponseEntity.ok(service.mapToDTO(service.calificar(id, calificadorId, puntaje)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/usuario/{usuarioId}/reputacion")
+    public ResponseEntity<ReputacionResponseDTO> getReputacion(@PathVariable String usuarioId) {
+        return ResponseEntity.ok(service.calcularReputacion(usuarioId));
     }
 }

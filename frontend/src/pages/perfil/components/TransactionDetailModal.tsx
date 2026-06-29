@@ -64,9 +64,9 @@ export default function TransactionDetailModal({ tx, onClose, onUserClick }: Pro
     if (detail.type === 'intercambio' || detail.type === 'oferta') {
       return (
         <>
-          <Block label="Yo di" color={RED} stickers={detail.given} />
+          <Block label="Entregado" color={RED} stickers={detail.given} />
           <ArrowDivider color="gray" />
-          <Block label="Yo recibí" color={GREEN} stickers={detail.received} />
+          <Block label="Recibido" color={GREEN} stickers={detail.received} />
         </>
       );
     }

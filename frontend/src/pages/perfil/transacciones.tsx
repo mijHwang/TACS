@@ -1,3 +1,5 @@
+import React from 'react';
+
 const BLUE  = '#03BAE9';
 const RED   = '#D82D31';
 const GREEN = '#05B15A';
@@ -6,20 +8,20 @@ export type TxType = 'intercambio' | 'subasta' | 'subasta-mia' | 'oferta';
 
 export interface TxDetailIntercambio {
   type: 'intercambio';
-  given: string[];      // figuritas que yo di
-  received: string[];   // figuritas que recibí
+  given: string[];
+  received: string[];
 }
 
 export interface TxDetailSubasta {
   type: 'subasta';
-  myOffer: string[];    // lo que yo ofrecí
-  received: string;     // figurita que recibí (la subastada)
+  myOffer: string[];
+  received: string;
 }
 
 export interface TxDetailSubastaMia {
   type: 'subasta-mia';
-  mySticker: string;    // figurita que yo puse en subasta
-  winnerOffer: string[]; // lo que ofreció el ganador
+  mySticker: string;
+  winnerOffer: string[];
 }
 
 export interface TxDetailOferta {
@@ -31,12 +33,12 @@ export interface TxDetailOferta {
 export type TxDetail = TxDetailIntercambio | TxDetailSubasta | TxDetailSubastaMia | TxDetailOferta;
 
 export interface Transaction {
-  id: number;
+  id: string;
   type: TxType;
   user: string;
   date: string;
   isoDate: string;
-  stickers: string[]; // resumen para la card
+  stickers: string[];
   detail: TxDetail;
 }
 
@@ -86,45 +88,122 @@ export const TX_CONFIG: Record<TxType, { label: string; color: string; icon: Rea
   },
 };
 
-export const MOCK_TRANSACTIONS: Transaction[] = [
-  {
-    id: 1, type: 'subasta', user: 'carlitos99', date: '23 abr 2026', isoDate: '2026-04-23',
-    stickers: ['Messi #10'],
-    detail: { type: 'subasta', myOffer: ['Mbappé #7', 'Pedri #8'], received: 'Messi #10' },
-  },
-  {
-    id: 2, type: 'intercambio', user: 'lauti_fútbol', date: '21 abr 2026', isoDate: '2026-04-21',
-    stickers: ['Mbappé #7', 'Neymar #11', 'Griezmann #6'],
-    detail: { type: 'intercambio', given: ['Mbappé #7', 'Griezmann #6'], received: ['Neymar #11', 'Bellingham #5'] },
-  },
-  {
-    id: 3, type: 'oferta', user: 'manu_col', date: '19 abr 2026', isoDate: '2026-04-19',
-    stickers: ['Ronaldo #7'],
-    detail: { type: 'oferta', given: ['Haaland #9'], received: ['Ronaldo #7'] },
-  },
-  {
-    id: 4, type: 'intercambio', user: 'sofi_fig', date: '17 abr 2026', isoDate: '2026-04-17',
-    stickers: ['Haaland #9', 'Kane #9'],
-    detail: { type: 'intercambio', given: ['Kane #9'], received: ['Haaland #9'] },
-  },
-  {
-    id: 5, type: 'subasta-mia', user: 'pepe_crack', date: '14 abr 2026', isoDate: '2026-04-14',
-    stickers: ['Vinicius #20'],
-    detail: { type: 'subasta-mia', mySticker: 'Vinicius #20', winnerOffer: ['De Bruyne #17', 'Salah #11'] },
-  },
-  {
-    id: 6, type: 'oferta', user: 'nico_world', date: '10 abr 2026', isoDate: '2026-04-10',
-    stickers: ['De Bruyne #17', 'Salah #11', 'Benzema #9', 'Modric #10'],
-    detail: { type: 'oferta', given: ['Benzema #9', 'Modric #10'], received: ['De Bruyne #17', 'Salah #11'] },
-  },
-  {
-    id: 7, type: 'intercambio', user: 'vale_sticker', date: '07 abr 2026', isoDate: '2026-04-07',
-    stickers: ['Pedri #8', 'Bellingham #5'],
-    detail: { type: 'intercambio', given: ['Pedri #8'], received: ['Bellingham #5'] },
-  },
-  {
-    id: 8, type: 'subasta-mia', user: 'juanma_f', date: '03 abr 2026', isoDate: '2026-04-03',
-    stickers: ['Lewandowski #9'],
-    detail: { type: 'subasta-mia', mySticker: 'Lewandowski #9', winnerOffer: ['Messi #10', 'Neymar #11', 'Mbappé #7'] },
-  },
-];
+// ── DTOs from backend ─────────────────────────────────────────────────────────
+
+export interface IntercambioResponseDTO {
+  id: string;
+  usuarioGeneradorId: string;
+  usuarioGeneradorUsername: string;
+  usuarioIntercambiadorId: string;
+  usuarioIntercambiadorUsername: string;
+  figuritaId: string;
+  figuritaNombre: string;
+  figuritasIntercambiadasNombres: string[];
+  fecha: string;
+  puntajeGenerador: number | null;
+  puntajeIntercambiador: number | null;
+}
+
+export interface SubastaResponseDTO {
+  id: string;
+  usuarioId: string;
+  usuarioUsername: string;
+  figuritaId: string;
+  figuritaNumero: number;
+  figuritaJugadorNombre: string;
+  figuritaSeleccionNombre: string;
+  figuritaEquipoNombre: string;
+  figuritaCategoriaNombre: string;
+  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
+  duracion: number;
+  horaInicio: string;
+  horaFin: string;
+  ofertasCount: number;
+  liderId: string | null;
+  liderUsername: string | null;
+  liderFiguritasNombres: string[];
+}
+
+// ── Mappers ───────────────────────────────────────────────────────────────────
+
+export function mapIntercambioToTransaction(
+  intercambio: IntercambioResponseDTO,
+  userId: string
+): Transaction {
+  const soyGenerador = intercambio.usuarioGeneradorId === userId;
+  const otroUsername = soyGenerador
+    ? intercambio.usuarioIntercambiadorUsername
+    : intercambio.usuarioGeneradorUsername;
+
+  const dado = soyGenerador
+    ? intercambio.figuritasIntercambiadasNombres
+    : [intercambio.figuritaNombre];
+
+  const recibido = soyGenerador
+    ? [intercambio.figuritaNombre]
+    : intercambio.figuritasIntercambiadasNombres;
+
+  const fecha = new Date(intercambio.fecha);
+
+  return {
+    id: intercambio.id,
+    type: 'intercambio',
+    user: otroUsername,
+    date: fecha.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' }),
+    isoDate: intercambio.fecha.slice(0, 10),
+    stickers: [...dado, ...recibido],
+    detail: {
+      type: 'intercambio',
+      given: dado,
+      received: recibido,
+    },
+  };
+}
+
+export function mapSubastaToTransaction(
+  subasta: SubastaResponseDTO,
+  userId: string
+): Transaction | null {
+  if (subasta.estado !== 'FINALIZADA') return null;
+
+  const stickerSubastado = `${subasta.figuritaJugadorNombre} #${subasta.figuritaNumero}`;
+  const fecha = new Date(subasta.horaFin);
+  const dateStr = fecha.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+  const isoDate = subasta.horaFin.slice(0, 10);
+
+  // My auction — someone won it
+  if (subasta.usuarioId === userId && subasta.liderId && subasta.liderId !== userId) {
+    return {
+      id: subasta.id,
+      type: 'subasta-mia',
+      user: subasta.liderUsername ?? 'Desconocido',
+      date: dateStr,
+      isoDate,
+      stickers: [stickerSubastado],
+      detail: {
+        type: 'subasta-mia',
+        mySticker: stickerSubastado,
+        winnerOffer: subasta.liderFiguritasNombres ?? [],
+      },
+    };
+  }
+
+  // I won someone else's auction
+  if (subasta.liderId === userId && subasta.usuarioId !== userId) {
+    return {
+      id: subasta.id,
+      type: 'subasta',
+      user: subasta.usuarioUsername,
+      date: dateStr,
+      isoDate,
+      stickers: [stickerSubastado, ...(subasta.liderFiguritasNombres ?? [])],
+      detail: {
+        type: 'subasta',
+        myOffer: subasta.liderFiguritasNombres ?? [],
+        received: stickerSubastado,
+      },
+    };
+  }
+
+  return null;
+}

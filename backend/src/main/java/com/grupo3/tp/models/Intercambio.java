@@ -32,4 +32,9 @@ public class Intercambio {
     private LocalDateTime fecha;
     @DocumentReference(lazy = true)
     private SolicitudDeIntercambio solicitud;
+
+    private Integer puntajeGenerador;      // rating given TO usuarioGenerador
+    private Integer puntajeIntercambiador; // rating given TO usuarioIntercambiador
+
+    
 }
