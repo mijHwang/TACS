@@ -4,6 +4,8 @@ import com.grupo3.tp.dtos.IntercambioResponseDTO;
 import com.grupo3.tp.dtos.ReputacionResponseDTO;
 import com.grupo3.tp.models.Intercambio;
 import com.grupo3.tp.repository.IntercambioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,13 +49,14 @@ public class IntercambioService {
     }
 
     public List<IntercambioResponseDTO> obtenerPorUsuarioId(String usuarioId) {
-        List<Intercambio> lista = repository.findByUsuarioId(usuarioId);
-
-        System.out.println("Encontrados: " + lista.size());
-
         return repository.findByUsuarioId(usuarioId).stream()
                 .map(this::mapToDTO)
                 .toList();
+    }
+
+    public Page<IntercambioResponseDTO> obtenerPorUsuarioId(String usuarioId, Pageable pageable) {
+        return repository.findByUsuarioId(usuarioId, pageable)
+                .map(this::mapToDTO);
     }
 
     public Intercambio calificar(String intercambioId, String calificadorId, Integer puntaje) {

@@ -1,5 +1,6 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.dtos.SolicitudDeIntercambioDTO;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.SolicitudDeIntercambio;
@@ -8,6 +9,9 @@ import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.SolicitudDeIntercambioService;
 import com.grupo3.tp.service.UsuarioService;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,15 +95,23 @@ public class SolicitudDeIntercambioController {
     }
 
     @GetMapping("/recibidas/{usuarioId}")
-    public ResponseEntity<List<SolicitudDeIntercambio>> getRecibidas(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerRecibidas(usuarioId));
+    public ResponseEntity<PagedResponse<SolicitudDeIntercambio>> getRecibidas(
+            @PathVariable String usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // El modelo no tiene campo fecha; el _id (ObjectId) es monotónico por inserción,
+        // así que ordenamos por id desc para obtener las más recientes primero.
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100), Sort.by(Sort.Direction.DESC, "id"));
+        return ResponseEntity.ok(PagedResponse.from(service.obtenerRecibidas(usuarioId, pageable)));
     }
 
     @GetMapping("/enviadas/{usuarioId}")
-    public ResponseEntity<List<SolicitudDeIntercambio>> getEnviadas(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerEnviadas(usuarioId));
-
-
+    public ResponseEntity<PagedResponse<SolicitudDeIntercambio>> getEnviadas(
+            @PathVariable String usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100), Sort.by(Sort.Direction.DESC, "id"));
+        return ResponseEntity.ok(PagedResponse.from(service.obtenerEnviadas(usuarioId, pageable)));
     }
 
     @PutMapping("/{id}/aceptar")

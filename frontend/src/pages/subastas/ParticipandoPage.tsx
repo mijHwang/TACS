@@ -10,13 +10,16 @@ import { useSubastasParticipando, useOfertar, type SubastaResponseDTO } from '..
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import EmptyState from '../../components/EmptyState';
+import Paginador from '../../components/Paginador';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
 
 export default function ParticipandoPage() {
   const { user } = useAuth();
-  const { data: auctions = [], isLoading, isError, refetch } = useSubastasParticipando(user?.id);
+  const [page, setPage] = useState(0);
+  const { data, isLoading, isError, refetch } = useSubastasParticipando(user?.id, page);
+  const auctions = data?.content ?? [];
   const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
@@ -121,6 +124,8 @@ export default function ParticipandoPage() {
           </div>
         </section>
       )}
+
+      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
 
       {selected && (
         <AuctionDetailModal

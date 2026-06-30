@@ -5,6 +5,8 @@ import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.FiguritaRepository;
 import com.grupo3.tp.repository.IntercambioRepository;
 import com.grupo3.tp.repository.SolicitudDeIntercambioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -83,6 +85,14 @@ public class SolicitudDeIntercambioService {
 
     public List<SolicitudDeIntercambio> obtenerEnviadas(String usuarioId) {
         return repository.findByUsuarioId(usuarioId);
+    }
+
+    public Page<SolicitudDeIntercambio> obtenerRecibidas(String usuarioId, Pageable pageable) {
+        return repository.findByFiguritaOwnerId(usuarioId, pageable);
+    }
+
+    public Page<SolicitudDeIntercambio> obtenerEnviadas(String usuarioId, Pageable pageable) {
+        return repository.findByUsuarioId(usuarioId, pageable);
     }
 
     public Optional<SolicitudDeIntercambio> aceptar(String id) {

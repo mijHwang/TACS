@@ -1,9 +1,12 @@
 package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.IntercambioResponseDTO;
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.dtos.ReputacionResponseDTO;
 import com.grupo3.tp.models.Intercambio;
 import com.grupo3.tp.service.IntercambioService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,8 +61,14 @@ public class IntercambioController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<IntercambioResponseDTO>> getByUsuario(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerPorUsuarioId(usuarioId));
+    public ResponseEntity<PagedResponse<IntercambioResponseDTO>> getByUsuario(
+            @PathVariable String usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 100),
+                Sort.by(Sort.Direction.DESC, "fecha"));
+        return ResponseEntity.ok(PagedResponse.from(
+                service.obtenerPorUsuarioId(usuarioId, pageable)));
     }
 
     @PatchMapping("/{id}/calificar")

@@ -12,6 +12,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -109,5 +113,30 @@ public class SugerenciaServiceTest {
         assertEquals(1, dtos.size());
         assertEquals("maria", dtos.get(0).getContraparteNombre());
         verify(sugerenciaRepository).findByUsuarioId("user-1");
+    }
+
+    @Test
+    public void obtenerPorUsuarioPaginadoMapeaADTOYConservaTotales() {
+        Sugerencia s = Sugerencia.builder()
+                .usuarioId("user-1").contraparteId("user-2").contraparteNombre("maria")
+                .figuritasARecibir(List.of()).figuritasAOfrecer(List.of()).build();
+        Pageable pageable = PageRequest.of(0, 10);
+        when(sugerenciaRepository.findByUsuarioId(eq("user-1"), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(s), pageable, 1));
+
+        Page<SugerenciaResponseDTO> page = service.obtenerPorUsuario("user-1", pageable);
+
+        assertEquals(1, page.getContent().size());
+        assertEquals("maria", page.getContent().get(0).getContraparteNombre());
+        assertEquals("user-2", page.getContent().get(0).getContraparteId());
+        assertEquals(1, page.getTotalElements());
+        assertEquals(1, page.getTotalPages());
+        assertEquals(0, page.getNumber());
+        assertTrue(page.isLast());
+
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+        verify(sugerenciaRepository).findByUsuarioId(eq("user-1"), pageableCaptor.capture());
+        assertEquals(0, pageableCaptor.getValue().getPageNumber());
+        assertEquals(10, pageableCaptor.getValue().getPageSize());
     }
 }

@@ -1,11 +1,17 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import { useNotificaciones, useMarcarLeida, useEliminarNotificacion, useLimpiarNotificaciones } from '../../hooks/useNotificaciones';
+import Paginador from '../../components/Paginador';
 
 export default function NotificacionesPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: notificaciones = [], isLoading } = useNotificaciones(user?.id);
+  const [page, setPage] = useState(0);
+  const { data, isLoading } = useNotificaciones(user?.id, page);
+  const notificaciones = data?.content ?? [];
+  const totalElements = data?.totalElements ?? 0;
+  const totalPages = data?.totalPages ?? 0;
   const marcarLeida = useMarcarLeida();
   const eliminar = useEliminarNotificacion();
   const limpiar = useLimpiarNotificaciones();
@@ -73,7 +79,7 @@ export default function NotificacionesPage() {
         )}
       </div>
 
-      {notificaciones.length === 0 ? (
+      {totalElements === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
           <p className="text-2xl mb-2">📭</p>
           <p className="text-muted">No hay notificaciones</p>
@@ -117,6 +123,8 @@ export default function NotificacionesPage() {
           ))}
         </div>
       )}
+
+      <Paginador page={page} totalPages={totalPages} onChange={setPage} />
     </div>
   );
 }

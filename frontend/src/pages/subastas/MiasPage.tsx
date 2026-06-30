@@ -5,6 +5,7 @@ import AuctionDetailModal from './components/AuctionDetailModal';
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import EmptyState from '../../components/EmptyState';
+import Paginador from '../../components/Paginador';
 import { useMisSubastas, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
@@ -14,7 +15,9 @@ const RED = '#D82D31';
 
 export default function SubastasMiasPage() {
   const { user } = useAuth();
-  const { data: auctions = [], isLoading, isError, refetch } = useMisSubastas(user?.id);
+  const [page, setPage] = useState(0);
+  const { data, isLoading, isError, refetch } = useMisSubastas(user?.id, page);
+  const auctions = data?.content ?? [];
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
   if (isLoading) return <Spinner label="Cargando tus subastas…" />;
@@ -51,7 +54,7 @@ export default function SubastasMiasPage() {
           className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
           style={{ background: `${RED}15`, color: RED }}
         >
-          {auctions.length}
+          {data?.totalElements ?? 0}
         </span>
       </div>
 
@@ -84,13 +87,15 @@ export default function SubastasMiasPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {auctions.map(auction => (
-          <AuctionCard 
-            key={auction.id} 
-            auction={auction} 
-            onViewDetail={setSelected} 
+          <AuctionCard
+            key={auction.id}
+            auction={auction}
+            onViewDetail={setSelected}
           />
         ))}
       </div>
+
+      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
 
       {selected && (
         <AuctionDetailModal

@@ -10,6 +10,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -187,6 +192,42 @@ public class NotificacionServiceTest {
 
         assertTrue(result.isEmpty());
         verify(repo, times(1)).findByUsuarioId("user-999");
+    }
+
+    // ============= OBTENER POR USUARIO (PAGINADO) TESTS =============
+    @Test
+    public void testObtenerPorUsuarioPaginado() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Notificacion> pagina = new PageImpl<>(List.of(notif1, notif2), pageable, 2);
+
+        when(repo.findByUsuarioId(eq("user-1"), any(Pageable.class))).thenReturn(pagina);
+
+        Page<Notificacion> result = service.obtenerPorUsuario("user-1", pageable);
+
+        assertEquals(2, result.getContent().size());
+        assertEquals("notif-1", result.getContent().get(0).getId());
+        assertEquals(2, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
+        assertTrue(result.isLast());
+
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        verify(repo, times(1)).findByUsuarioId(eq("user-1"), captor.capture());
+        assertEquals(0, captor.getValue().getPageNumber());
+        assertEquals(10, captor.getValue().getPageSize());
+    }
+
+    @Test
+    public void testObtenerPorUsuarioPaginadoVacia() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Notificacion> pagina = new PageImpl<>(new ArrayList<>(), pageable, 0);
+
+        when(repo.findByUsuarioId(eq("user-999"), any(Pageable.class))).thenReturn(pagina);
+
+        Page<Notificacion> result = service.obtenerPorUsuario("user-999", pageable);
+
+        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.getTotalElements());
+        verify(repo, times(1)).findByUsuarioId(eq("user-999"), any(Pageable.class));
     }
 
     // ============= MARCAR COMO LEIDA TESTS =============

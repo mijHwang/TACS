@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../services/api';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
+import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../services/api';
 
 export interface SubastaResponseDTO {
   id: string;
@@ -21,29 +21,33 @@ export interface SubastaResponseDTO {
   liderFiguritasNombres: string[];
 }
 
-export function useSubastasActivas() {
+// El backend filtra por estado server-side (ActivasPage pasa estado=EN_CURSO).
+export function useSubastasActivas(page = 0, estado = 'EN_CURSO') {
   return useQuery({
-    queryKey: ['subastas', 'activas'],
-    queryFn: async (): Promise<SubastaResponseDTO[]> => {
-      const res = await api.get('/api/subastas');
-      return (res.data as SubastaResponseDTO[]).filter((d) => d.estado === 'EN_CURSO');
-    },
+    queryKey: ['subastas', 'activas', estado, page],
+    queryFn: async (): Promise<PagedResponse<SubastaResponseDTO>> =>
+      (await api.get('/api/subastas', { params: { estado, page, size: DEFAULT_PAGE_SIZE } })).data,
+    placeholderData: keepPreviousData,
   });
 }
 
-export function useMisSubastas(userId: string | undefined) {
+export function useMisSubastas(userId: string | undefined, page = 0) {
   return useQuery({
-    queryKey: ['subastas', 'mias', userId],
-    queryFn: async (): Promise<SubastaResponseDTO[]> => (await api.get(`/api/subastas/usuario/${userId}`)).data,
+    queryKey: ['subastas', 'mias', userId, page],
+    queryFn: async (): Promise<PagedResponse<SubastaResponseDTO>> =>
+      (await api.get(`/api/subastas/usuario/${userId}`, { params: { page, size: DEFAULT_PAGE_SIZE } })).data,
     enabled: !!userId,
+    placeholderData: keepPreviousData,
   });
 }
 
-export function useSubastasParticipando(userId: string | undefined) {
+export function useSubastasParticipando(userId: string | undefined, page = 0) {
   return useQuery({
-    queryKey: ['subastas', 'participando', userId],
-    queryFn: async (): Promise<SubastaResponseDTO[]> => (await api.get(`/api/subastas/participando/${userId}`)).data,
+    queryKey: ['subastas', 'participando', userId, page],
+    queryFn: async (): Promise<PagedResponse<SubastaResponseDTO>> =>
+      (await api.get(`/api/subastas/participando/${userId}`, { params: { page, size: DEFAULT_PAGE_SIZE } })).data,
     enabled: !!userId,
+    placeholderData: keepPreviousData,
   });
 }
 

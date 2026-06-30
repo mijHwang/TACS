@@ -8,6 +8,7 @@ import com.grupo3.tp.models.Seleccion;
 import com.grupo3.tp.models.Equipo;
 import com.grupo3.tp.models.CategoriaFigurita;
 import com.grupo3.tp.models.Jugador;
+import com.grupo3.tp.dtos.IntercambioResponseDTO;
 import com.grupo3.tp.repository.IntercambioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -259,5 +265,36 @@ public class IntercambioServiceTest {
 
         assertFalse(result);
         verify(repo, never()).deleteById(any());
+    }
+
+    // ============= OBTENER POR USUARIO (PAGINADO) TESTS =============
+    @Test
+    public void testObtenerPorUsuarioIdPaginado() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Intercambio> repoPage =
+                new PageImpl<>(List.of(intercambio1), pageable, 1);
+
+        when(repo.findByUsuarioId(eq("user-1"), any(Pageable.class))).thenReturn(repoPage);
+
+        Page<IntercambioResponseDTO> result = service.obtenerPorUsuarioId("user-1", pageable);
+
+        // mapping is preserved over the page slice
+        assertEquals(1, result.getContent().size());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
+        assertTrue(result.isLast());
+
+        IntercambioResponseDTO dto = result.getContent().get(0);
+        assertEquals("int-1", dto.getId());
+        assertEquals("user-1", dto.getUsuarioGeneradorId());
+        assertEquals("juan", dto.getUsuarioGeneradorUsername());
+        assertEquals("user-2", dto.getUsuarioIntercambiadorId());
+        assertEquals("maria", dto.getUsuarioIntercambiadorUsername());
+
+        // repo is called once with a Pageable of page 0, size 10 — no duplicate call
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        verify(repo, times(1)).findByUsuarioId(eq("user-1"), captor.capture());
+        assertEquals(0, captor.getValue().getPageNumber());
+        assertEquals(10, captor.getValue().getPageSize());
     }
 }

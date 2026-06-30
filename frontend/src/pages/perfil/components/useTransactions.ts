@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../../../services/api';
+import api, { type PagedResponse } from '../../../services/api';
 import {
   mapIntercambioToTransaction,
   mapSubastaToTransaction,
@@ -7,6 +7,20 @@ import {
   type IntercambioResponseDTO,
   type SubastaResponseDTO,
 } from '../transacciones';
+
+// Estos 3 endpoints ahora están paginados; HistorialPage sigue siendo client-side, así que
+// recorremos todas las páginas (size=100) hasta `last` para reconstruir el historial completo.
+async function fetchAllPages<T>(url: string): Promise<T[]> {
+  const out: T[] = [];
+  let page = 0;
+  for (;;) {
+    const res = await api.get<PagedResponse<T>>(url, { params: { page, size: 100 } });
+    out.push(...res.data.content);
+    if (res.data.last || res.data.content.length === 0) break;
+    page += 1;
+  }
+  return out;
+}
 
 export function useTransactions(userId: string | undefined, username: string | undefined) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -19,21 +33,21 @@ export function useTransactions(userId: string | undefined, username: string | u
     const fetchAll = async () => {
       setError(false);
       try {
-        const [intercambiosRes, participandoRes, misSubastasRes] = await Promise.all([
-          api.get<IntercambioResponseDTO[]>(`/api/intercambios/usuario/${userId}`),
-          api.get<SubastaResponseDTO[]>(`/api/subastas/participando/${userId}`),
-          api.get<SubastaResponseDTO[]>(`/api/subastas/usuario/${userId}`),
+        const [intercambios, participando, misSubastas] = await Promise.all([
+          fetchAllPages<IntercambioResponseDTO>(`/api/intercambios/usuario/${userId}`),
+          fetchAllPages<SubastaResponseDTO>(`/api/subastas/participando/${userId}`),
+          fetchAllPages<SubastaResponseDTO>(`/api/subastas/usuario/${userId}`),
         ]);
 
-        const fromIntercambios = intercambiosRes.data.map(i =>
+        const fromIntercambios = intercambios.map(i =>
           mapIntercambioToTransaction(i, userId)
         );
 
-        const fromParticipando = participandoRes.data
+        const fromParticipando = participando
           .map(s => mapSubastaToTransaction(s, userId))
           .filter((t): t is Transaction => t !== null);
 
-        const fromMisSubastas = misSubastasRes.data
+        const fromMisSubastas = misSubastas
           .map(s => mapSubastaToTransaction(s, userId))
           .filter((t): t is Transaction => t !== null);
 

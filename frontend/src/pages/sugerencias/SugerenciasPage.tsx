@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import { useSugerencias, type SugerenciaResponseDTO } from '../../hooks/useSugerencias';
 import type { FiguritaResponseDTO } from '../../hooks/useFiguritas';
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
+import Paginador from '../../components/Paginador';
 
 /**
  * Página de Sugerencias de Intercambio (US4): muestra intercambios bidireccionales posibles
@@ -13,7 +15,9 @@ import ErrorState from '../../components/ErrorState';
 export default function SugerenciasPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: sugerencias = [], isLoading, isError, refetch } = useSugerencias(user?.username);
+  const [page, setPage] = useState(0);
+  const { data, isLoading, isError, refetch } = useSugerencias(user?.username, page);
+  const sugerencias = data?.content ?? [];
 
   const proponer = (s: SugerenciaResponseDTO, f: FiguritaResponseDTO) => {
     navigate('/propuestas/nueva', {
@@ -43,6 +47,7 @@ export default function SugerenciasPage() {
       {sugerencias.length === 0 ? (
         <p className="text-muted">No tenés sugerencias por ahora.</p>
       ) : (
+        <>
         <div className="flex flex-col gap-6">
           {sugerencias.map((s) => (
             <div key={s.contraparteId} className="bg-surface border border-border rounded-lg p-5">
@@ -83,6 +88,8 @@ export default function SugerenciasPage() {
             </div>
           ))}
         </div>
+        <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
+        </>
       )}
     </div>
   );

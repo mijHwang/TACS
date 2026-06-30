@@ -1,6 +1,7 @@
 package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.OfertaDTO;
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.dtos.SubastaDTO;
 import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.EstadoSubasta;
@@ -8,6 +9,9 @@ import com.grupo3.tp.models.Oferta;
 import com.grupo3.tp.models.Subasta;
 import com.grupo3.tp.service.OfertaService;
 import com.grupo3.tp.service.SubastaService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,28 +33,57 @@ public class SubastaController {
     }
 
     // FIXED: Changed return type from List<Subasta> to List<SubastaResponseDTO>
-    // Maps each Subasta to DTO with flattened figurita data
+    // Now paginated: optional server-side `estado` filter, sort horaFin ASC (ending soonest first).
+    // The per-auction DTO recompute (ofertas válidas / líder) runs only over the page slice.
     @GetMapping
-    public ResponseEntity<List<SubastaResponseDTO>> getAll() {
-        return ResponseEntity.ok(service.obtenerTodas().stream()
-                .map(service::mapToDTO)
-                .toList());
+    public ResponseEntity<PagedResponse<SubastaResponseDTO>> getAll(
+            @RequestParam(required = false) String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100),
+                Sort.by(Sort.Direction.ASC, "horaFin"));
+        EstadoSubasta estadoFiltro = parseEstado(estado);
+        return ResponseEntity.ok(PagedResponse.from(
+                service.obtenerTodasPaginado(estadoFiltro, pageable).map(service::mapToDTO)));
     }
 
     // FIXED: Changed return type to SubastaResponseDTO and added mapping
+    // Now paginated: sort horaFin DESC.
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<SubastaResponseDTO>> getByUsuario(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerPorUsuario(usuarioId).stream()
-                .map(service::mapToDTO)
-                .toList());
+    public ResponseEntity<PagedResponse<SubastaResponseDTO>> getByUsuario(
+            @PathVariable String usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100),
+                Sort.by(Sort.Direction.DESC, "horaFin"));
+        return ResponseEntity.ok(PagedResponse.from(
+                service.obtenerPorUsuarioPaginado(usuarioId, pageable).map(service::mapToDTO)));
     }
 
     // FIXED: Changed return type to SubastaResponseDTO and added mapping
+    // Now paginated: sort horaFin DESC.
     @GetMapping("/participando/{usuarioId}")
-    public ResponseEntity<List<SubastaResponseDTO>> getParticipando(@PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerParticipando(usuarioId).stream()
-                .map(service::mapToDTO)
-                .toList());
+    public ResponseEntity<PagedResponse<SubastaResponseDTO>> getParticipando(
+            @PathVariable String usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100),
+                Sort.by(Sort.Direction.DESC, "horaFin"));
+        return ResponseEntity.ok(PagedResponse.from(
+                service.obtenerParticipandoPaginado(usuarioId, pageable).map(service::mapToDTO)));
+    }
+
+    /** Parses the optional `estado` query param to the enum; null/blank → no filter. */
+    private EstadoSubasta parseEstado(String estado) {
+        if (estado == null || estado.isBlank()) {
+            return null;
+        }
+        try {
+            return EstadoSubasta.valueOf(estado.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Estado de subasta inválido: " + estado);
+        }
     }
 
     // FIXED: Changed return type to SubastaResponseDTO and added mapping

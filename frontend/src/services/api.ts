@@ -171,3 +171,21 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
+
+// ── Pagination envelope ─────────────────────────────────────────────────────────
+
+export const DEFAULT_PAGE_SIZE = 10;
+
+export interface PagedResponse<T> {
+  content: T[];
+  page: number;          // 0-based
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+/** Maps the inner list of a page while keeping the pagination metadata. */
+export function mapPage<A, B>(res: PagedResponse<A>, fn: (a: A) => B): PagedResponse<B> {
+  return { ...res, content: res.content.map(fn) };
+}

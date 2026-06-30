@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
+import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../../services/api';
+import Paginador from '../../components/Paginador';
 
 interface IntercambioResponseDTO {
   id: string;
@@ -22,6 +23,9 @@ const BLUE = '#03BAE9';
 export default function IntercambiosPage() {
   const { user } = useAuth();
   const [intercambios, setIntercambios] = useState<IntercambioResponseDTO[]>([]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(Boolean(user?.id && user.id !== user.username));
   const [error, setError] = useState<string | null>(null);
   const [hovered, setHovered] = useState<{ id: string; star: number } | null>(null);
@@ -30,11 +34,20 @@ export default function IntercambiosPage() {
 
   useEffect(() => {
     if (!user?.id || user.id === user.username) return;
-    api.get(`/api/intercambios/usuario/${user.id}`)
-      .then(res => setIntercambios(res.data))
+    // No seteamos loading=true en cambios de página: mantenemos las filas previas
+    // visibles hasta que llega la nueva página (UX tipo keepPreviousData). El spinner
+    // inicial se cubre con el estado loading inicial (true).
+    api.get<PagedResponse<IntercambioResponseDTO>>(`/api/intercambios/usuario/${user.id}`, {
+      params: { page, size: DEFAULT_PAGE_SIZE },
+    })
+      .then(res => {
+        setIntercambios(res.data.content);
+        setTotalPages(res.data.totalPages);
+        setTotalElements(res.data.totalElements);
+      })
       .catch(() => setError('No se pudieron cargar los intercambios.'))
       .finally(() => setLoading(false));
-  }, [user?.id, user?.username]);
+  }, [user?.id, user?.username, page]);
 
   const handleCalificar = async (intercambioId: string, puntaje: number) => {
     if (!user?.id) return;
@@ -56,7 +69,7 @@ export default function IntercambiosPage() {
     }
   };
 
-  if (loading) return (
+  if (loading && intercambios.length === 0) return (
     <div className="flex items-center justify-center py-20 gap-2 text-muted text-sm">
       <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
@@ -80,7 +93,7 @@ export default function IntercambiosPage() {
           className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
           style={{ background: `${BLUE}15`, color: BLUE }}
         >
-          {intercambios.length}
+          {totalElements}
         </span>
       </div>
 
@@ -190,6 +203,7 @@ export default function IntercambiosPage() {
               </div>
             );
           })}
+          <Paginador page={page} totalPages={totalPages} onChange={setPage} />
         </div>
       )}
     </div>

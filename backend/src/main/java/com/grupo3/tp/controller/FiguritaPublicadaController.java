@@ -2,7 +2,10 @@ package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.FiguritaPublicadaRequestDTO;
 import com.grupo3.tp.dtos.FiguritaPublicadaResponseDTO;
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.service.FiguritaPublicadaService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +33,15 @@ public class FiguritaPublicadaController {
     }
 
     @GetMapping("/disponibles/{usuarioId}")
-    public ResponseEntity<List<FiguritaPublicadaResponseDTO>> getDisponibles(
-            @PathVariable String usuarioId) {
-        return ResponseEntity.ok(service.obtenerDisponibles(usuarioId));
+    public ResponseEntity<PagedResponse<FiguritaPublicadaResponseDTO>> getDisponibles(
+            @PathVariable String usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageable = PageRequest.of(
+                page, Math.min(size, 100),
+                Sort.by(Sort.Direction.DESC, "fechaPublicacion"));
+        return ResponseEntity.ok(
+                PagedResponse.from(service.obtenerDisponibles(usuarioId, pageable)));
     }
 
     @GetMapping("/usuario/{usuarioId}")

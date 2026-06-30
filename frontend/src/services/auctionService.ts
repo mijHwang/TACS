@@ -1,6 +1,8 @@
-import type { Auction, AuctionCondition, Sticker } from '../types/auction';
-import { apiFetch, mapSubasta, type BackendSubasta } from './api';
+import type { Auction, AuctionCondition, AuctionStatus, Bid, Sticker } from '../types/auction';
+import { apiFetch, mapSubasta, mapPage, type BackendSubasta, type PagedResponse } from './api';
+import type { SubastaResponseDTO } from '../hooks/useSubastas';
 
+const DEFAULT_PAGE_SIZE = 10;
 
 function mapFiguritaToSticker(figurita: {
   id: string; numero: number; jugadorNombre: string; seleccionNombre: string;
@@ -15,21 +17,61 @@ function mapFiguritaToSticker(figurita: {
 
 export { mapFiguritaToSticker };
 
+function dtoEstadoToStatus(estado: SubastaResponseDTO['estado'], liderId: string | null, currentUserId?: string): AuctionStatus {
+  if (estado === 'PENDIENTE' || estado === 'EN_CURSO') return 'active';
+  // FINALIZADA: si el líder soy yo gané; si participé pero no soy líder, perdí.
+  if (currentUserId && liderId) {
+    return liderId === currentUserId ? 'won' : 'lost';
+  }
+  return 'finished';
+}
+
+/**
+ * Adapta el SubastaResponseDTO (plano) del backend al modelo `Auction` del front.
+ * Reconstruye `bids` con longitud = ofertasCount y la última oferta atribuida al líder,
+ * para preservar la semántica que consume el dashboard (`bids.length`, `bids.at(-1)?.bidderId`).
+ */
+function mapSubastaDTO(d: SubastaResponseDTO, currentUserId?: string): Auction {
+  const bids: Bid[] = Array.from({ length: Math.max(0, d.ofertasCount) }, (_, i) => ({
+    id: `${d.id}-bid-${i}`,
+    bidderId: i === d.ofertasCount - 1 ? (d.liderId ?? '') : '',
+    bidderUsername: i === d.ofertasCount - 1 ? (d.liderUsername ?? '') : '',
+    stickers: [],
+    placedAt: d.horaInicio ?? new Date().toISOString(),
+  }));
+  return {
+    id: d.id,
+    ownerId: d.usuarioId ?? '',
+    ownerUsername: d.usuarioUsername ?? '',
+    sticker: {
+      id: d.figuritaId ?? '',
+      number: d.figuritaNumero ?? 0,
+      playerName: d.figuritaJugadorNombre ?? '',
+      country: d.figuritaSeleccionNombre ?? '',
+    },
+    bids,
+    endTime: d.horaFin ?? new Date().toISOString(),
+    createdAt: d.horaInicio ?? new Date().toISOString(),
+    status: dtoEstadoToStatus(d.estado, d.liderId, currentUserId),
+    conditions: [],
+  };
+}
+
 export const auctionService = {
 
-  async getAll(currentUserId?: string): Promise<Auction[]> {
-    const data = await apiFetch<BackendSubasta[]>('/subastas');
-    return data.map(s => mapSubasta(s, currentUserId));
+  async getAll(currentUserId?: string, page = 0, size = DEFAULT_PAGE_SIZE): Promise<Auction[]> {
+    const res = await apiFetch<PagedResponse<SubastaResponseDTO>>(`/subastas?estado=EN_CURSO&page=${page}&size=${size}`);
+    return mapPage(res, s => mapSubastaDTO(s, currentUserId)).content;
   },
 
-  async getByUsuario(usuarioId: string): Promise<Auction[]> {
-    const data = await apiFetch<BackendSubasta[]>(`/subastas/usuario/${usuarioId}`);
-    return data.map(s => mapSubasta(s, usuarioId));
+  async getByUsuario(usuarioId: string, page = 0, size = DEFAULT_PAGE_SIZE): Promise<Auction[]> {
+    const res = await apiFetch<PagedResponse<SubastaResponseDTO>>(`/subastas/usuario/${usuarioId}?page=${page}&size=${size}`);
+    return mapPage(res, s => mapSubastaDTO(s, usuarioId)).content;
   },
 
-  async getParticipando(usuarioId: string): Promise<Auction[]> {
-    const data = await apiFetch<BackendSubasta[]>(`/subastas/participando/${usuarioId}`);
-    return data.map(s => mapSubasta(s, usuarioId));
+  async getParticipando(usuarioId: string, page = 0, size = DEFAULT_PAGE_SIZE): Promise<Auction[]> {
+    const res = await apiFetch<PagedResponse<SubastaResponseDTO>>(`/subastas/participando/${usuarioId}?page=${page}&size=${size}`);
+    return mapPage(res, s => mapSubastaDTO(s, usuarioId)).content;
   },
 
   async finalizar(auctionId: string): Promise<Auction> {

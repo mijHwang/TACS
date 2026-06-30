@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../services/api';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
+import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../services/api';
 
 export interface Notificacion {
   id: string;
@@ -11,15 +11,22 @@ export interface Notificacion {
   enlace: string;
 }
 
-export function useNotificaciones(userId: string | undefined) {
+export function useNotificaciones(
+  userId: string | undefined,
+  page = 0,
+  size = DEFAULT_PAGE_SIZE,
+) {
   return useQuery({
-    queryKey: ['notificaciones', userId],
-    queryFn: async (): Promise<Notificacion[]> => {
-      const res = await api.get(`/api/notificaciones/usuario/${userId}`);
-      return [...res.data].sort((a: Notificacion, b: Notificacion) =>
-        new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+    queryKey: ['notificaciones', userId, page, size],
+    queryFn: async (): Promise<PagedResponse<Notificacion>> => {
+      // El backend ordena por fecha desc (más recientes primero) y pagina server-side.
+      const res = await api.get(`/api/notificaciones/usuario/${userId}`, {
+        params: { page, size },
+      });
+      return res.data as PagedResponse<Notificacion>;
     },
     enabled: !!userId,
+    placeholderData: keepPreviousData,
   });
 }
 

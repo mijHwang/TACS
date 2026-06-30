@@ -2,6 +2,7 @@ package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.dtos.SugerenciaResponseDTO;
 import com.grupo3.tp.dtos.UsuarioDTO;
 import com.grupo3.tp.models.Figurita;
@@ -9,6 +10,9 @@ import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.SugerenciaService;
 import com.grupo3.tp.service.UsuarioService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -99,8 +103,14 @@ public class UsuarioController {
     }
 
     @GetMapping("/{userName}/sugerencias")
-    public ResponseEntity<List<SugerenciaResponseDTO>> getSugerencias(@PathVariable String userName) {
+    public ResponseEntity<PagedResponse<SugerenciaResponseDTO>> getSugerencias(
+            @PathVariable String userName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Usuario usuario = service.loadUserByUsername(userName);
-        return ResponseEntity.ok(sugerenciaService.obtenerPorUsuario(usuario.getId()));
+        // Orden estable por id asc: todas las sugerencias de un usuario comparten generadaEn
+        // (mismo timestamp del job), por lo que la fecha no desempata; el id sí.
+        Pageable pageable = PageRequest.of(page, Math.min(size, 100), Sort.by(Sort.Direction.ASC, "id"));
+        return ResponseEntity.ok(PagedResponse.from(sugerenciaService.obtenerPorUsuario(usuario.getId(), pageable)));
     }
 }

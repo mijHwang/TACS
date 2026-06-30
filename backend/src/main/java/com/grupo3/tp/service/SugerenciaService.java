@@ -8,6 +8,8 @@ import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaRepository;
 import com.grupo3.tp.repository.SugerenciaRepository;
 import com.grupo3.tp.repository.UsuarioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,10 +42,20 @@ public class SugerenciaService {
     /** Sugerencias persistidas del usuario, mapeadas a DTO. */
     public List<SugerenciaResponseDTO> obtenerPorUsuario(String usuarioId) {
         return sugerenciaRepository.findByUsuarioId(usuarioId).stream()
-                .map(s -> new SugerenciaResponseDTO(
-                        s.getContraparteId(), s.getContraparteNombre(),
-                        s.getFiguritasARecibir(), s.getFiguritasAOfrecer()))
+                .map(this::toResponseDTO)
                 .toList();
+    }
+
+    /** Sugerencias persistidas del usuario, paginadas y mapeadas a DTO. */
+    public Page<SugerenciaResponseDTO> obtenerPorUsuario(String usuarioId, Pageable pageable) {
+        return sugerenciaRepository.findByUsuarioId(usuarioId, pageable)
+                .map(this::toResponseDTO);
+    }
+
+    private SugerenciaResponseDTO toResponseDTO(Sugerencia s) {
+        return new SugerenciaResponseDTO(
+                s.getContraparteId(), s.getContraparteNombre(),
+                s.getFiguritasARecibir(), s.getFiguritasAOfrecer());
     }
 
     /**

@@ -10,13 +10,17 @@ import { useSubastasActivas, useOfertar, type SubastaResponseDTO } from '../../h
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import EmptyState from '../../components/EmptyState';
+import Paginador from '../../components/Paginador';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
 
 export default function SubastasActivasPage() {
   const { user } = useAuth();
-  const { data: auctions = [], isLoading, isError, refetch } = useSubastasActivas();
+  const [page, setPage] = useState(0);
+  // El servidor ya filtra por estado=EN_CURSO; no se filtra en JS.
+  const { data, isLoading, isError, refetch } = useSubastasActivas(page);
+  const auctions = data?.content ?? [];
   const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
@@ -66,7 +70,7 @@ export default function SubastasActivasPage() {
           className="ml-1 px-2 py-0.5 rounded-full text-xs font-bold"
           style={{ background: `${RED}15`, color: RED }}
         >
-          {auctions.length}
+          {data?.totalElements ?? 0}
         </span>
       </div>
 
@@ -92,6 +96,8 @@ export default function SubastasActivasPage() {
           ))}
         </div>
       )}
+
+      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
 
       {selected && (
         <AuctionDetailModal

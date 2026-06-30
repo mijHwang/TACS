@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../services/api';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
+import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../services/api';
 
 export interface Usuario { id: string; username: string; password?: string; email?: string; figuritas?: Figurita[]; }
 export interface FiguritaBase {
@@ -15,19 +15,23 @@ export interface SolicitudDeIntercambio {
   cantidadDisponible: number; estado: string; destinatarioUsername: string;
 }
 
-export function usePropuestasRecibidas(userId: string | undefined) {
+export function usePropuestasRecibidas(userId: string | undefined, page = 0, size = DEFAULT_PAGE_SIZE) {
   return useQuery({
-    queryKey: ['propuestas', 'recibidas', userId],
-    queryFn: async (): Promise<SolicitudDeIntercambio[]> => (await api.get(`/api/solicitudes-intercambio/recibidas/${userId}`)).data,
+    queryKey: ['propuestas', 'recibidas', userId, page, size],
+    queryFn: async (): Promise<PagedResponse<SolicitudDeIntercambio>> =>
+      (await api.get(`/api/solicitudes-intercambio/recibidas/${userId}`, { params: { page, size } })).data,
     enabled: !!userId,
+    placeholderData: keepPreviousData,
   });
 }
 
-export function usePropuestasEnviadas(userId: string | undefined) {
+export function usePropuestasEnviadas(userId: string | undefined, page = 0, size = DEFAULT_PAGE_SIZE) {
   return useQuery({
-    queryKey: ['propuestas', 'enviadas', userId],
-    queryFn: async (): Promise<SolicitudDeIntercambio[]> => (await api.get(`/api/solicitudes-intercambio/enviadas/${userId}`)).data,
+    queryKey: ['propuestas', 'enviadas', userId, page, size],
+    queryFn: async (): Promise<PagedResponse<SolicitudDeIntercambio>> =>
+      (await api.get(`/api/solicitudes-intercambio/enviadas/${userId}`, { params: { page, size } })).data,
     enabled: !!userId,
+    placeholderData: keepPreviousData,
   });
 }
 

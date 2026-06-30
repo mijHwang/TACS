@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import { usePropuestasEnviadas } from '../../hooks/usePropuestas';
+import Paginador from '../../components/Paginador';
 
 export default function PropuestasEnviadasPage() {
   const { user } = useAuth();
-  const { data: propuestasEnviadas = [], isLoading } = usePropuestasEnviadas(user?.id);
+  const [page, setPage] = useState(0);
+  const { data, isLoading } = usePropuestasEnviadas(user?.id, page);
+  const propuestasEnviadas = data?.content ?? [];
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -87,6 +91,8 @@ export default function PropuestasEnviadasPage() {
           ))}
         </div>
       )}
+
+      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
     </div>
   );
 }

@@ -7,6 +7,8 @@ import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaPublicada;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaPublicadaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -75,11 +77,10 @@ public class FiguritaPublicadaService {
         return mapToDTO(repository.save(publicacion));
     }
 
-    public List<FiguritaPublicadaResponseDTO> obtenerDisponibles(String usuarioId) {
-        return repository.findDisponibles().stream()
-                .filter(p -> !p.getUsuario().getId().equals(usuarioId))
-                .map(this::mapToDTO)
-                .toList();
+    public Page<FiguritaPublicadaResponseDTO> obtenerDisponibles(String usuarioId, Pageable pageable) {
+        // La exclusión del usuario que consulta y el filtro por estado DISPONIBLE
+        // ahora se resuelven en la query (ver FiguritaPublicadaRepositoryImpl).
+        return repository.findDisponibles(usuarioId, pageable).map(this::mapToDTO);
     }
 
     public List<FiguritaPublicadaResponseDTO> obtenerPorUsuario(String usuarioId) {

@@ -5,6 +5,8 @@ import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.SubastaRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,6 +91,20 @@ public class SubastaService {
 
     public List<Subasta> obtenerParticipando(String usuarioId) {
         return repository.findByParticipating(usuarioId);
+    }
+
+    // Paginated variants. The per-auction DTO recompute (ofertas válidas / líder)
+    // is done by the controller over the page slice (page.getContent()).
+    public Page<Subasta> obtenerTodasPaginado(EstadoSubasta estado, Pageable pageable) {
+        return repository.findAllPaged(estado, pageable);
+    }
+
+    public Page<Subasta> obtenerPorUsuarioPaginado(String usuarioId, Pageable pageable) {
+        return repository.findByUsuarioIdPaged(usuarioId, pageable);
+    }
+
+    public Page<Subasta> obtenerParticipandoPaginado(String usuarioId, Pageable pageable) {
+        return repository.findByParticipatingPaged(usuarioId, pageable);
     }
 
 

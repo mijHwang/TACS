@@ -2,6 +2,8 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.models.Notificacion;
 import com.grupo3.tp.repository.NotificacionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,10 @@ public class NotificacionService {
 
     public List<Notificacion> obtenerPorUsuario(String usuarioId) {
         return repository.findByUsuarioId(usuarioId);
+    }
+
+    public Page<Notificacion> obtenerPorUsuario(String usuarioId, Pageable pageable) {
+        return repository.findByUsuarioId(usuarioId, pageable);
     }
 
     public Optional<Notificacion> marcarComoLeida(String id) {

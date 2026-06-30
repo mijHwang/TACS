@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import { usePropuestasRecibidas, useResponderPropuesta } from '../../hooks/usePropuestas';
+import Paginador from '../../components/Paginador';
 
 export default function PropuestasRecibidasPage() {
   const { user } = useAuth();
-  const { data: propuestasRecibidas = [], isLoading } = usePropuestasRecibidas(user?.id);
+  const [page, setPage] = useState(0);
+  const { data, isLoading } = usePropuestasRecibidas(user?.id, page);
+  const propuestasRecibidas = data?.content ?? [];
   const responder = useResponderPropuesta();
 
   const handleAceptar = (propuestaId: string) => responder.mutate({ propuestaId, accion: 'aceptar' });
@@ -115,6 +119,8 @@ export default function PropuestasRecibidasPage() {
           ))}
         </div>
       )}
+
+      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
     </div>
   );
 }

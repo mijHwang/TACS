@@ -1,4 +1,4 @@
-import { apiFetch } from './api';
+import { apiFetch, type PagedResponse } from './api';
 import { auctionService } from './auctionService';
 import type { Auction } from '../types/auction';
 import type {
@@ -21,15 +21,20 @@ export interface DashboardDeps {
   fetchSugerencias: (username: string) => Promise<SugerenciaResponseDTO[]>;
 }
 
+// El dashboard sólo necesita un resumen; de los endpoints ahora paginados pedimos la primera
+// página grande (size=100, el máximo) y leemos `.content`. Los contadores quedan exactos hasta
+// 100 ítems por fuente (suficiente para el resumen). Las fuentes no paginadas (figuritas,
+// faltantes) se piden igual.
+const DASH_SIZE = 100;
 const defaultDeps: DashboardDeps = {
   fetchFiguritas: (u) => apiFetch<FiguritaResponseDTO[]>(`/usuarios/${u}/figuritas`),
   fetchFaltantes: (u) => apiFetch<unknown[]>(`/usuarios/${u}/figuritas/faltantes`),
-  fetchEnviadas: (id) => apiFetch<SolicitudDeIntercambio[]>(`/solicitudes-intercambio/enviadas/${id}`),
-  fetchRecibidas: (id) => apiFetch<SolicitudDeIntercambio[]>(`/solicitudes-intercambio/recibidas/${id}`),
-  fetchMisSubastas: (id) => auctionService.getByUsuario(id),
-  fetchParticipando: (id) => auctionService.getParticipando(id),
-  fetchNotificaciones: (id) => apiFetch<NotificacionDTO[]>(`/notificaciones/usuario/${id}`),
-  fetchSugerencias: (u) => apiFetch<SugerenciaResponseDTO[]>(`/usuarios/${u}/sugerencias`),
+  fetchEnviadas: (id) => apiFetch<PagedResponse<SolicitudDeIntercambio>>(`/solicitudes-intercambio/enviadas/${id}?page=0&size=${DASH_SIZE}`).then(r => r.content),
+  fetchRecibidas: (id) => apiFetch<PagedResponse<SolicitudDeIntercambio>>(`/solicitudes-intercambio/recibidas/${id}?page=0&size=${DASH_SIZE}`).then(r => r.content),
+  fetchMisSubastas: (id) => auctionService.getByUsuario(id, 0, DASH_SIZE),
+  fetchParticipando: (id) => auctionService.getParticipando(id, 0, DASH_SIZE),
+  fetchNotificaciones: (id) => apiFetch<PagedResponse<NotificacionDTO>>(`/notificaciones/usuario/${id}?page=0&size=${DASH_SIZE}`).then(r => r.content),
+  fetchSugerencias: (u) => apiFetch<PagedResponse<SugerenciaResponseDTO>>(`/usuarios/${u}/sugerencias?page=0&size=${DASH_SIZE}`).then(r => r.content),
 };
 
 async function settle<T>(p: Promise<T>, fallback: T): Promise<SectionResult<T>> {
