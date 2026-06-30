@@ -19,10 +19,31 @@ export interface RecentActivityItem {
   timestamp: string;
 }
 
+export interface SeedResult {
+  usuarios: number;
+  figuritasBase: number;
+  figuritas: number;
+  solicitudes: number;
+  intercambios: number;
+  subastas: number;
+  ofertas: number;
+  sugerencias: number;
+  notificaciones: number;
+  calificaciones: number;
+  protagonistaUsername: string;
+  protagonistaPassword: string;
+  adminUsername: string;
+  adminPassword: string;
+  mensaje: string;
+}
+
 // ── Service ───────────────────────────────────────────────────────────────────
 
 export const adminService = {
   async getStats(): Promise<PlatformStats> {
     return apiFetch<PlatformStats>('/admin/stats');
+  },
+  async seedDemo(): Promise<SeedResult> {
+    return apiFetch<SeedResult>('/admin/seed-demo', { method: 'POST' });
   },
 };

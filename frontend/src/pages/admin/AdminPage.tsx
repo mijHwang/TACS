@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminService, type PlatformStats } from '../../services/adminService';
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
+import SeedDemoCard from './components/SeedDemoCard';
 import {
   StatCard,
   SectionHeader,
@@ -58,12 +59,12 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadStats = () => {
     adminService.getStats()
-      .then(setStats)
-      .catch(() => setError('No se pudieron cargar las estadísticas.'))
-      .finally(() => setLoading(false));
-  }, []);
+      .then((data) => { setStats(data); setLoading(false); })
+      .catch(() => { setError('No se pudieron cargar las estadísticas.'); setLoading(false); });
+  };
+  useEffect(() => { loadStats(); }, []);
 
   if (loading) return <Spinner label="Cargando estadísticas…" />;
   if (error || !stats) return <ErrorState message={error ?? 'Error inesperado.'} />;
@@ -98,6 +99,8 @@ export default function AdminPage() {
           Regalar Figurita
         </button>
       </div>
+
+      <SeedDemoCard onDone={loadStats} />
 
       {/* ── KPI cards ───────────────────────────────────────────────────────── */}
       <section>
