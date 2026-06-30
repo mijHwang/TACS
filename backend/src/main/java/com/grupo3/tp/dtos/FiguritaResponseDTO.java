@@ -18,4 +18,5 @@ public class FiguritaResponseDTO {
     private String categoriaNombre;
     private String ownerId;
     private String ownerName;
+    private String imagenUrl;
 }

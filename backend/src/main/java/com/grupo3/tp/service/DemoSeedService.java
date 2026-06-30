@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.grupo3.tp.models.Figurita;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,10 +60,7 @@ public class DemoSeedService {
 
     private final MongoTemplate mongoTemplate;
     private final PasswordEncoder passwordEncoder;
-    private final SeleccionRepository seleccionRepo;
-    private final EquipoRepository equipoRepo;
-    private final JugadorRepository jugadorRepo;
-    private final CategoriaFiguritaRepository categoriaRepo;
+    private final CatalogoService catalogoService;
     private final FiguritaBaseRepository figuritaBaseRepo;
     private final UsuarioService usuarioService;
     private final FiguritaService figuritaService;
@@ -85,10 +81,7 @@ public class DemoSeedService {
 
     public DemoSeedService(MongoTemplate mongoTemplate,
                            PasswordEncoder passwordEncoder,
-                           SeleccionRepository seleccionRepo,
-                           EquipoRepository equipoRepo,
-                           JugadorRepository jugadorRepo,
-                           CategoriaFiguritaRepository categoriaRepo,
+                           CatalogoService catalogoService,
                            FiguritaBaseRepository figuritaBaseRepo,
                            UsuarioService usuarioService,
                            FiguritaService figuritaService,
@@ -108,10 +101,7 @@ public class DemoSeedService {
                            FiguritaRepository figuritaRepo) {
         this.mongoTemplate = mongoTemplate;
         this.passwordEncoder = passwordEncoder;
-        this.seleccionRepo = seleccionRepo;
-        this.equipoRepo = equipoRepo;
-        this.jugadorRepo = jugadorRepo;
-        this.categoriaRepo = categoriaRepo;
+        this.catalogoService = catalogoService;
         this.figuritaBaseRepo = figuritaBaseRepo;
         this.usuarioService = usuarioService;
         this.figuritaService = figuritaService;
@@ -149,249 +139,17 @@ public class DemoSeedService {
     }
 
     /**
-     * Crea el catálogo base (selecciones, categorías, equipos, jugadores y 48 figuritas_base
-     * numeradas 1..48). Reutiliza los datos del antiguo FiguritaBaseSeeder.
-     * @return mapa numero -> FiguritaBase para usar al armar colecciones.
+     * Subset determinístico del catálogo real para la demo: mapa numero -> FiguritaBase
+     * con las bases 1..n. Como Argentina es la 1ª selección del JSON, las bases 1..18 son
+     * de Argentina (coherente con la subasta "Solo Argentina" del escenario de demo).
      */
-    Map<Integer, FiguritaBase> seedCatalogo() {
+    Map<Integer, FiguritaBase> primerasBasesPorNumero(int n) {
         Map<Integer, FiguritaBase> porNumero = new HashMap<>();
-
-        // Save Selecciones
-        Seleccion arg = seleccionRepo.save(new Seleccion(null, "Argentina", "CONMEBOL"));
-        Seleccion bra = seleccionRepo.save(new Seleccion(null, "Brazil", "CONMEBOL"));
-
-        // Save Categorias
-        CategoriaFigurita oro = categoriaRepo.save(new CategoriaFigurita(null, "Oro"));
-        CategoriaFigurita plata = categoriaRepo.save(new CategoriaFigurita(null, "Plata"));
-        CategoriaFigurita bronce = categoriaRepo.save(new CategoriaFigurita(null, "Bronce"));
-        List<CategoriaFigurita> categorias = Arrays.asList(oro, plata, bronce);
-
-        // Save Argentina Equipos
-        Equipo boca = equipoRepo.save(new Equipo(null, "Boca Juniors"));
-        Equipo river = equipoRepo.save(new Equipo(null, "River Plate"));
-        Equipo racing = equipoRepo.save(new Equipo(null, "Racing Club"));
-        Equipo sanLorenzo = equipoRepo.save(new Equipo(null, "San Lorenzo"));
-        Equipo independiente = equipoRepo.save(new Equipo(null, "Independiente"));
-
-        // Save Brazil Equipos
-        Equipo santos = equipoRepo.save(new Equipo(null, "Santos"));
-        Equipo flamengo = equipoRepo.save(new Equipo(null, "Flamengo"));
-        Equipo corinthians = equipoRepo.save(new Equipo(null, "Corinthians"));
-        Equipo palmeiras = equipoRepo.save(new Equipo(null, "Palmeiras"));
-        Equipo vasco = equipoRepo.save(new Equipo(null, "Vasco da Gama"));
-
-        // Save European Equipos
-        Equipo barcelona = equipoRepo.save(new Equipo(null, "Barcelona"));
-        Equipo realMadrid = equipoRepo.save(new Equipo(null, "Real Madrid"));
-        Equipo juventus = equipoRepo.save(new Equipo(null, "Juventus"));
-        Equipo liverpool = equipoRepo.save(new Equipo(null, "Liverpool"));
-        Equipo psg = equipoRepo.save(new Equipo(null, "Paris Saint-Germain"));
-        Equipo acMilan = equipoRepo.save(new Equipo(null, "AC Milan"));
-        Equipo manchesterCity = equipoRepo.save(new Equipo(null, "Manchester City"));
-
-        // Save Argentina Jugadores
-        Jugador maradona = jugadorRepo.save(new Jugador(null, "Diego Maradona"));
-        Jugador aguero = jugadorRepo.save(new Jugador(null, "Sergio Aguero"));
-        Jugador diMaria = jugadorRepo.save(new Jugador(null, "Angel Di Maria"));
-        Jugador mascherano = jugadorRepo.save(new Jugador(null, "Javier Mascherano"));
-        Jugador higuain = jugadorRepo.save(new Jugador(null, "Gonzalo Higuain"));
-        Jugador banega = jugadorRepo.save(new Jugador(null, "Ever Banega"));
-        Jugador otamendi = jugadorRepo.save(new Jugador(null, "Nicolas Otamendi"));
-        Jugador tevez = jugadorRepo.save(new Jugador(null, "Carlos Tevez"));
-
-        // Save Brazil Jugadores
-        Jugador ronaldo = jugadorRepo.save(new Jugador(null, "Ronaldo"));
-        Jugador ronaldinho = jugadorRepo.save(new Jugador(null, "Ronaldinho"));
-        Jugador neymar = jugadorRepo.save(new Jugador(null, "Neymar"));
-        Jugador kaka = jugadorRepo.save(new Jugador(null, "Kaka"));
-        Jugador robinho = jugadorRepo.save(new Jugador(null, "Robinho"));
-        Jugador thiagoSilva = jugadorRepo.save(new Jugador(null, "Thiago Silva"));
-        Jugador coutinho = jugadorRepo.save(new Jugador(null, "Philippe Coutinho"));
-        Jugador marcelo = jugadorRepo.save(new Jugador(null, "Marcelo"));
-
-        // Create Argentina figuritas (8 jugadores × 3 categorías = 24 figuritas)
-        int numero = 1;
-
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(maradona)
-                    .seleccion(arg)
-                    .equipo(boca)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
+        for (FiguritaBase fb : figuritaBaseRepo.findAll()) {
+            if (fb.getNumero() != null && fb.getNumero() >= 1 && fb.getNumero() <= n) {
+                porNumero.put(fb.getNumero(), fb);
+            }
         }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(aguero)
-                    .seleccion(arg)
-                    .equipo(manchesterCity)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(diMaria)
-                    .seleccion(arg)
-                    .equipo(realMadrid)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(mascherano)
-                    .seleccion(arg)
-                    .equipo(barcelona)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(higuain)
-                    .seleccion(arg)
-                    .equipo(juventus)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(banega)
-                    .seleccion(arg)
-                    .equipo(sanLorenzo)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(otamendi)
-                    .seleccion(arg)
-                    .equipo(juventus)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(tevez)
-                    .seleccion(arg)
-                    .equipo(manchesterCity)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-
-        // Create Brazil figuritas (8 jugadores × 3 categorías = 24 figuritas)
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(ronaldo)
-                    .seleccion(bra)
-                    .equipo(realMadrid)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(ronaldinho)
-                    .seleccion(bra)
-                    .equipo(barcelona)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(neymar)
-                    .seleccion(bra)
-                    .equipo(psg)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(kaka)
-                    .seleccion(bra)
-                    .equipo(acMilan)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(robinho)
-                    .seleccion(bra)
-                    .equipo(manchesterCity)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(thiagoSilva)
-                    .seleccion(bra)
-                    .equipo(psg)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(coutinho)
-                    .seleccion(bra)
-                    .equipo(liverpool)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-        for (CategoriaFigurita cat : categorias) {
-            FiguritaBase fb = figuritaBaseRepo.save(FiguritaBase.builder()
-                    .numero(numero)
-                    .jugador(marcelo)
-                    .seleccion(bra)
-                    .equipo(realMadrid)
-                    .categoria(cat)
-                    .build());
-            porNumero.put(numero, fb);
-            numero++;
-        }
-
-        // porNumero now holds entries 1..48 (16 players × 3 categories each)
         return porNumero;
     }
 
@@ -557,7 +315,8 @@ public class DemoSeedService {
      */
     public DemoSeedResultDTO seed() {
         reset();
-        Map<Integer, FiguritaBase> bases = seedCatalogo();
+        catalogoService.cargarDesdeJson();
+        Map<Integer, FiguritaBase> bases = primerasBasesPorNumero(48);
         Map<String, Usuario> users = seedUsuarios();
         Map<String, Map<Integer, List<Figurita>>> owned = seedColecciones(users, bases);
         seedPropuestas(users, owned);

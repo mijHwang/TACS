@@ -280,4 +280,23 @@ public class FiguritaServiceTest {
         verify(repo).save(captor.capture());
         assertEquals("user-2", captor.getValue().getOwner().getId());
     }
+
+    @Test
+    public void testObtenerPorUserIdIncluyeImagenUrl() {
+        FiguritaBase baseConFoto = FiguritaBase.builder()
+                .id("fig-base-9").numero(9)
+                .seleccion(new Seleccion("sel-1", "Argentina", "CONMEBOL"))
+                .equipo(new Equipo("eq-9", "Inter Miami"))
+                .categoria(new CategoriaFigurita("cat-1", "Oro"))
+                .jugador(new Jugador("jug-9", "Lionel Messi"))
+                .imagenUrl("https://img.test/messi.png")
+                .build();
+        Figurita fig = Figurita.builder().id("fig-9").figuritaBase(baseConFoto).owner(usuario1).build();
+        when(repo.findByFiguritaOwnerId("user-1")).thenReturn(List.of(fig));
+
+        List<FiguritaResponseDTO> result = service.obtenerPorUserId("user-1");
+
+        assertEquals(1, result.size());
+        assertEquals("https://img.test/messi.png", result.get(0).getImagenUrl());
+    }
 }

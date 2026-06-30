@@ -10,6 +10,7 @@ export interface FiguritaResponseDTO {
   categoriaNombre: string;
   ownerId: string;
   ownerName: string;
+  imagenUrl?: string | null;
 }
 
 export interface FiguritaBaseRef {

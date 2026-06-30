@@ -51,7 +51,8 @@ public class FiguritaRepositoryCustomImpl implements FiguritaRepositoryCustom {
                         group.get(0).getFiguritaBase().getEquipo().getNombre(),
                         group.get(0).getFiguritaBase().getCategoria().getNombre(),
                         group.get(0).getOwner().getId(),
-                        group.get(0).getOwner().getUsername()
+                        group.get(0).getOwner().getUsername(),
+                        group.get(0).getFiguritaBase().getImagenUrl()
                 ))
                 .toList();
     }

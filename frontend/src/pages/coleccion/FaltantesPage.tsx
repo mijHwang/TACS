@@ -31,6 +31,7 @@ export default function ColeccionFaltantesPage() {
             jugadorNombre={f.jugadorNombre}
             equipoNombre={f.equipoNombre}
             categoriaNombre={f.categoriaNombre}
+            imagenUrl={f.imagenUrl}
             onClick={() => navigate('/buscar', { state: { filterByBaseId: f.id, figuritaInfo: f } })}
             footer={<p className="text-xs text-muted">#{f.numero}</p>}
           />

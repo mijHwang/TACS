@@ -1,0 +1,5254 @@
+{
+  "torneo": "FIFA World Cup 2026",
+  "categorias": [
+    "Oro",
+    "Plata",
+    "Bronce"
+  ],
+  "selecciones": [
+    {
+      "nombre": "Argentina",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        {
+          "nombre": "Lionel Messi",
+          "club": "Inter Miami",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/e0i2051750317027.png"
+        },
+        {
+          "nombre": "Lautaro Martinez",
+          "club": "Inter",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vwxq811759408924.png"
+        },
+        {
+          "nombre": "Julian Alvarez",
+          "club": "Atletico Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/91pla41762288186.png"
+        },
+        {
+          "nombre": "Emiliano Martinez",
+          "club": "Aston Villa",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ffr5xx1756984715.png"
+        },
+        {
+          "nombre": "Enzo Fernandez",
+          "club": "Chelsea",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b71vun1757003115.png"
+        },
+        {
+          "nombre": "Alexis Mac Allister",
+          "club": "Liverpool",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/96dmuf1757087513.png"
+        },
+        {
+          "nombre": "Rodrigo De Paul",
+          "club": "Inter Miami",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/n7z5lr1773999437.png"
+        },
+        {
+          "nombre": "Cristian Romero",
+          "club": "Tottenham Hotspur",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dme7x81757016317.png"
+        },
+        {
+          "nombre": "Nicolas Otamendi",
+          "club": "Benfica",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ifxn6x1632995975.png"
+        },
+        {
+          "nombre": "Nahuel Molina",
+          "club": "Atletico Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/36bdni1762288498.png"
+        },
+        {
+          "nombre": "Nicolas Tagliafico",
+          "club": "Lyon",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4z43fy1766146600.png"
+        },
+        {
+          "nombre": "Giovani Lo Celso",
+          "club": "Real Betis",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yge8gq1762602923.png"
+        },
+        {
+          "nombre": "Leandro Paredes",
+          "club": "Boca Juniors",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/chsspk1763384490.png"
+        },
+        {
+          "nombre": "Angel Di Maria",
+          "club": "Rosario Central",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4vji4l1765295910.png"
+        },
+        {
+          "nombre": "Paulo Dybala",
+          "club": "Roma",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pjupvq1758815223.png"
+        },
+        {
+          "nombre": "Gonzalo Montiel",
+          "club": "River Plate",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/perteu1750270994.png"
+        },
+        {
+          "nombre": "Lisandro Martinez",
+          "club": "Manchester United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mqcogi1766826879.png"
+        },
+        {
+          "nombre": "Thiago Almada",
+          "club": "Atletico Madrid",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ffqi3i1762288171.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Brazil",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        {
+          "nombre": "Vinicius Junior",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ejuxsh1750271859.png"
+        },
+        {
+          "nombre": "Rodrygo",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uzoghw1733653286.png"
+        },
+        {
+          "nombre": "Raphinha",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/w94spe1726510018.png"
+        },
+        {
+          "nombre": "Alisson",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8amq961757087569.png"
+        },
+        {
+          "nombre": "Marquinhos",
+          "club": "Paris Saint-Germain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7x9gtl1766335348.png"
+        },
+        {
+          "nombre": "Bruno Guimaraes",
+          "club": "Newcastle United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qr8gk01766824971.png"
+        },
+        {
+          "nombre": "Casemiro",
+          "club": "Manchester United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ydr3j41766826524.png"
+        },
+        {
+          "nombre": "Lucas Paqueta",
+          "club": "West Ham United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wz75kq1770378434.png"
+        },
+        {
+          "nombre": "Gabriel Magalhaes",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/trz5x71769331076.png"
+        },
+        {
+          "nombre": "Danilo",
+          "club": "Flamengo",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6hr4w81750454528.png"
+        },
+        {
+          "nombre": "Ederson",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xhlait1769179027.png"
+        },
+        {
+          "nombre": "Endrick",
+          "club": "Real Madrid",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5yb3rv1733653315.png"
+        },
+        {
+          "nombre": "Gabriel Martinelli",
+          "club": "Arsenal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pnwfls1769331152.png"
+        },
+        {
+          "nombre": "Andreas Pereira",
+          "club": "Fulham",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0moxnx1767691272.png"
+        },
+        {
+          "nombre": "Wendell",
+          "club": "Porto",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fqg18o1767961409.png"
+        },
+        {
+          "nombre": "Joao Gomes",
+          "club": "Wolverhampton",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u8mcha1756975493.png"
+        },
+        {
+          "nombre": "Bremer",
+          "club": "Juventus",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3qx4p71759224866.png"
+        },
+        {
+          "nombre": "Savinho",
+          "club": "Manchester City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/khqgy21769183420.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Uruguay",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        {
+          "nombre": "Federico Valverde",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5249151768499204.png"
+        },
+        {
+          "nombre": "Darwin Nunez",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i78juc1693941560.png"
+        },
+        {
+          "nombre": "Ronald Araujo",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ggpnkx1762289497.png"
+        },
+        {
+          "nombre": "Sergio Rochet",
+          "club": "Internacional",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/02lxaa1767604928.png"
+        },
+        {
+          "nombre": "Rodrigo Bentancur",
+          "club": "Tottenham Hotspur",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qfrqcq1757016565.png"
+        },
+        {
+          "nombre": "Manuel Ugarte",
+          "club": "Manchester United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/35xg041766826974.png"
+        },
+        {
+          "nombre": "Nahitan Nandez",
+          "club": "Al-Qadsiah",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a8p7881697923826.png"
+        },
+        {
+          "nombre": "Jose Maria Gimenez",
+          "club": "Atletico Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/j2c2gn1762287634.png"
+        },
+        {
+          "nombre": "Mathias Olivera",
+          "club": "Napoli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b0ju3e1764089662.png"
+        },
+        {
+          "nombre": "Nicolas de la Cruz",
+          "club": "Flamengo",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s4d9o91750920555.png"
+        },
+        {
+          "nombre": "Facundo Pellistri",
+          "club": "Panathinaikos",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/33n2n91693853217.png"
+        },
+        {
+          "nombre": "Maximiliano Araujo",
+          "club": "Sporting CP",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3u12tv1762290711.png"
+        },
+        {
+          "nombre": "Giorgian de Arrascaeta",
+          "club": "Flamengo",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2p9j0d1750919894.png"
+        },
+        {
+          "nombre": "Sebastian Caceres",
+          "club": "America",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q6rtb21750326812.png"
+        },
+        {
+          "nombre": "Brian Rodriguez",
+          "club": "America",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g1am161750329406.png"
+        },
+        {
+          "nombre": "Agustin Canobbio",
+          "club": "Athletico Paranaense",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qgh8yj1767539679.png"
+        },
+        {
+          "nombre": "Luis Suarez",
+          "club": "Inter Miami",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vfjd0w1750315193.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Colombia",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        {
+          "nombre": "Luis Diaz",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/emmcyf1756408968.png"
+        },
+        {
+          "nombre": "James Rodriguez",
+          "club": "Club Leon",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2604ez1778161086.png"
+        },
+        {
+          "nombre": "Jhon Duran",
+          "club": "Fenerbahce",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dxghbp1769178915.png"
+        },
+        {
+          "nombre": "Camilo Vargas",
+          "club": "Atlas",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ej38x01648634661.png"
+        },
+        {
+          "nombre": "Davinson Sanchez",
+          "club": "Galatasaray",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fwqgth1769178122.png"
+        },
+        {
+          "nombre": "Jefferson Lerma",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5h7eyz1772141174.png"
+        },
+        {
+          "nombre": "Richard Rios",
+          "club": "Benfica",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tszmsw1758216058.png"
+        },
+        {
+          "nombre": "Johan Mojica",
+          "club": "Mallorca",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8uf3w61762524256.png"
+        },
+        {
+          "nombre": "Daniel Munoz",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qoxqre1761492462.png"
+        },
+        {
+          "nombre": "Jhon Cordoba",
+          "club": "Krasnodar",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6g14e01691161946.png"
+        },
+        {
+          "nombre": "Yerry Mina",
+          "club": "Cagliari",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9gq0ca1764336694.png"
+        },
+        {
+          "nombre": "Juan Fernando Quintero",
+          "club": "River Plate",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ysk0b21764106676.png"
+        },
+        {
+          "nombre": "Mateus Uribe",
+          "club": "Junior",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6134mm1679052360.png"
+        },
+        {
+          "nombre": "Rafael Santos Borre",
+          "club": "Internacional",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tsfv7s1767558322.png"
+        },
+        {
+          "nombre": "Kevin Mier",
+          "club": "Cruz Azul",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/d42ck01779690353.jpg"
+        },
+        {
+          "nombre": "Jorge Carrascal",
+          "club": "Flamengo",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bf3o7s1770029750.png"
+        },
+        {
+          "nombre": "Santiago Arias",
+          "club": "Bahia",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8989q21763831492.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Ecuador",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        {
+          "nombre": "Moises Caicedo",
+          "club": "Chelsea",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u3feyy1757002398.png"
+        },
+        {
+          "nombre": "Enner Valencia",
+          "club": "Internacional",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gplbd81668544491.png"
+        },
+        {
+          "nombre": "Pervis Estupinan",
+          "club": "AC Milan",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qc2kib1758892363.png"
+        },
+        {
+          "nombre": "Hernan Galindez",
+          "club": "Huracan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i7jwvi1763739794.png"
+        },
+        {
+          "nombre": "Piero Hincapie",
+          "club": "Bayer Leverkusen",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7dltx01769330396.png"
+        },
+        {
+          "nombre": "Willian Pacho",
+          "club": "Paris Saint-Germain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/73q3q11766335492.png"
+        },
+        {
+          "nombre": "Kendry Paez",
+          "club": "Chelsea",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tf06hr1766053963.png"
+        },
+        {
+          "nombre": "Gonzalo Plata",
+          "club": "Flamengo",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sdclx01751003063.png"
+        },
+        {
+          "nombre": "Angelo Preciado",
+          "club": "Sparta Prague",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lhzix21623867937.png"
+        },
+        {
+          "nombre": "Jeremy Sarmiento",
+          "club": "Brighton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zdq2621758886486.png"
+        },
+        {
+          "nombre": "Felix Torres",
+          "club": "Corinthians",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/arv0dd1769774741.png"
+        },
+        {
+          "nombre": "Alan Franco",
+          "club": "Atlanta United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/d4dtcf1763755226.png"
+        },
+        {
+          "nombre": "Jordy Caicedo",
+          "club": "San Lorenzo",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9teqe21657546877.png"
+        },
+        {
+          "nombre": "John Yeboah",
+          "club": "Vejle",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2qvbyn1780328386.png"
+        },
+        {
+          "nombre": "Alexander Dominguez",
+          "club": "LDU Quito",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ty0o6e1724150081.png"
+        },
+        {
+          "nombre": "Joffre Escobar",
+          "club": "Barcelona SC",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Kevin Rodriguez",
+          "club": "Union Saint-Gilloise",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        }
+      ]
+    },
+    {
+      "nombre": "Paraguay",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        {
+          "nombre": "Miguel Almiron",
+          "club": "Atlanta United",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/35lxqh1757447624.png"
+        },
+        {
+          "nombre": "Julio Enciso",
+          "club": "Ipswich Town",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mvazxz1766053932.png"
+        },
+        {
+          "nombre": "Antonio Sanabria",
+          "club": "Cremonese",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3vkhoo1758886470.png"
+        },
+        {
+          "nombre": "Roberto Fernandez",
+          "club": "Sevilla",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/as69at1754465614.png"
+        },
+        {
+          "nombre": "Gustavo Gomez",
+          "club": "Palmeiras",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ytrnlp1750412203.png"
+        },
+        {
+          "nombre": "Omar Alderete",
+          "club": "Sunderland",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jny02g1756903939.png"
+        },
+        {
+          "nombre": "Andres Cubas",
+          "club": "Vancouver Whitecaps",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b9bgzk1766434740.png"
+        },
+        {
+          "nombre": "Damian Bobadilla",
+          "club": "Sao Paulo",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/617tsc1716917227.png"
+        },
+        {
+          "nombre": "Diego Gomez",
+          "club": "Brighton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/alorj01756993808.png"
+        },
+        {
+          "nombre": "Matias Galarza",
+          "club": "Talleres",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mnnh0g1777643155.png"
+        },
+        {
+          "nombre": "Ramon Sosa",
+          "club": "Nottingham Forest",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8x4cso1767691390.png"
+        },
+        {
+          "nombre": "Alejandro Romero Gamarra",
+          "club": "Tijuana",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ep17s81750753664.png"
+        },
+        {
+          "nombre": "Junior Alonso",
+          "club": "Krasnodar",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qf74pc1763755103.png"
+        },
+        {
+          "nombre": "Braian Ojeda",
+          "club": "Real Salt Lake",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2mrheq1778592772.png"
+        },
+        {
+          "nombre": "Mathias Villasanti",
+          "club": "Gremio",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pn05061767548091.png"
+        },
+        {
+          "nombre": "Adam Bareiro",
+          "club": "River Plate",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Carlos Coronel",
+          "club": "New York Red Bulls",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dpulog1766755790.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Mexico",
+      "confederacion": "CONCACAF",
+      "jugadores": [
+        {
+          "nombre": "Santiago Gimenez",
+          "club": "AC Milan",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/j63fz01758892529.png"
+        },
+        {
+          "nombre": "Edson Alvarez",
+          "club": "West Ham United",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nt933u1769179587.png"
+        },
+        {
+          "nombre": "Hirving Lozano",
+          "club": "San Diego FC",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sumitr1762901593.png"
+        },
+        {
+          "nombre": "Guillermo Ochoa",
+          "club": "AVS",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2oh1dq1707692146.png"
+        },
+        {
+          "nombre": "Cesar Montes",
+          "club": "Lokomotiv Moscow",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hfmpbv1754726674.png"
+        },
+        {
+          "nombre": "Johan Vasquez",
+          "club": "Genoa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7q4sks1758997735.png"
+        },
+        {
+          "nombre": "Jorge Sanchez",
+          "club": "Cruz Azul",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xftyyb1698428324.png"
+        },
+        {
+          "nombre": "Luis Romo",
+          "club": "Cruz Azul",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/w5g1po1716821279.png"
+        },
+        {
+          "nombre": "Orbelin Pineda",
+          "club": "AEK Athens",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yechmf1668721648.png"
+        },
+        {
+          "nombre": "Alexis Vega",
+          "club": "Toluca",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0mmqo91776412620.png"
+        },
+        {
+          "nombre": "Raul Jimenez",
+          "club": "Fulham",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xjepmh1781348889.png"
+        },
+        {
+          "nombre": "Cesar Huerta",
+          "club": "Anderlecht",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u0d1li1768080617.png"
+        },
+        {
+          "nombre": "Roberto Alvarado",
+          "club": "Guadalajara",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dup2qf1630164554.png"
+        },
+        {
+          "nombre": "Julian Quinones",
+          "club": "Al-Qadsiah",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kwg6ps1781248412.png"
+        },
+        {
+          "nombre": "Jesus Gallardo",
+          "club": "Toluca",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/syauia1776427423.png"
+        },
+        {
+          "nombre": "Israel Reyes",
+          "club": "America",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gopczi1750327134.png"
+        },
+        {
+          "nombre": "Luis Malagon",
+          "club": "America",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vxw95v1750327513.png"
+        }
+      ]
+    },
+    {
+      "nombre": "United States",
+      "confederacion": "CONCACAF",
+      "jugadores": [
+        {
+          "nombre": "Christian Pulisic",
+          "club": "AC Milan",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qwii9r1758893548.png"
+        },
+        {
+          "nombre": "Weston McKennie",
+          "club": "Juventus",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ct34v01759225325.png"
+        },
+        {
+          "nombre": "Tyler Adams",
+          "club": "Bournemouth",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/utnaxk1756989024.png"
+        },
+        {
+          "nombre": "Matt Turner",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hyxs351778269585.png"
+        },
+        {
+          "nombre": "Antonee Robinson",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q5wlej1757070520.png"
+        },
+        {
+          "nombre": "Sergino Dest",
+          "club": "PSV Eindhoven",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k5dzj41764594710.png"
+        },
+        {
+          "nombre": "Chris Richards",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/l1yb8m1761492382.png"
+        },
+        {
+          "nombre": "Yunus Musah",
+          "club": "AC Milan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wpi3ym1764281224.png"
+        },
+        {
+          "nombre": "Gio Reyna",
+          "club": "Borussia Monchengladbach",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cwatcj1781348049.png"
+        },
+        {
+          "nombre": "Timothy Weah",
+          "club": "Juventus",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mxdwu11766153578.png"
+        },
+        {
+          "nombre": "Folarin Balogun",
+          "club": "Monaco",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ic7kq51781348516.png"
+        },
+        {
+          "nombre": "Ricardo Pepi",
+          "club": "PSV Eindhoven",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xmhafw1764595238.png"
+        },
+        {
+          "nombre": "Tim Ream",
+          "club": "Charlotte FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lbav9r1771754456.png"
+        },
+        {
+          "nombre": "Joe Scally",
+          "club": "Borussia Monchengladbach",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5i06fh1756313309.png"
+        },
+        {
+          "nombre": "Tanner Tessmann",
+          "club": "Lyon",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/txkxbo1766146622.png"
+        },
+        {
+          "nombre": "Haji Wright",
+          "club": "Coventry City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dj2mi11781207728.png"
+        },
+        {
+          "nombre": "Matt Freese",
+          "club": "New York City FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kgux451778272403.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Canada",
+      "confederacion": "CONCACAF",
+      "jugadores": [
+        {
+          "nombre": "Alphonso Davies",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/11afh31756409066.png"
+        },
+        {
+          "nombre": "Jonathan David",
+          "club": "Juventus",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nyd9d91759225738.png"
+        },
+        {
+          "nombre": "Stephen Eustaquio",
+          "club": "Porto",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4q6t9d1778157858.png"
+        },
+        {
+          "nombre": "Maxime Crepeau",
+          "club": "Portland Timbers",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tm8isx1766759820.png"
+        },
+        {
+          "nombre": "Moise Bombito",
+          "club": "Nice",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pz6zo51766319628.png"
+        },
+        {
+          "nombre": "Derek Cornelius",
+          "club": "Marseille",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8ifr0w1777017367.png"
+        },
+        {
+          "nombre": "Alistair Johnston",
+          "club": "Celtic",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g6eohm1701350643.png"
+        },
+        {
+          "nombre": "Ismael Kone",
+          "club": "Sassuolo",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kiabdn1764106047.png"
+        },
+        {
+          "nombre": "Tajon Buchanan",
+          "club": "Villarreal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ar6mwv1762888718.png"
+        },
+        {
+          "nombre": "Cyle Larin",
+          "club": "Mallorca",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bgse2n1777485421.png"
+        },
+        {
+          "nombre": "Jacob Shaffelburg",
+          "club": "Nashville SC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rj1wn11778158071.png"
+        },
+        {
+          "nombre": "Jonathan Osorio",
+          "club": "Toronto FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/j30x9f1766575844.png"
+        },
+        {
+          "nombre": "Richie Laryea",
+          "club": "Toronto FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/milfrs1766575517.png"
+        },
+        {
+          "nombre": "Kamal Miller",
+          "club": "Portland Timbers",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sql0pi1766760349.png"
+        },
+        {
+          "nombre": "Dayne St. Clair",
+          "club": "Minnesota United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/at1um91776499323.png"
+        },
+        {
+          "nombre": "Liam Millar",
+          "club": "Hull City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i9obah1761922181.png"
+        },
+        {
+          "nombre": "Promise David",
+          "club": "Union Saint-Gilloise",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t1efon1767102514.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Costa Rica",
+      "confederacion": "CONCACAF",
+      "jugadores": [
+        {
+          "nombre": "Keylor Navas",
+          "club": "Pumas UNAM",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vo1yli1704463423.png"
+        },
+        {
+          "nombre": "Francisco Calvo",
+          "club": "Konyaspor",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a2msdz1647443811.png"
+        },
+        {
+          "nombre": "Manfred Ugalde",
+          "club": "Spartak Moscow",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/y7pih91700397951.png"
+        },
+        {
+          "nombre": "Joel Campbell",
+          "club": "Saprissa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ti4p891668273860.png"
+        },
+        {
+          "nombre": "Kendall Waston",
+          "club": "Saprissa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/aq04nb1668187308.png"
+        },
+        {
+          "nombre": "Juan Pablo Vargas",
+          "club": "Millonarios",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ywg9t01668187001.png"
+        },
+        {
+          "nombre": "Carlos Mora",
+          "club": "Alajuelense",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/arltid1703410869.png"
+        },
+        {
+          "nombre": "Orlando Galo",
+          "club": "Riga FC",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Josimar Alcocer",
+          "club": "Westerlo",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/29arey1767097478.png"
+        },
+        {
+          "nombre": "Alvaro Zamora",
+          "club": "Saprissa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/odepxr1668272290.png"
+        },
+        {
+          "nombre": "Anthony Contreras",
+          "club": "Cartagines",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m1017n1668274251.png"
+        },
+        {
+          "nombre": "Alonso Martinez",
+          "club": "New York City FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cmpstk1766754763.png"
+        },
+        {
+          "nombre": "Brandon Aguilera",
+          "club": "Bristol Rovers",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3wxs0r1697743731.png"
+        },
+        {
+          "nombre": "Jeyland Mitchell",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3u4e5w1770147471.png"
+        },
+        {
+          "nombre": "Patrick Sequeira",
+          "club": "Casa Pia",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i9ocx61668186043.png"
+        },
+        {
+          "nombre": "Carlos Martinez",
+          "club": "San Jose Earthquakes",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/etv8gj1504540222.jpg"
+        },
+        {
+          "nombre": "Celso Borges",
+          "club": "Alajuelense",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ziu0is1668201028.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Panama",
+      "confederacion": "CONCACAF",
+      "jugadores": [
+        {
+          "nombre": "Adalberto Carrasquilla",
+          "club": "Pumas UNAM",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wnvnsm1779876881.png"
+        },
+        {
+          "nombre": "Cesar Blackman",
+          "club": "Cracovia",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/baa05l1716211763.png"
+        },
+        {
+          "nombre": "Ismael Diaz",
+          "club": "Leon",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3ytfaj1779829565.png"
+        },
+        {
+          "nombre": "Orlando Mosquera",
+          "club": "Aris",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zkbjvd1717088213.png"
+        },
+        {
+          "nombre": "Fidel Escobar",
+          "club": "Alanyaspor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f8q7vu1779873298.png"
+        },
+        {
+          "nombre": "Michael Murillo",
+          "club": "Marseille",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/693hds1766153380.png"
+        },
+        {
+          "nombre": "Jose Cordoba",
+          "club": "Norwich City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4h6gwd1761684091.png"
+        },
+        {
+          "nombre": "Anibal Godoy",
+          "club": "San Jose Earthquakes",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xq1uij1762901226.png"
+        },
+        {
+          "nombre": "Cristian Martinez",
+          "club": "Independiente del Valle",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zhvprg1779874064.png"
+        },
+        {
+          "nombre": "Jose Fajardo",
+          "club": "Sporting Lisbon B",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9tyk4y1779878525.png"
+        },
+        {
+          "nombre": "Eric Davis",
+          "club": "Tractor",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/d5rp9l1779878294.png"
+        },
+        {
+          "nombre": "Cecilio Waterman",
+          "club": "Coquimbo Unido",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cft6r81779876320.png"
+        },
+        {
+          "nombre": "Edward Cedeno",
+          "club": "Universidad Catolica",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Andres Andrade",
+          "club": "Anderlecht",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0xq6t21769635655.png"
+        },
+        {
+          "nombre": "Jorge Gutierrez",
+          "club": "Plaza Amador",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4ygjb51779878675.png"
+        },
+        {
+          "nombre": "Harold Cummings",
+          "club": "Sporting San Miguelito",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/1q0whc1719946049.jpg"
+        },
+        {
+          "nombre": "Yoel Barcenas",
+          "club": "Real Oviedo",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hndz121779829099.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Jamaica",
+      "confederacion": "CONCACAF",
+      "jugadores": [
+        {
+          "nombre": "Leon Bailey",
+          "club": "Aston Villa",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8ky80l1764108541.png"
+        },
+        {
+          "nombre": "Michail Antonio",
+          "club": "West Ham United",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gqhl7g1694257399.png"
+        },
+        {
+          "nombre": "Demarai Gray",
+          "club": "Al-Ettifaq",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vs69w61761931273.png"
+        },
+        {
+          "nombre": "Andre Blake",
+          "club": "Philadelphia Union",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7dtqel1760523129.png"
+        },
+        {
+          "nombre": "Ethan Pinnock",
+          "club": "Brentford",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/36c65g1765972433.png"
+        },
+        {
+          "nombre": "Di Shon Bernard",
+          "club": "Sheffield United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dmhaak1761336382.png"
+        },
+        {
+          "nombre": "Bobby Reid",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rwsdk01761861483.png"
+        },
+        {
+          "nombre": "Kasey Palmer",
+          "club": "Coventry City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ramnwr1778012345.png"
+        },
+        {
+          "nombre": "Dujuan Richards",
+          "club": "Feyenoord",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Renaldo Cephas",
+          "club": "Slovan Bratislava",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Greg Leigh",
+          "club": "Auckland FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/y0iq8d1675071314.png"
+        },
+        {
+          "nombre": "Damion Lowe",
+          "club": "Al-Okhdood",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5nfo9k1766574133.png"
+        },
+        {
+          "nombre": "Joel Latibeaudiere",
+          "club": "Coventry City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/89o1rx1762174293.png"
+        },
+        {
+          "nombre": "Kaheim Dixon",
+          "club": "Cavalier",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Shamar Nicholson",
+          "club": "Spartak Moscow",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/godl9x1702291922.png"
+        },
+        {
+          "nombre": "Amari Bell",
+          "club": "Luton Town",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hdn0aj1762171507.png"
+        },
+        {
+          "nombre": "Jacob Greaves",
+          "club": "Ipswich Town",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1ldm591761908961.png"
+        }
+      ]
+    },
+    {
+      "nombre": "France",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Kylian Mbappe",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/h9u9vz1733653583.png"
+        },
+        {
+          "nombre": "Ousmane Dembele",
+          "club": "Paris Saint-Germain",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pstgy21766335175.png"
+        },
+        {
+          "nombre": "Aurelien Tchouameni",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4o417k1733653668.png"
+        },
+        {
+          "nombre": "Mike Maignan",
+          "club": "AC Milan",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sw5ukh1758892671.png"
+        },
+        {
+          "nombre": "William Saliba",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/czasy21769331889.png"
+        },
+        {
+          "nombre": "Dayot Upamecano",
+          "club": "Bayern Munich",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a1hyfj1756416177.png"
+        },
+        {
+          "nombre": "Theo Hernandez",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4d3g7j1675234242.png"
+        },
+        {
+          "nombre": "Jules Kounde",
+          "club": "Barcelona",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qea88i1726509803.png"
+        },
+        {
+          "nombre": "Eduardo Camavinga",
+          "club": "Real Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/viijpx1733653403.png"
+        },
+        {
+          "nombre": "Adrien Rabiot",
+          "club": "AC Milan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m2upnx1758893486.png"
+        },
+        {
+          "nombre": "Michael Olise",
+          "club": "Bayern Munich",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/r4vx6b1756408807.png"
+        },
+        {
+          "nombre": "Bradley Barcola",
+          "club": "Paris Saint-Germain",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/l2v71f1766334537.png"
+        },
+        {
+          "nombre": "Marcus Thuram",
+          "club": "Inter",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/aykui01759408989.png"
+        },
+        {
+          "nombre": "Randal Kolo Muani",
+          "club": "Juventus",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/h89zyk1768679563.png"
+        },
+        {
+          "nombre": "Ibrahima Konate",
+          "club": "Liverpool",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/izock91757088476.png"
+        },
+        {
+          "nombre": "N'Golo Kante",
+          "club": "Al-Ittihad",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ld6low1719039995.png"
+        },
+        {
+          "nombre": "Lucas Digne",
+          "club": "Aston Villa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ywg68z1756984819.png"
+        },
+        {
+          "nombre": "Warren Zaire-Emery",
+          "club": "Paris Saint-Germain",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fjxbac1766335583.png"
+        }
+      ]
+    },
+    {
+      "nombre": "England",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Jude Bellingham",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/trk5271750271712.png"
+        },
+        {
+          "nombre": "Harry Kane",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/j4ouvd1756408895.png"
+        },
+        {
+          "nombre": "Bukayo Saka",
+          "club": "Arsenal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xfwok41769331816.png"
+        },
+        {
+          "nombre": "Jordan Pickford",
+          "club": "Everton",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wt1c4n1756976358.png"
+        },
+        {
+          "nombre": "Phil Foden",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lbn4sx1769182620.png"
+        },
+        {
+          "nombre": "Declan Rice",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/do2pew1694204464.png"
+        },
+        {
+          "nombre": "John Stones",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dkq8d41763068509.png"
+        },
+        {
+          "nombre": "Kyle Walker",
+          "club": "Burnley",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mnod0k1757174815.png"
+        },
+        {
+          "nombre": "Marc Guehi",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/842bfy1771748128.png"
+        },
+        {
+          "nombre": "Cole Palmer",
+          "club": "Chelsea",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fn0pzc1757010119.png"
+        },
+        {
+          "nombre": "Trent Alexander-Arnold",
+          "club": "Real Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rw1mkk1750271928.png"
+        },
+        {
+          "nombre": "Eberechi Eze",
+          "club": "Arsenal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jcabmd1769330240.png"
+        },
+        {
+          "nombre": "Anthony Gordon",
+          "club": "Newcastle United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8ztck61766824986.png"
+        },
+        {
+          "nombre": "Ollie Watkins",
+          "club": "Aston Villa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/w6dir11756987347.png"
+        },
+        {
+          "nombre": "Levi Colwill",
+          "club": "Chelsea",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4irnsq1757002647.png"
+        },
+        {
+          "nombre": "Morgan Gibbs-White",
+          "club": "Nottingham Forest",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1xexg01757166443.png"
+        },
+        {
+          "nombre": "Ezri Konsa",
+          "club": "Aston Villa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rnu4al1756984921.png"
+        },
+        {
+          "nombre": "Noni Madueke",
+          "club": "Arsenal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0x05ou1769330933.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Spain",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Lamine Yamal",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m9n4ja1761512633.png"
+        },
+        {
+          "nombre": "Rodri",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0ml2zi1761148957.png"
+        },
+        {
+          "nombre": "Pedri",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/srwppu1424795582.png"
+        },
+        {
+          "nombre": "Unai Simon",
+          "club": "Athletic Bilbao",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6b7izw1603316358.png"
+        },
+        {
+          "nombre": "Nico Williams",
+          "club": "Athletic Bilbao",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8lg7941629190551.png"
+        },
+        {
+          "nombre": "Dani Olmo",
+          "club": "Barcelona",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s9hzoh1725611346.png"
+        },
+        {
+          "nombre": "Fabian Ruiz",
+          "club": "Paris Saint-Germain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wq4dxd1766335227.png"
+        },
+        {
+          "nombre": "Robin Le Normand",
+          "club": "Atletico Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ubsd6x1762288701.png"
+        },
+        {
+          "nombre": "Aymeric Laporte",
+          "club": "Athletic Bilbao",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q4eqw31762285953.png"
+        },
+        {
+          "nombre": "Marc Cucurella",
+          "club": "Chelsea",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/j7i66q1757002736.png"
+        },
+        {
+          "nombre": "Mikel Merino",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/07opk31769330730.png"
+        },
+        {
+          "nombre": "Alvaro Morata",
+          "club": "Como",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5cci4b1764278358.png"
+        },
+        {
+          "nombre": "Mikel Oyarzabal",
+          "club": "Real Sociedad",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9apeaz1762709253.png"
+        },
+        {
+          "nombre": "Ferran Torres",
+          "club": "Barcelona",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/feey201726510461.png"
+        },
+        {
+          "nombre": "Dani Carvajal",
+          "club": "Real Madrid",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k510z81733653425.png"
+        },
+        {
+          "nombre": "Martin Zubimendi",
+          "club": "Arsenal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lj71fn1769331598.png"
+        },
+        {
+          "nombre": "Pau Cubarsi",
+          "club": "Barcelona",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tynei31768321729.png"
+        },
+        {
+          "nombre": "Alex Baena",
+          "club": "Atletico Madrid",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/04ntmp1762890059.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Germany",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Florian Wirtz",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8t6bzo1757088899.png"
+        },
+        {
+          "nombre": "Jamal Musiala",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vbkv611756416067.png"
+        },
+        {
+          "nombre": "Kai Havertz",
+          "club": "Arsenal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hem4r91694204364.png"
+        },
+        {
+          "nombre": "Marc-Andre ter Stegen",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9w51mf1775286949.png"
+        },
+        {
+          "nombre": "Joshua Kimmich",
+          "club": "Bayern Munich",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oqb7rg1756408859.png"
+        },
+        {
+          "nombre": "Antonio Rudiger",
+          "club": "Real Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ftp1ci1733653186.png"
+        },
+        {
+          "nombre": "Ilkay Gundogan",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rhyyig1768854274.png"
+        },
+        {
+          "nombre": "Leroy Sane",
+          "club": "Galatasaray",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bqdwlt1769178212.png"
+        },
+        {
+          "nombre": "Jonathan Tah",
+          "club": "Bayern Munich",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/y6c2pt1750491272.png"
+        },
+        {
+          "nombre": "David Raum",
+          "club": "RB Leipzig",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wxbgdk1763561343.png"
+        },
+        {
+          "nombre": "Serge Gnabry",
+          "club": "Bayern Munich",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/unnt3z1756409086.png"
+        },
+        {
+          "nombre": "Niclas Fullkrug",
+          "club": "West Ham United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mnocti1773919754.png"
+        },
+        {
+          "nombre": "Nico Schlotterbeck",
+          "club": "Borussia Dortmund",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fw07jw1756326507.png"
+        },
+        {
+          "nombre": "Robert Andrich",
+          "club": "Bayer Leverkusen",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fw2c8c1756315716.png"
+        },
+        {
+          "nombre": "Aleksandar Pavlovic",
+          "club": "Bayern Munich",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/22ti3z1756408943.png"
+        },
+        {
+          "nombre": "Deniz Undav",
+          "club": "VfB Stuttgart",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hcxx8s1763586492.png"
+        },
+        {
+          "nombre": "Pascal Gross",
+          "club": "Borussia Dortmund",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/11ez9u1776803987.png"
+        },
+        {
+          "nombre": "Maximilian Mittelstadt",
+          "club": "VfB Stuttgart",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jxttcl1763586349.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Portugal",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Cristiano Ronaldo",
+          "club": "Al-Nassr",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a19jje1761592498.png"
+        },
+        {
+          "nombre": "Bruno Fernandes",
+          "club": "Manchester United",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jhasls1766826690.png"
+        },
+        {
+          "nombre": "Bernardo Silva",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/13ajsp1769182879.png"
+        },
+        {
+          "nombre": "Diogo Costa",
+          "club": "Porto",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/koetaj1724749969.png"
+        },
+        {
+          "nombre": "Ruben Dias",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g3psnr1769183713.png"
+        },
+        {
+          "nombre": "Joao Cancelo",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zqjhte1771260324.png"
+        },
+        {
+          "nombre": "Vitinha",
+          "club": "Paris Saint-Germain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q6mw6n1766335544.png"
+        },
+        {
+          "nombre": "Rafael Leao",
+          "club": "AC Milan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tlgrvf1758892567.png"
+        },
+        {
+          "nombre": "Nuno Mendes",
+          "club": "Paris Saint-Germain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zhdk3h1766335452.png"
+        },
+        {
+          "nombre": "Pedro Neto",
+          "club": "Chelsea",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g63rmf1757003837.png"
+        },
+        {
+          "nombre": "Joao Felix",
+          "club": "Al-Nassr",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m8aqft1725214728.png"
+        },
+        {
+          "nombre": "Goncalo Ramos",
+          "club": "Paris Saint-Germain",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/47dx051766335509.png"
+        },
+        {
+          "nombre": "Ruben Neves",
+          "club": "Al-Hilal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/86rcde1750272409.png"
+        },
+        {
+          "nombre": "Diogo Jota",
+          "club": "Liverpool",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9mty4l1693941467.png"
+        },
+        {
+          "nombre": "Pepe",
+          "club": "Porto",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/27onqf1679052553.png"
+        },
+        {
+          "nombre": "Joao Palhinha",
+          "club": "Tottenham Hotspur",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/o0ii6n1757016009.png"
+        },
+        {
+          "nombre": "Goncalo Inacio",
+          "club": "Sporting CP",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m00erp1762291029.png"
+        },
+        {
+          "nombre": "Nelson Semedo",
+          "club": "Fenerbahce",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k623aq1769179110.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Netherlands",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Virgil van Dijk",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9cxf2q1757087742.png"
+        },
+        {
+          "nombre": "Cody Gakpo",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lwkl5n1757088091.png"
+        },
+        {
+          "nombre": "Frenkie de Jong",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b8k6611726510284.png"
+        },
+        {
+          "nombre": "Bart Verbruggen",
+          "club": "Brighton",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5ak40b1756999759.png"
+        },
+        {
+          "nombre": "Denzel Dumfries",
+          "club": "Inter",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1hd7ox1759408866.png"
+        },
+        {
+          "nombre": "Nathan Ake",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dqu7y91769182942.png"
+        },
+        {
+          "nombre": "Memphis Depay",
+          "club": "Corinthians",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b91tiy1767278210.png"
+        },
+        {
+          "nombre": "Tijjani Reijnders",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/edgl5b1769182353.png"
+        },
+        {
+          "nombre": "Xavi Simons",
+          "club": "RB Leipzig",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uc5tjn1757016055.png"
+        },
+        {
+          "nombre": "Jurrien Timber",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a5hw8k1769332018.png"
+        },
+        {
+          "nombre": "Ryan Gravenberch",
+          "club": "Liverpool",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4f7y1o1757088226.png"
+        },
+        {
+          "nombre": "Jeremie Frimpong",
+          "club": "Liverpool",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ehf7fi1757088020.png"
+        },
+        {
+          "nombre": "Donyell Malen",
+          "club": "Aston Villa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t2xdih1777708654.png"
+        },
+        {
+          "nombre": "Stefan de Vrij",
+          "club": "Inter",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oe7gv21759409004.png"
+        },
+        {
+          "nombre": "Wout Weghorst",
+          "club": "Ajax",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i58a2q1726603016.png"
+        },
+        {
+          "nombre": "Micky van de Ven",
+          "club": "Tottenham Hotspur",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/o51n7v1757016843.png"
+        },
+        {
+          "nombre": "Brian Brobbey",
+          "club": "Ajax",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q3qz441762198721.png"
+        },
+        {
+          "nombre": "Quinten Timber",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fjzod11758188857.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Italy",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Gianluigi Donnarumma",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jyx9bq1769182577.png"
+        },
+        {
+          "nombre": "Nicolo Barella",
+          "club": "Inter",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k03sge1759408783.png"
+        },
+        {
+          "nombre": "Federico Chiesa",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/idecla1757087689.png"
+        },
+        {
+          "nombre": "Alessandro Bastoni",
+          "club": "Inter",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hwixpa1759408795.png"
+        },
+        {
+          "nombre": "Sandro Tonali",
+          "club": "Newcastle United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b9oang1766824727.png"
+        },
+        {
+          "nombre": "Giacomo Raspadori",
+          "club": "Atletico Madrid",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i9aw1q1762288549.png"
+        },
+        {
+          "nombre": "Federico Dimarco",
+          "club": "Inter",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0rhwx41759408849.png"
+        },
+        {
+          "nombre": "Riccardo Calafiori",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/e6icgz1769330125.png"
+        },
+        {
+          "nombre": "Mateo Retegui",
+          "club": "Al-Qadsiah",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s21z3c1731837995.png"
+        },
+        {
+          "nombre": "Davide Frattesi",
+          "club": "Inter",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/z58bx11759408884.png"
+        },
+        {
+          "nombre": "Giovanni Di Lorenzo",
+          "club": "Napoli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s9kuam1762288353.png"
+        },
+        {
+          "nombre": "Moise Kean",
+          "club": "Fiorentina",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1vjmgx1776938330.png"
+        },
+        {
+          "nombre": "Nicolo Fagioli",
+          "club": "Fiorentina",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/d4gbgc1758891694.png"
+        },
+        {
+          "nombre": "Manuel Locatelli",
+          "club": "Juventus",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0zlnug1759225148.png"
+        },
+        {
+          "nombre": "Andrea Cambiaso",
+          "club": "Juventus",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6r741t1759225481.png"
+        },
+        {
+          "nombre": "Mattia Zaccagni",
+          "club": "Lazio",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zypi1b1698231657.png"
+        },
+        {
+          "nombre": "Gianluca Scamacca",
+          "club": "Atalanta",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xp4bqm1695157525.png"
+        },
+        {
+          "nombre": "Destiny Udogie",
+          "club": "Tottenham Hotspur",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cduafm1757016239.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Belgium",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Kevin De Bruyne",
+          "club": "Napoli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/o4flia1764089447.png"
+        },
+        {
+          "nombre": "Romelu Lukaku",
+          "club": "Napoli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qi2z1d1764089572.png"
+        },
+        {
+          "nombre": "Jeremy Doku",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tehbsx1769183074.png"
+        },
+        {
+          "nombre": "Thibaut Courtois",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/592mar1733653475.png"
+        },
+        {
+          "nombre": "Youri Tielemans",
+          "club": "Aston Villa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dvyawe1756987280.png"
+        },
+        {
+          "nombre": "Amadou Onana",
+          "club": "Aston Villa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q2bvps1725359471.png"
+        },
+        {
+          "nombre": "Leandro Trossard",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/07fzpg1769331977.png"
+        },
+        {
+          "nombre": "Wout Faes",
+          "club": "Leicester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/c20fnd1772104361.png"
+        },
+        {
+          "nombre": "Timothy Castagne",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uc84ft1757070324.png"
+        },
+        {
+          "nombre": "Maxim De Cuyper",
+          "club": "Brighton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yo44zc1756993970.png"
+        },
+        {
+          "nombre": "Charles De Ketelaere",
+          "club": "Atalanta",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wqo9ia1695157273.png"
+        },
+        {
+          "nombre": "Loic Openda",
+          "club": "RB Leipzig",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Arthur Theate",
+          "club": "Eintracht Frankfurt",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tr7ftn1762287457.png"
+        },
+        {
+          "nombre": "Koen Casteels",
+          "club": "Al-Qadsiah",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k0vvcr1578226455.png"
+        },
+        {
+          "nombre": "Dodi Lukebakio",
+          "club": "Sevilla",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/335dwm1724784475.png"
+        },
+        {
+          "nombre": "Orel Mangala",
+          "club": "Everton",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1gmcji1766146434.png"
+        },
+        {
+          "nombre": "Zeno Debast",
+          "club": "Sporting CP",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xlp81e1716408284.png"
+        },
+        {
+          "nombre": "Johan Bakayoko",
+          "club": "RB Leipzig",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/47l15r1763560990.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Croatia",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Luka Modric",
+          "club": "AC Milan",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/msewdx1758892756.png"
+        },
+        {
+          "nombre": "Josko Gvardiol",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mmowa11769183247.png"
+        },
+        {
+          "nombre": "Mateo Kovacic",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m5jml31769183827.png"
+        },
+        {
+          "nombre": "Dominik Livakovic",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pp3yab1762457197.png"
+        },
+        {
+          "nombre": "Marcelo Brozovic",
+          "club": "Al-Nassr",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8omb8c1679049281.png"
+        },
+        {
+          "nombre": "Ivan Perisic",
+          "club": "PSV Eindhoven",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ywkvv41764595295.png"
+        },
+        {
+          "nombre": "Andrej Kramaric",
+          "club": "Hoffenheim",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9szvnr1763494431.png"
+        },
+        {
+          "nombre": "Borna Sosa",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4lylop1766828487.png"
+        },
+        {
+          "nombre": "Josip Stanisic",
+          "club": "Bayer Leverkusen",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m1kqf11756416127.png"
+        },
+        {
+          "nombre": "Luka Sucic",
+          "club": "Real Sociedad",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pmp5rt1762709318.png"
+        },
+        {
+          "nombre": "Mario Pasalic",
+          "club": "Atalanta",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/akmxr91695157400.png"
+        },
+        {
+          "nombre": "Ante Budimir",
+          "club": "Osasuna",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8v3s2w1762531932.png"
+        },
+        {
+          "nombre": "Petar Sucic",
+          "club": "Inter",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b4nmhd1759408181.png"
+        },
+        {
+          "nombre": "Martin Baturina",
+          "club": "Como",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bb3ntq1764278109.png"
+        },
+        {
+          "nombre": "Josip Sutalo",
+          "club": "Ajax",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4bdrsm1722880866.png"
+        },
+        {
+          "nombre": "Dion Drena Beljo",
+          "club": "Augsburg",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Kristijan Jakic",
+          "club": "Dinamo Zagreb",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tj2frb1763034190.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Denmark",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Christian Eriksen",
+          "club": "Wolfsburg",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uezfnp1763669279.png"
+        },
+        {
+          "nombre": "Rasmus Hojlund",
+          "club": "Napoli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jop7ho1762288170.png"
+        },
+        {
+          "nombre": "Pierre-Emile Hojbjerg",
+          "club": "Marseille",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Kasper Schmeichel",
+          "club": "Celtic",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yu112l1777020363.png"
+        },
+        {
+          "nombre": "Joakim Maehle",
+          "club": "Wolfsburg",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xxsayw1763669423.png"
+        },
+        {
+          "nombre": "Andreas Christensen",
+          "club": "Barcelona",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ynkck21768321682.png"
+        },
+        {
+          "nombre": "Joachim Andersen",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f4r1st1757070196.png"
+        },
+        {
+          "nombre": "Mikkel Damsgaard",
+          "club": "Brentford",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lfcep61765972129.png"
+        },
+        {
+          "nombre": "Morten Hjulmand",
+          "club": "Sporting CP",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5tz51l1762290678.png"
+        },
+        {
+          "nombre": "Jonas Wind",
+          "club": "Wolfsburg",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5bdekr1763669676.png"
+        },
+        {
+          "nombre": "Victor Kristiansen",
+          "club": "Bologna",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/eoe35i1761861579.png"
+        },
+        {
+          "nombre": "Christian Norgaard",
+          "club": "Arsenal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ia9o8w1769331494.png"
+        },
+        {
+          "nombre": "Anders Dreyer",
+          "club": "Anderlecht",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6it47r1762901364.png"
+        },
+        {
+          "nombre": "Gustav Isaksen",
+          "club": "Lazio",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/le8xvv1698231395.png"
+        },
+        {
+          "nombre": "Patrick Dorgu",
+          "club": "Manchester United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3bm5kb1766826589.png"
+        },
+        {
+          "nombre": "Jacob Bruun Larsen",
+          "club": "Burnley",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/61mpa91757174573.png"
+        },
+        {
+          "nombre": "Rasmus Kristensen",
+          "club": "Eintracht Frankfurt",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ac123e1762287544.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Switzerland",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Granit Xhaka",
+          "club": "Bayer Leverkusen",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2xa5dp1756903726.png"
+        },
+        {
+          "nombre": "Manuel Akanji",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k7o5oh1759408095.png"
+        },
+        {
+          "nombre": "Dan Ndoye",
+          "club": "Nottingham Forest",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yr9p371757163162.png"
+        },
+        {
+          "nombre": "Yann Sommer",
+          "club": "Inter",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/urnrqp1759408970.png"
+        },
+        {
+          "nombre": "Ricardo Rodriguez",
+          "club": "Real Betis",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/edg6gk1762603105.png"
+        },
+        {
+          "nombre": "Remo Freuler",
+          "club": "Bologna",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gwqmdw1758896917.png"
+        },
+        {
+          "nombre": "Breel Embolo",
+          "club": "Rennes",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k5xqvx1766136320.png"
+        },
+        {
+          "nombre": "Ruben Vargas",
+          "club": "Sevilla",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9jkl9w1762860549.png"
+        },
+        {
+          "nombre": "Fabian Rieder",
+          "club": "Stade Rennais",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8l9f3r1763034407.png"
+        },
+        {
+          "nombre": "Silvan Widmer",
+          "club": "Mainz",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/w2omdl1763554296.png"
+        },
+        {
+          "nombre": "Nico Elvedi",
+          "club": "Borussia Monchengladbach",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/aelb5v1756313277.png"
+        },
+        {
+          "nombre": "Zeki Amdouni",
+          "club": "Benfica",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2exh3l1757175582.png"
+        },
+        {
+          "nombre": "Michel Aebischer",
+          "club": "Pisa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bhy5cz1764188556.png"
+        },
+        {
+          "nombre": "Ardon Jashari",
+          "club": "AC Milan",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yvd5v21762956511.png"
+        },
+        {
+          "nombre": "Gregor Kobel",
+          "club": "Borussia Dortmund",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vri4zw1756326279.png"
+        },
+        {
+          "nombre": "Cedric Zesiger",
+          "club": "Augsburg",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ylz5dx1763034679.png"
+        },
+        {
+          "nombre": "Vincent Sierro",
+          "club": "Al-Wahda",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/78ybn51765968579.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Poland",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Robert Lewandowski",
+          "club": "Barcelona",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xg2rl51762289740.png"
+        },
+        {
+          "nombre": "Piotr Zielinski",
+          "club": "Inter",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8wynz41759408193.png"
+        },
+        {
+          "nombre": "Nicola Zalewski",
+          "club": "Atalanta",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zbqpct1764331476.png"
+        },
+        {
+          "nombre": "Wojciech Szczesny",
+          "club": "Barcelona",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f6c4oc1762289852.png"
+        },
+        {
+          "nombre": "Jan Bednarek",
+          "club": "FC Porto",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4kcmv01725548431.png"
+        },
+        {
+          "nombre": "Jakub Kiwior",
+          "club": "Porto",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s9vp9d1694204099.png"
+        },
+        {
+          "nombre": "Sebastian Szymanski",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/84e0jl1779276436.png"
+        },
+        {
+          "nombre": "Matty Cash",
+          "club": "Aston Villa",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/on5cl81756984765.png"
+        },
+        {
+          "nombre": "Przemyslaw Frankowski",
+          "club": "Galatasaray",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qty9051766136429.png"
+        },
+        {
+          "nombre": "Karol Swiderski",
+          "club": "Panathinaikos",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/49nz041727967369.png"
+        },
+        {
+          "nombre": "Bartosz Slisz",
+          "club": "Atlanta United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/l539so1712086024.png"
+        },
+        {
+          "nombre": "Krzysztof Piatek",
+          "club": "Al-Duhail",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jsl6gr1679411511.png"
+        },
+        {
+          "nombre": "Jakub Moder",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v9fk7c1758187336.png"
+        },
+        {
+          "nombre": "Pawel Dawidowicz",
+          "club": "Verona",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fxgt3s1770971460.png"
+        },
+        {
+          "nombre": "Kacper Urbanski",
+          "club": "Bologna",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fjbbnc1678805259.png"
+        },
+        {
+          "nombre": "Lukasz Skorupski",
+          "club": "Bologna",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nuwfv21758897094.png"
+        },
+        {
+          "nombre": "Adam Buksa",
+          "club": "Midtjylland",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/r51zrc1764172291.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Austria",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Marcel Sabitzer",
+          "club": "Borussia Dortmund",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m0if0e1756326525.png"
+        },
+        {
+          "nombre": "Konrad Laimer",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dzukrz1756409157.png"
+        },
+        {
+          "nombre": "David Alaba",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zxblp31733653341.png"
+        },
+        {
+          "nombre": "Patrick Pentz",
+          "club": "Brondby",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4p78sd1765317561.png"
+        },
+        {
+          "nombre": "Philipp Mwene",
+          "club": "Mainz",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Kevin Danso",
+          "club": "Tottenham Hotspur",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/unhinl1739274856.png"
+        },
+        {
+          "nombre": "Stefan Posch",
+          "club": "Bologna",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1swesw1775205659.png"
+        },
+        {
+          "nombre": "Christoph Baumgartner",
+          "club": "RB Leipzig",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7gy4ar1763561036.png"
+        },
+        {
+          "nombre": "Nicolas Seiwald",
+          "club": "RB Leipzig",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/h7mvys1763561377.png"
+        },
+        {
+          "nombre": "Marko Arnautovic",
+          "club": "Belgrade",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gnkzom1697979946.png"
+        },
+        {
+          "nombre": "Michael Gregoritsch",
+          "club": "SC Freiburg",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g46w261765376250.png"
+        },
+        {
+          "nombre": "Romano Schmid",
+          "club": "Werder Bremen",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pc39yd1763666231.png"
+        },
+        {
+          "nombre": "Patrick Wimmer",
+          "club": "Wolfsburg",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4vcyyu1763669658.png"
+        },
+        {
+          "nombre": "Maximilian Wober",
+          "club": "Borussia Monchengladbach",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wi4qc91763666341.png"
+        },
+        {
+          "nombre": "Alexander Prass",
+          "club": "Hoffenheim",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1iv3r61763494556.png"
+        },
+        {
+          "nombre": "Gernot Trauner",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fwdsrv1758188883.png"
+        },
+        {
+          "nombre": "Xaver Schlager",
+          "club": "RB Leipzig",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1bvq9r1763561361.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Serbia",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Dusan Vlahovic",
+          "club": "Juventus",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rl2w191759225532.png"
+        },
+        {
+          "nombre": "Aleksandar Mitrovic",
+          "club": "Al-Hilal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/75ssc91750756166.png"
+        },
+        {
+          "nombre": "Sergej Milinkovic-Savic",
+          "club": "Al-Hilal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v1k9g21750272688.png"
+        },
+        {
+          "nombre": "Predrag Rajkovic",
+          "club": "Mallorca",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2ef2qx1678829519.png"
+        },
+        {
+          "nombre": "Nikola Milenkovic",
+          "club": "Nottingham Forest",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5vd1n81757163144.png"
+        },
+        {
+          "nombre": "Strahinja Pavlovic",
+          "club": "AC Milan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fcq2am1758893218.png"
+        },
+        {
+          "nombre": "Filip Kostic",
+          "club": "Juventus",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1kqxaz1759225234.png"
+        },
+        {
+          "nombre": "Filip Mladenovic",
+          "club": "Panathinaikos",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/o3k1xi1616626543.png"
+        },
+        {
+          "nombre": "Sasa Lukic",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xju0y51757070769.png"
+        },
+        {
+          "nombre": "Dusan Tadic",
+          "club": "Al-Wahda",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qus57w1724849772.png"
+        },
+        {
+          "nombre": "Lazar Samardzic",
+          "club": "Atalanta",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/43jwpu1764331634.png"
+        },
+        {
+          "nombre": "Andrija Zivkovic",
+          "club": "PAOK",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/z24quu1670011809.png"
+        },
+        {
+          "nombre": "Veljko Birmancevic",
+          "club": "Sporting CP",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vcjxak1681644235.png"
+        },
+        {
+          "nombre": "Ivan Ilic",
+          "club": "Torino",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bd6s9a1758813427.png"
+        },
+        {
+          "nombre": "Vanja Milinkovic-Savic",
+          "club": "Torino",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pk4wgd1762288382.png"
+        },
+        {
+          "nombre": "Nemanja Gudelj",
+          "club": "Sevilla",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8uupl01762860130.png"
+        },
+        {
+          "nombre": "Mijat Gacinovic",
+          "club": "AEK Athens",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ibyps21578086994.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Turkey",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Arda Guler",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lwnog21768499165.png"
+        },
+        {
+          "nombre": "Hakan Calhanoglu",
+          "club": "Inter",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hw8uxm1759408821.png"
+        },
+        {
+          "nombre": "Kenan Yildiz",
+          "club": "Juventus",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Mert Gunok",
+          "club": "Besiktas",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nmg1ye1725038024.png"
+        },
+        {
+          "nombre": "Merih Demiral",
+          "club": "Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mqjb7n1777237989.png"
+        },
+        {
+          "nombre": "Caglar Soyuncu",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ndlact1769179871.png"
+        },
+        {
+          "nombre": "Ferdi Kadioglu",
+          "club": "Brighton",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Orkun Kokcu",
+          "club": "Benfica",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zrp45u1769170024.png"
+        },
+        {
+          "nombre": "Yunus Akgun",
+          "club": "Galatasaray",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b701we1724945952.png"
+        },
+        {
+          "nombre": "Kerem Akturkoglu",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ix8aeh1769179066.png"
+        },
+        {
+          "nombre": "Baris Alper Yilmaz",
+          "club": "Galatasaray",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Cenk Tosun",
+          "club": "Besiktas",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/l90jrj1769179909.png"
+        },
+        {
+          "nombre": "Salih Ozcan",
+          "club": "Borussia Dortmund",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8dw4231756326486.png"
+        },
+        {
+          "nombre": "Abdulkerim Bardakci",
+          "club": "Galatasaray",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ismail Yuksek",
+          "club": "Fenerbahce",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yl8ono1724846159.png"
+        },
+        {
+          "nombre": "Semih Kilicsoy",
+          "club": "Besiktas",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Zeki Celik",
+          "club": "Roma",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b8hg8o1758816005.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Norway",
+      "confederacion": "UEFA",
+      "jugadores": [
+        {
+          "nombre": "Erling Haaland",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/un3jr11769182465.png"
+        },
+        {
+          "nombre": "Martin Odegaard",
+          "club": "Arsenal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5g6vww1769331695.png"
+        },
+        {
+          "nombre": "Alexander Sorloth",
+          "club": "Atletico Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v3of4b1762288730.png"
+        },
+        {
+          "nombre": "Orjan Nyland",
+          "club": "Sevilla",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wqnwbe1762860279.png"
+        },
+        {
+          "nombre": "Kristoffer Ajer",
+          "club": "Brentford",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f1m43k1765972202.png"
+        },
+        {
+          "nombre": "Leo Ostigard",
+          "club": "Rennes",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/riue4t1758997507.png"
+        },
+        {
+          "nombre": "Sander Berge",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/plhdsy1757070706.png"
+        },
+        {
+          "nombre": "Patrick Berg",
+          "club": "Bodo/Glimt",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s8sr041769181767.png"
+        },
+        {
+          "nombre": "Antonio Nusa",
+          "club": "RB Leipzig",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yo19551763561296.png"
+        },
+        {
+          "nombre": "Oscar Bobb",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6bdhe51772132928.png"
+        },
+        {
+          "nombre": "Fredrik Aursnes",
+          "club": "Benfica",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vabjep1681328214.png"
+        },
+        {
+          "nombre": "Jorgen Strand Larsen",
+          "club": "Wolverhampton",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kalrqi1772136115.png"
+        },
+        {
+          "nombre": "Julian Ryerson",
+          "club": "Borussia Dortmund",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3cofj41756326544.png"
+        },
+        {
+          "nombre": "Morten Thorsby",
+          "club": "Genoa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/n3xi251776936734.png"
+        },
+        {
+          "nombre": "Birger Meling",
+          "club": "Rennes",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jwpxd11742465457.png"
+        },
+        {
+          "nombre": "Aron Donnum",
+          "club": "Standard Liege",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/n7b1xn1765968347.png"
+        },
+        {
+          "nombre": "Andreas Hanche-Olsen",
+          "club": "Mainz",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yj355p1763554027.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Morocco",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Achraf Hakimi",
+          "club": "Paris Saint-Germain",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oqu69c1766335243.png"
+        },
+        {
+          "nombre": "Brahim Diaz",
+          "club": "Real Madrid",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/civrzg1733653256.png"
+        },
+        {
+          "nombre": "Hakim Ziyech",
+          "club": "Al-Duhail",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k1xzte1717537373.png"
+        },
+        {
+          "nombre": "Yassine Bounou",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u0pjgc1658436080.png"
+        },
+        {
+          "nombre": "Noussair Mazraoui",
+          "club": "Manchester United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/o58oaq1766826898.png"
+        },
+        {
+          "nombre": "Nayef Aguerd",
+          "club": "Real Sociedad",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/aqw7ba1766151823.png"
+        },
+        {
+          "nombre": "Sofyan Amrabat",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/coyzox1762602846.png"
+        },
+        {
+          "nombre": "Azzedine Ounahi",
+          "club": "Girona",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bqjrxp1762457280.png"
+        },
+        {
+          "nombre": "Youssef En-Nesyri",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/c0oe3i1769179774.png"
+        },
+        {
+          "nombre": "Sofiane Boufal",
+          "club": "Al-Rayyan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ap1jem1767102555.png"
+        },
+        {
+          "nombre": "Romain Saiss",
+          "club": "Al-Shabab",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nwzyky1632478012.png"
+        },
+        {
+          "nombre": "Bilal El Khannouss",
+          "club": "VfB Stuttgart",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ii2jau1763586312.png"
+        },
+        {
+          "nombre": "Eliesse Ben Seghir",
+          "club": "Bayer Leverkusen",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vlvhj31762962673.png"
+        },
+        {
+          "nombre": "Amir Richardson",
+          "club": "Fiorentina",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g2qmky1758892125.png"
+        },
+        {
+          "nombre": "Abde Ezzalzouli",
+          "club": "Real Betis",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/c7fznc1762602800.png"
+        },
+        {
+          "nombre": "Ayoub El Kaabi",
+          "club": "Olympiacos",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uq61lq1762288890.png"
+        },
+        {
+          "nombre": "Achraf Dari",
+          "club": "Brest",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/10gu4m1750398070.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Senegal",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Sadio Mane",
+          "club": "Al-Nassr",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cify0u1678370417.png"
+        },
+        {
+          "nombre": "Nicolas Jackson",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uteluc1762963819.png"
+        },
+        {
+          "nombre": "Ismaila Sarr",
+          "club": "Crystal Palace",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1abo611761492444.png"
+        },
+        {
+          "nombre": "Edouard Mendy",
+          "club": "Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/eoy47r1771663768.png"
+        },
+        {
+          "nombre": "Kalidou Koulibaly",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nirqe51750672288.png"
+        },
+        {
+          "nombre": "Pape Matar Sarr",
+          "club": "Tottenham Hotspur",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ll7kkd1757016806.png"
+        },
+        {
+          "nombre": "Idrissa Gueye",
+          "club": "Everton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ag9fm11756976825.png"
+        },
+        {
+          "nombre": "Krepin Diatta",
+          "club": "Monaco",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5uag2g1766238000.png"
+        },
+        {
+          "nombre": "Iliman Ndiaye",
+          "club": "Everton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rten2t1756977078.png"
+        },
+        {
+          "nombre": "Habib Diarra",
+          "club": "Sunderland",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fbklgi1756903777.png"
+        },
+        {
+          "nombre": "Boulaye Dia",
+          "club": "Lazio",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/h2sjet1759646431.png"
+        },
+        {
+          "nombre": "Abdou Diallo",
+          "club": "Al-Arabi",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8430136.png"
+        },
+        {
+          "nombre": "Youssouf Sabaly",
+          "club": "Al-Shabab",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mjc9241701176946.png"
+        },
+        {
+          "nombre": "Lamine Camara",
+          "club": "Monaco",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1fl2tg1766237973.png"
+        },
+        {
+          "nombre": "Cheikhou Kouyate",
+          "club": "Damac",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9yk9i41693757085.png"
+        },
+        {
+          "nombre": "Nampalys Mendy",
+          "club": "Lens",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4a84uw1761216636.png"
+        },
+        {
+          "nombre": "Formose Mendy",
+          "club": "Amiens",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/60m9vj1761216653.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Nigeria",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Victor Osimhen",
+          "club": "Galatasaray",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lw0qcf1769177786.png"
+        },
+        {
+          "nombre": "Ademola Lookman",
+          "club": "Atalanta",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wg0pod1772033492.png"
+        },
+        {
+          "nombre": "Alex Iwobi",
+          "club": "Fulham",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/o2a0dm1757071197.png"
+        },
+        {
+          "nombre": "Stanley Nwabali",
+          "club": "Chippa United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/x3msrh1705329792.png"
+        },
+        {
+          "nombre": "William Troost-Ekong",
+          "club": "Al-Kholood",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/irvssf1679410966.png"
+        },
+        {
+          "nombre": "Calvin Bassey",
+          "club": "Fulham",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8v9oyj1757070140.png"
+        },
+        {
+          "nombre": "Wilfred Ndidi",
+          "club": "Besiktas",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jrj6pt1769171903.png"
+        },
+        {
+          "nombre": "Frank Onyeka",
+          "club": "Augsburg",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8mcku51756990515.png"
+        },
+        {
+          "nombre": "Samuel Chukwueze",
+          "club": "AC Milan",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8t0gxa1757069795.png"
+        },
+        {
+          "nombre": "Moses Simon",
+          "club": "Paris FC",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9w3oan1766329413.png"
+        },
+        {
+          "nombre": "Victor Boniface",
+          "club": "Bayer Leverkusen",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7e2phd1763665992.png"
+        },
+        {
+          "nombre": "Ola Aina",
+          "club": "Nottingham Forest",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3rasdy1757162843.png"
+        },
+        {
+          "nombre": "Bright Osayi-Samuel",
+          "club": "Birmingham City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zha7cx1761931389.png"
+        },
+        {
+          "nombre": "Raphael Onyedika",
+          "club": "Club Brugge",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/iwnph11767634416.png"
+        },
+        {
+          "nombre": "Kelechi Iheanacho",
+          "club": "Celtic",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lt5yh91777019567.png"
+        },
+        {
+          "nombre": "Semi Ajayi",
+          "club": "Hull City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ni9kqs1761921739.png"
+        },
+        {
+          "nombre": "Terem Moffi",
+          "club": "Nice",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/s55c351766319825.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Egypt",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Mohamed Salah",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3blc581757088735.png"
+        },
+        {
+          "nombre": "Omar Marmoush",
+          "club": "Manchester City",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kgn5451757098568.png"
+        },
+        {
+          "nombre": "Trezeguet",
+          "club": "Trabzonspor",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kd5p321750397912.png"
+        },
+        {
+          "nombre": "Mohamed El Shenawy",
+          "club": "Al-Ahly",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kg0q741750395330.png"
+        },
+        {
+          "nombre": "Mohamed Abdelmonem",
+          "club": "Nice",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v3aiug1766319519.png"
+        },
+        {
+          "nombre": "Ahmed Hegazy",
+          "club": "Al-Ittihad",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uworxt1603139454.png"
+        },
+        {
+          "nombre": "Mohamed Hamdy",
+          "club": "Al-Ahly",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Mahmoud Trezeguet",
+          "club": "Trabzonspor",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Mostafa Mohamed",
+          "club": "Nantes",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ebm0591765877211.png"
+        },
+        {
+          "nombre": "Emam Ashour",
+          "club": "Al-Ahly",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jk038w1750398132.png"
+        },
+        {
+          "nombre": "Mohamed Elneny",
+          "club": "Al-Jazira",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1bm0wr1694204323.png"
+        },
+        {
+          "nombre": "Ahmed Sayed Zizo",
+          "club": "Zamalek",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/94q8zp1750398220.png"
+        },
+        {
+          "nombre": "Akram Tawfik",
+          "club": "Al-Ahly",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ramadan Sobhi",
+          "club": "Pyramids",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/0k6mey1509655925.jpg"
+        },
+        {
+          "nombre": "Mahmoud Hamdy",
+          "club": "Zamalek",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ibrahim Adel",
+          "club": "Pyramids",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wt2w9m1780058672.png"
+        },
+        {
+          "nombre": "Mohamed Sherif",
+          "club": "Al-Ahly",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        }
+      ]
+    },
+    {
+      "nombre": "Algeria",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Riyad Mahrez",
+          "club": "Al-Ahli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g0ay2p1771662753.png"
+        },
+        {
+          "nombre": "Ismael Bennacer",
+          "club": "AC Milan",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8kqhkf1748683319.png"
+        },
+        {
+          "nombre": "Houssem Aouar",
+          "club": "Al-Ittihad",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hm39tt1681230801.png"
+        },
+        {
+          "nombre": "Alexandre Oukidja",
+          "club": "Metz",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/n6medt1608499216.png"
+        },
+        {
+          "nombre": "Aissa Mandi",
+          "club": "Lille",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u0lyro1766078291.png"
+        },
+        {
+          "nombre": "Ramy Bensebaini",
+          "club": "Borussia Dortmund",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/z5sfyp1756326052.png"
+        },
+        {
+          "nombre": "Youcef Atal",
+          "club": "Al-Sadd",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2gni3o1700558830.png"
+        },
+        {
+          "nombre": "Nabil Bentaleb",
+          "club": "Lille",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ryrkw41766077386.png"
+        },
+        {
+          "nombre": "Said Benrahma",
+          "club": "Neom SC",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/l5602v1694257438.png"
+        },
+        {
+          "nombre": "Amine Gouiri",
+          "club": "Marseille",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/74eam91766152411.png"
+        },
+        {
+          "nombre": "Baghdad Bounedjah",
+          "club": "Al-Sadd",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/muk3j11735339588.png"
+        },
+        {
+          "nombre": "Mohamed Amoura",
+          "club": "Wolfsburg",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/exqyvl1763669195.png"
+        },
+        {
+          "nombre": "Adam Ounas",
+          "club": "Apoel",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jl7opy1674745852.png"
+        },
+        {
+          "nombre": "Ramiz Zerrouki",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/22jlww1759840799.png"
+        },
+        {
+          "nombre": "Yacine Brahimi",
+          "club": "Al-Gharafa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lidosn1714637921.png"
+        },
+        {
+          "nombre": "Rais Mbolhi",
+          "club": "CR Belouizdad",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Farid Boulaya",
+          "club": "CR Belouizdad",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/iwuar71608499314.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Ghana",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Thomas Partey",
+          "club": "Villarreal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oys62i1762889055.png"
+        },
+        {
+          "nombre": "Mohammed Kudus",
+          "club": "Tottenham Hotspur",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5wk6s81757016366.png"
+        },
+        {
+          "nombre": "Inaki Williams",
+          "club": "Athletic Bilbao",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xvxhdg1603578184.png"
+        },
+        {
+          "nombre": "Lawrence Ati-Zigi",
+          "club": "St. Gallen",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lyg3961630005372.png"
+        },
+        {
+          "nombre": "Alexander Djiku",
+          "club": "Fenerbahce",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t0bh2q1721243943.png"
+        },
+        {
+          "nombre": "Mohammed Salisu",
+          "club": "Monaco",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lrp4yl1766238308.png"
+        },
+        {
+          "nombre": "Jordan Ayew",
+          "club": "Leicester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kiav0x1761861279.png"
+        },
+        {
+          "nombre": "Antoine Semenyo",
+          "club": "Bournemouth",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9y2ge41768393433.png"
+        },
+        {
+          "nombre": "Kamaldeen Sulemana",
+          "club": "Atalanta",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8761hy1764331699.png"
+        },
+        {
+          "nombre": "Ernest Nuamah",
+          "club": "Lyon",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/p4wa4o1766146544.png"
+        },
+        {
+          "nombre": "Abdul Fatawu Issahaku",
+          "club": "Leicester City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/xeziiq1781261946.jpg"
+        },
+        {
+          "nombre": "Daniel Amartey",
+          "club": "Besiktas",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mwp15i1725041346.png"
+        },
+        {
+          "nombre": "Ransford Konigsdorffer",
+          "club": "Hamburger SV",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/teu04x1763416900.png"
+        },
+        {
+          "nombre": "Salis Abdul Samed",
+          "club": "Lens",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Gideon Mensah",
+          "club": "Auxerre",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gvciqz1765920565.png"
+        },
+        {
+          "nombre": "Tariq Lamptey",
+          "club": "Brighton",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6yglit1758891885.png"
+        },
+        {
+          "nombre": "Brandon Thomas-Asante",
+          "club": "Coventry City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k62uhs1762174414.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Ivory Coast",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Sebastien Haller",
+          "club": "Utrecht",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1tu3in1759780321.png"
+        },
+        {
+          "nombre": "Franck Kessie",
+          "club": "Al-Ahli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wcmpma1771663848.png"
+        },
+        {
+          "nombre": "Simon Adingra",
+          "club": "Sunderland",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rxw49v1762198657.png"
+        },
+        {
+          "nombre": "Yahia Fofana",
+          "club": "Angers",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/np4wf61765835758.png"
+        },
+        {
+          "nombre": "Evan Ndicka",
+          "club": "Roma",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8ark361758816299.png"
+        },
+        {
+          "nombre": "Odilon Kossounou",
+          "club": "Atalanta",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/p876cf1764331393.png"
+        },
+        {
+          "nombre": "Ghislain Konan",
+          "club": "Al-Riyadh",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rj1ph21608638246.png"
+        },
+        {
+          "nombre": "Ibrahim Sangare",
+          "club": "Nottingham Forest",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qc7kcv1757163183.png"
+        },
+        {
+          "nombre": "Seko Fofana",
+          "club": "Rennes",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hu70nu1766137589.png"
+        },
+        {
+          "nombre": "Nicolas Pepe",
+          "club": "Villarreal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xeui221762889301.png"
+        },
+        {
+          "nombre": "Jean-Philippe Krasso",
+          "club": "Panathinaikos",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kvb4j71766329205.png"
+        },
+        {
+          "nombre": "Wilfried Singo",
+          "club": "Monaco",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zwfgmo1769177983.png"
+        },
+        {
+          "nombre": "Jeremie Boga",
+          "club": "Nice",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9dndpt1776674931.png"
+        },
+        {
+          "nombre": "Oumar Diakite",
+          "club": "Reims",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2s5slh1767799799.png"
+        },
+        {
+          "nombre": "Christian Kouame",
+          "club": "Fiorentina",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sjz7nd1697894438.png"
+        },
+        {
+          "nombre": "Yan Diomande",
+          "club": "RB Leipzig",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zbzyn51763561086.png"
+        },
+        {
+          "nombre": "Amad Diallo",
+          "club": "Manchester United",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8p6wbg1766826668.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Cameroon",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Andre Onana",
+          "club": "Manchester United",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ha3jbx1766826944.png"
+        },
+        {
+          "nombre": "Bryan Mbeumo",
+          "club": "Manchester United",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/op28s81755176679.png"
+        },
+        {
+          "nombre": "Andre-Frank Zambo Anguissa",
+          "club": "Napoli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bedkjv1762288303.png"
+        },
+        {
+          "nombre": "Devis Epassy",
+          "club": "Abha",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zz4jnb1668633959.png"
+        },
+        {
+          "nombre": "Christopher Wooh",
+          "club": "Rennes",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cc23hy1681417318.png"
+        },
+        {
+          "nombre": "Nouhou Tolo",
+          "club": "Seattle Sounders",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1b4piy1750196303.png"
+        },
+        {
+          "nombre": "Carlos Baleba",
+          "club": "Brighton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/52x9bk1756994205.png"
+        },
+        {
+          "nombre": "Martin Hongla",
+          "club": "Granada",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nvcgya1718362195.png"
+        },
+        {
+          "nombre": "Karl Toko Ekambi",
+          "club": "Abha",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/d9qusl1678359575.png"
+        },
+        {
+          "nombre": "Vincent Aboubakar",
+          "club": "Hatayspor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/co19211647504532.png"
+        },
+        {
+          "nombre": "Georges-Kevin Nkoudou",
+          "club": "Damac",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gpl59a1668109867.png"
+        },
+        {
+          "nombre": "Frank Magri",
+          "club": "Toulouse",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/cixrfq1765966950.png"
+        },
+        {
+          "nombre": "Olivier Ntcham",
+          "club": "Samsunspor",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Jean-Charles Castelletto",
+          "club": "Nantes",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gdr0wu1681388270.png"
+        },
+        {
+          "nombre": "Enzo Tchato",
+          "club": "Montpellier",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/g7hu2t1674742125.png"
+        },
+        {
+          "nombre": "Pierre Kunde",
+          "club": "Al-Wehda",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qt01hw1674562139.png"
+        },
+        {
+          "nombre": "Marou Souaibou",
+          "club": "Coton Sport",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/e8ztl01668681848.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Tunisia",
+      "confederacion": "CAF",
+      "jugadores": [
+        {
+          "nombre": "Hannibal Mejbri",
+          "club": "Burnley",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/aupcea1757174643.png"
+        },
+        {
+          "nombre": "Ellyes Skhiri",
+          "club": "Eintracht Frankfurt",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zhs8151762287564.png"
+        },
+        {
+          "nombre": "Montassar Talbi",
+          "club": "Al-Khalej",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/197tnc1765969875.png"
+        },
+        {
+          "nombre": "Aymen Dahmen",
+          "club": "Al-Wehda",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/x3irao1669130503.png"
+        },
+        {
+          "nombre": "Dylan Bronn",
+          "club": "Salernitana",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u75m3r1707691637.png"
+        },
+        {
+          "nombre": "Yassine Meriah",
+          "club": "Esperance",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/fcq00t1750491512.png"
+        },
+        {
+          "nombre": "Ali Abdi",
+          "club": "Nice",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3v1p3u1766319540.png"
+        },
+        {
+          "nombre": "Aissa Laidouni",
+          "club": "Wolfsburg",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u1w0cw1678366479.png"
+        },
+        {
+          "nombre": "Naim Sliti",
+          "club": "Al-Ettifaq",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gi0t2n1668864605.png"
+        },
+        {
+          "nombre": "Youssef Msakni",
+          "club": "Al-Arabi",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/imx6h61668861739.png"
+        },
+        {
+          "nombre": "Wahbi Khazri",
+          "club": "Saint-Etienne",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9rij0v1674742344.png"
+        },
+        {
+          "nombre": "Seifeddine Jaziri",
+          "club": "Zamalek",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8aksd91668861917.png"
+        },
+        {
+          "nombre": "Elias Achouri",
+          "club": "Copenhagen",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ytwbcx1742471881.png"
+        },
+        {
+          "nombre": "Ferjani Sassi",
+          "club": "Al-Duhail",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/we6iyk1668861122.png"
+        },
+        {
+          "nombre": "Mohamed Drager",
+          "club": "Luzern",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/c703im1578228717.png"
+        },
+        {
+          "nombre": "Hamza Rafia",
+          "club": "Lecce",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qpg5s01764339523.png"
+        },
+        {
+          "nombre": "Firas Chaouat",
+          "club": "Esperance",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/as0ng31779187473.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Japan",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Takefusa Kubo",
+          "club": "Real Sociedad",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bb8sw01762709094.png"
+        },
+        {
+          "nombre": "Kaoru Mitoma",
+          "club": "Brighton",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1hwrck1756998804.png"
+        },
+        {
+          "nombre": "Wataru Endo",
+          "club": "Liverpool",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/eawsfp1757087920.png"
+        },
+        {
+          "nombre": "Zion Suzuki",
+          "club": "Parma",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/24eahn1759780929.png"
+        },
+        {
+          "nombre": "Takehiro Tomiyasu",
+          "club": "Arsenal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sfhhub1694204158.png"
+        },
+        {
+          "nombre": "Ko Itakura",
+          "club": "Borussia Monchengladbach",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v3ptg81759497926.png"
+        },
+        {
+          "nombre": "Hidemasa Morita",
+          "club": "Sporting CP",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/79kep21668618622.png"
+        },
+        {
+          "nombre": "Daichi Kamada",
+          "club": "Crystal Palace",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xajscx1761492482.png"
+        },
+        {
+          "nombre": "Junya Ito",
+          "club": "Stade Reims",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/sl5pc01767641839.png"
+        },
+        {
+          "nombre": "Ritsu Doan",
+          "club": "SC Freiburg",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6526j01762287692.png"
+        },
+        {
+          "nombre": "Ayase Ueda",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5ezc8v1758188908.png"
+        },
+        {
+          "nombre": "Daizen Maeda",
+          "club": "Celtic",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oohjhs1777019949.png"
+        },
+        {
+          "nombre": "Reo Hatate",
+          "club": "Celtic",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ekv0mg1701948944.png"
+        },
+        {
+          "nombre": "Hiroki Ito",
+          "club": "Bayern Munich",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bm4rkl1630672664.png"
+        },
+        {
+          "nombre": "Takumi Minamino",
+          "club": "Monaco",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a6g0551766238256.png"
+        },
+        {
+          "nombre": "Keito Nakamura",
+          "club": "Stade Reims",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rvg6ub1678454947.png"
+        },
+        {
+          "nombre": "Yukinari Sugawara",
+          "club": "Southampton",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9znmfg1763666295.png"
+        }
+      ]
+    },
+    {
+      "nombre": "South Korea",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Son Heung-min",
+          "club": "Los Angeles FC",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a5cqf81766425262.png"
+        },
+        {
+          "nombre": "Kim Min-jae",
+          "club": "Bayern Munich",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m4uh701756408877.png"
+        },
+        {
+          "nombre": "Lee Kang-in",
+          "club": "Paris Saint-Germain",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3jhw2d1766335293.png"
+        },
+        {
+          "nombre": "Jo Hyeon-woo",
+          "club": "Ulsan HD",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v7na7c1750221952.png"
+        },
+        {
+          "nombre": "Kim Young-gwon",
+          "club": "Ulsan HD",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q13aof1750221235.png"
+        },
+        {
+          "nombre": "Kim Moon-hwan",
+          "club": "Daejeon Hana",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/eufzv71647866451.png"
+        },
+        {
+          "nombre": "Hwang In-beom",
+          "club": "Feyenoord",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v818b11781248523.png"
+        },
+        {
+          "nombre": "Hwang Hee-chan",
+          "club": "Wolverhampton",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/917hke1756975302.png"
+        },
+        {
+          "nombre": "Hwang Ui-jo",
+          "club": "Alaves",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/917hke1756975302.png"
+        },
+        {
+          "nombre": "Lee Jae-sung",
+          "club": "Mainz",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/p0i9wg1763554091.png"
+        },
+        {
+          "nombre": "Oh Hyeon-gyu",
+          "club": "Genk",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/txh91l1781344639.png"
+        },
+        {
+          "nombre": "Cho Gue-sung",
+          "club": "Midtjylland",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/32w5vj1765385403.png"
+        },
+        {
+          "nombre": "Seol Young-woo",
+          "club": "Crvena Zvezda",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/v6c4ev1779016056.png"
+        },
+        {
+          "nombre": "Park Yong-woo",
+          "club": "Al-Ain",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/y2ohay1750753126.png"
+        },
+        {
+          "nombre": "Jung Woo-young",
+          "club": "Al-Sadd",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/olxea41750223957.png"
+        },
+        {
+          "nombre": "Bae Jun-ho",
+          "club": "Stoke City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mj5ala1761251077.png"
+        },
+        {
+          "nombre": "Kim Ji-soo",
+          "club": "Brentford",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hkj8sg1732890746.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Iran",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Mehdi Taremi",
+          "club": "Inter",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9dhm7l1772033412.png"
+        },
+        {
+          "nombre": "Sardar Azmoun",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qbwg8l1674560734.png"
+        },
+        {
+          "nombre": "Alireza Jahanbakhsh",
+          "club": "Heerenveen",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dfrwg01767622139.png"
+        },
+        {
+          "nombre": "Alireza Beiranvand",
+          "club": "Tractor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t0vpyd1668778733.png"
+        },
+        {
+          "nombre": "Shojae Khalilzadeh",
+          "club": "Tractor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/d9mh0o1668783872.png"
+        },
+        {
+          "nombre": "Majid Hosseini",
+          "club": "Kayserispor",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Saeid Ezatolahi",
+          "club": "Esteghlal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qcewmg1702646602.png"
+        },
+        {
+          "nombre": "Saman Ghoddos",
+          "club": "Stade Brestois",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9r84g11694113587.png"
+        },
+        {
+          "nombre": "Mehdi Ghayedi",
+          "club": "Ittihad Kalba",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f89civ1780431882.png"
+        },
+        {
+          "nombre": "Karim Ansarifard",
+          "club": "Omonia",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mx5z2k1668780873.png"
+        },
+        {
+          "nombre": "Ramin Rezaeian",
+          "club": "Sepahan",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yiz0x31668787055.png"
+        },
+        {
+          "nombre": "Milad Mohammadi",
+          "club": "AEK Athens",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/mvpqij1668785747.png"
+        },
+        {
+          "nombre": "Omid Noorafkan",
+          "club": "Sepahan",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ali Gholizadeh",
+          "club": "Lech Poznan",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6iznwf1770474978.png"
+        },
+        {
+          "nombre": "Mohammad Mohebi",
+          "club": "Rostov",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rj8nr51780432044.png"
+        },
+        {
+          "nombre": "Allahyar Sayyadmanesh",
+          "club": "Hull City",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8vm2ad1767097790.png"
+        },
+        {
+          "nombre": "Hossein Hosseini",
+          "club": "Esteghlal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f3ioes1668782350.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Saudi Arabia",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Salem Al-Dawsari",
+          "club": "Al-Hilal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qcr7z31750679699.png"
+        },
+        {
+          "nombre": "Firas Al-Buraikan",
+          "club": "Al-Ahli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/16sp4v1777237767.png"
+        },
+        {
+          "nombre": "Mohamed Kanno",
+          "club": "Al-Hilal",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rd52j51750753527.png"
+        },
+        {
+          "nombre": "Nawaf Al-Aqidi",
+          "club": "Al-Nassr",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ermj5e1668792170.png"
+        },
+        {
+          "nombre": "Ali Al-Bulaihi",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6nnm1f1750680017.png"
+        },
+        {
+          "nombre": "Hassan Tambakti",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/b4i61r1750671923.png"
+        },
+        {
+          "nombre": "Saud Abdulhamid",
+          "club": "Roma",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/37g75w1766004681.png"
+        },
+        {
+          "nombre": "Abdullah Otayf",
+          "club": "Al-Hilal",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1l1xmm1668845852.png"
+        },
+        {
+          "nombre": "Sami Al-Najei",
+          "club": "Al-Nassr",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/uqorrr1668843599.png"
+        },
+        {
+          "nombre": "Abdulrahman Ghareeb",
+          "club": "Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rq4nhv1647576976.png"
+        },
+        {
+          "nombre": "Saleh Al-Shehri",
+          "club": "Al-Ittihad",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/w8tfh21668850118.png"
+        },
+        {
+          "nombre": "Salman Al-Faraj",
+          "club": "Al-Hilal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kxnga11668795519.png"
+        },
+        {
+          "nombre": "Nasser Al-Dawsari",
+          "club": "Al-Hilal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t059e71750671684.png"
+        },
+        {
+          "nombre": "Ayman Yahya",
+          "club": "Al-Nassr",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/2ld1981647505240.png"
+        },
+        {
+          "nombre": "Marwan Al-Sahafi",
+          "club": "Al-Ittihad",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lkg1ec1767170753.png"
+        },
+        {
+          "nombre": "Abdulellah Al-Malki",
+          "club": "Al-Hilal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lfxn2a1668800879.png"
+        },
+        {
+          "nombre": "Mohammed Al-Owais",
+          "club": "Al-Hilal",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lmzvcf1668851261.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Australia",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Mathew Ryan",
+          "club": "Lens",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/l3xyhq1732915878.png"
+        },
+        {
+          "nombre": "Jackson Irvine",
+          "club": "St. Pauli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/bx4oi71763567546.png"
+        },
+        {
+          "nombre": "Riley McGree",
+          "club": "Middlesbrough",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/k4zg061761830188.png"
+        },
+        {
+          "nombre": "Harry Souttar",
+          "club": "Sheffield United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/219opn1761861817.png"
+        },
+        {
+          "nombre": "Kye Rowles",
+          "club": "Hearts",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kkylmm1766431538.png"
+        },
+        {
+          "nombre": "Aziz Behich",
+          "club": "Melbourne City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/61w0hq1765803958.png"
+        },
+        {
+          "nombre": "Connor Metcalfe",
+          "club": "St. Pauli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/8xb0sq1756311214.png"
+        },
+        {
+          "nombre": "Aiden O'Neill",
+          "club": "Standard Liege",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/28x1kl1778529144.png"
+        },
+        {
+          "nombre": "Martin Boyle",
+          "club": "Hibernian",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/q4gdo01668089337.png"
+        },
+        {
+          "nombre": "Mitchell Duke",
+          "club": "Machida Zelvia",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/427u721776108336.png"
+        },
+        {
+          "nombre": "Craig Goodwin",
+          "club": "Al-Wehda",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/5khqi41765705149.png"
+        },
+        {
+          "nombre": "Jordan Bos",
+          "club": "Feyenoord",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u0rnwo1758189333.png"
+        },
+        {
+          "nombre": "Nestory Irankunda",
+          "club": "Bayern Munich",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/nyliux1761216493.png"
+        },
+        {
+          "nombre": "Cameron Burgess",
+          "club": "Ipswich Town",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/maa37o1761234599.png"
+        },
+        {
+          "nombre": "Nishan Velupillay",
+          "club": "Melbourne Victory",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/zi32h91765899271.png"
+        },
+        {
+          "nombre": "Keanu Baccus",
+          "club": "St. Mirren",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ydrkez1668089260.png"
+        },
+        {
+          "nombre": "Kusini Yengi",
+          "club": "Portsmouth",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6yblys1697716490.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Qatar",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Akram Afif",
+          "club": "Al-Sadd",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rv8cvv1707592143.png"
+        },
+        {
+          "nombre": "Almoez Ali",
+          "club": "Al-Duhail",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gjet2n1668609534.png"
+        },
+        {
+          "nombre": "Hassan Al-Haydos",
+          "club": "Al-Sadd",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/3xhwao1707597905.png"
+        },
+        {
+          "nombre": "Meshaal Barsham",
+          "club": "Al-Sadd",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/eztua91707596619.png"
+        },
+        {
+          "nombre": "Boualem Khoukhi",
+          "club": "Al-Sadd",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/d4bcg31707645603.png"
+        },
+        {
+          "nombre": "Tarek Salman",
+          "club": "Al-Sadd",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/1v3o6p1707598183.png"
+        },
+        {
+          "nombre": "Pedro Miguel",
+          "club": "Al-Sadd",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/e7p4v71668598345.png"
+        },
+        {
+          "nombre": "Karim Boudiaf",
+          "club": "Al-Duhail",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oozrq51668609711.png"
+        },
+        {
+          "nombre": "Abdelaziz Hatim",
+          "club": "Al-Rayyan",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Bassam Al-Rawi",
+          "club": "Al-Duhail",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vomwh91668608749.png"
+        },
+        {
+          "nombre": "Mohammed Muntari",
+          "club": "Al-Duhail",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gixdmu1668609407.png"
+        },
+        {
+          "nombre": "Ahmed Alaaeldin",
+          "club": "Al-Gharafa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0vj7zr1668609076.png"
+        },
+        {
+          "nombre": "Homam Ahmed",
+          "club": "Al-Gharafa",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/4j713o1668598216.png"
+        },
+        {
+          "nombre": "Mostafa Meshaal",
+          "club": "Al-Sadd",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ckzf9g1668609440.png"
+        },
+        {
+          "nombre": "Ismaeel Mohammad",
+          "club": "Al-Duhail",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Yusuf Abdurisag",
+          "club": "Al-Sadd",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6wq2k61707599411.png"
+        },
+        {
+          "nombre": "Jassem Gaber",
+          "club": "Al-Arabi",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/r8igue1668608171.png"
+        }
+      ]
+    },
+    {
+      "nombre": "Iraq",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Aymen Hussein",
+          "club": "Al-Qadsiah",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/n741p41780581152.png"
+        },
+        {
+          "nombre": "Ali Jasim",
+          "club": "Como",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xhyr981780581222.png"
+        },
+        {
+          "nombre": "Zidane Iqbal",
+          "club": "Utrecht",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/m60b8d1723059508.png"
+        },
+        {
+          "nombre": "Jalal Hassan",
+          "club": "Al-Quwa Al-Jawiya",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qa7id21780581126.png"
+        },
+        {
+          "nombre": "Rebin Sulaka",
+          "club": "Buriram United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/brke7t1780589135.png"
+        },
+        {
+          "nombre": "Merchas Doski",
+          "club": "Vejle",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t79mso1780581036.png"
+        },
+        {
+          "nombre": "Amjad Attwan",
+          "club": "Al-Zawraa",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ibrahim Bayesh",
+          "club": "Al-Shorta",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qbwn6o1780580871.png"
+        },
+        {
+          "nombre": "Amir Al-Ammari",
+          "club": "Halmstad",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/z2j9fm1718053097.png"
+        },
+        {
+          "nombre": "Mohanad Ali",
+          "club": "Al-Shorta",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/t43zpw1780580661.png"
+        },
+        {
+          "nombre": "Sherko Kareem",
+          "club": "Al-Quwa Al-Jawiya",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Hussein Ali",
+          "club": "Al-Shorta",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/35b2qb1728931694.png"
+        },
+        {
+          "nombre": "Manaf Younis",
+          "club": "Al-Quwa Al-Jawiya",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u7s3kq1780589237.png"
+        },
+        {
+          "nombre": "Bashar Resan",
+          "club": "Al-Wakrah",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Frans Putros",
+          "club": "Brisbane Roar",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/rsb4v11654788134.png"
+        },
+        {
+          "nombre": "Ali Faez",
+          "club": "Al-Shorta",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Mustafa Mohammed",
+          "club": "Al-Talaba",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        }
+      ]
+    },
+    {
+      "nombre": "Uzbekistan",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Eldor Shomurodov",
+          "club": "Roma",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/pzj8ab1697923953.png"
+        },
+        {
+          "nombre": "Abbosbek Fayzullaev",
+          "club": "CSKA Moscow",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0zoijs1781036889.png"
+        },
+        {
+          "nombre": "Khusniddin Alikulov",
+          "club": "Hwaseong FC",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/bnote71721831518.jpg"
+        },
+        {
+          "nombre": "Utkir Yusupov",
+          "club": "Pakhtakor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9hu3an1781037251.png"
+        },
+        {
+          "nombre": "Rustam Ashurmatov",
+          "club": "Gwangju",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/i5sv5j1781036776.png"
+        },
+        {
+          "nombre": "Abdukodir Khusanov",
+          "club": "Manchester City",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/da8tg41769182137.png"
+        },
+        {
+          "nombre": "Jaloliddin Masharipov",
+          "club": "Pakhtakor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/aaz3rs1781037445.png"
+        },
+        {
+          "nombre": "Otabek Shukurov",
+          "club": "Pari Nizhny Novgorod",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/shq2ng1781037167.png"
+        },
+        {
+          "nombre": "Igor Sergeev",
+          "club": "Pakhtakor",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/kcmvbv1781037142.png"
+        },
+        {
+          "nombre": "Oston Urunov",
+          "club": "Neftci",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/a1hwzc1781037228.png"
+        },
+        {
+          "nombre": "Jasurbek Yakhshiboev",
+          "club": "Lokomotiv Moscow",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Sardor Rashidov",
+          "club": "Adana Demirspor",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Farrukh Sayfiev",
+          "club": "Pakhtakor",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/vo03so1781037124.png"
+        },
+        {
+          "nombre": "Bobir Abdixolikov",
+          "club": "Mes Rafsanjan",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Diyor Kholmatov",
+          "club": "Andijon",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Sanjar Shoakhmedov",
+          "club": "Pakhtakor",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Abdurauf Buriev",
+          "club": "Pakhtakor",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/fisha71721830815.jpg"
+        }
+      ]
+    },
+    {
+      "nombre": "Jordan",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Mousa Al-Tamari",
+          "club": "Montpellier",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Yazan Al-Naimat",
+          "club": "Al-Ahli",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Nizar Al-Rashdan",
+          "club": "Al-Wehdat",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tj6p131781096962.png"
+        },
+        {
+          "nombre": "Yazeed Abulaila",
+          "club": "Al-Hussein",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/oczaal1781096826.png"
+        },
+        {
+          "nombre": "Abdallah Nasib",
+          "club": "Al-Faisaly",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lub7jy1781097184.png"
+        },
+        {
+          "nombre": "Yazan Al-Arab",
+          "club": "Al-Salmiya",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/xtrjp31781096853.png"
+        },
+        {
+          "nombre": "Salem Al-Ajalin",
+          "club": "Al-Faisaly",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Noor Al-Rawabdeh",
+          "club": "Al-Hussein",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/lp7dfm1781096983.png"
+        },
+        {
+          "nombre": "Ihsan Haddad",
+          "club": "Al-Hussein",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Mahmoud Al-Mardi",
+          "club": "Al-Wehdat",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/6kytmo1781096944.png"
+        },
+        {
+          "nombre": "Ali Olwan",
+          "club": "Pohang Steelers",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/ifvtit1781097232.png"
+        },
+        {
+          "nombre": "Musa Al-Taamari",
+          "club": "Montpellier",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/r8omzu1766136576.png"
+        },
+        {
+          "nombre": "Mahmoud Zaqa",
+          "club": "Al-Hussein",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ehab Abu Jazar",
+          "club": "Al-Wehdat",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Mohammad Abu Hashish",
+          "club": "Al-Faisaly",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/f54v6e1781097149.png"
+        },
+        {
+          "nombre": "Rajaei Ayed",
+          "club": "Al-Ramtha",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/hjae2y1781097059.png"
+        },
+        {
+          "nombre": "Mohammad Abu Zraiq",
+          "club": "Al-Hussein",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        }
+      ]
+    },
+    {
+      "nombre": "United Arab Emirates",
+      "confederacion": "AFC",
+      "jugadores": [
+        {
+          "nombre": "Caio Canedo",
+          "club": "Al-Wasl",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Fabio De Lima",
+          "club": "Al-Wasl",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ali Mabkhout",
+          "club": "Al-Jazira",
+          "categoria": "Oro",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Khalid Eisa",
+          "club": "Al-Ain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/71oh4q1750753392.png"
+        },
+        {
+          "nombre": "Khalifa Al-Hammadi",
+          "club": "Al-Ain",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Bandar Al-Ahbabi",
+          "club": "Al-Ain",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/thumb/0wbzpt1711418880.jpg"
+        },
+        {
+          "nombre": "Yahia Nader",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/9o9bc91750753188.png"
+        },
+        {
+          "nombre": "Abdullah Ramadan",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Harib Abdallah",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Sultan Adil",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Plata",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Tahnoon Al-Zaabi",
+          "club": "Al-Ain",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Kouame Autonne",
+          "club": "Al-Wahda",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/x3vmjo1750753547.png"
+        },
+        {
+          "nombre": "Marcus Meloni",
+          "club": "Al-Wasl",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Yahia Al-Ghassani",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Khalfan Mubarak",
+          "club": "Al-Jazira",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Majed Hassan",
+          "club": "Shabab Al-Ahli",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        },
+        {
+          "nombre": "Ali Saleh",
+          "club": "Al-Wasl",
+          "categoria": "Bronce",
+          "imagenUrl": null
+        }
+      ]
+    },
+    {
+      "nombre": "New Zealand",
+      "confederacion": "OFC",
+      "jugadores": [
+        {
+          "nombre": "Chris Wood",
+          "club": "Nottingham Forest",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/03zmjz1757163261.png"
+        },
+        {
+          "nombre": "Marko Stamenic",
+          "club": "Olympiacos",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/il25p91761235114.png"
+        },
+        {
+          "nombre": "Liberato Cacace",
+          "club": "Empoli",
+          "categoria": "Oro",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/itavca1761148778.png"
+        },
+        {
+          "nombre": "Alex Paulsen",
+          "club": "Auckland FC",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/n3p2581716230939.png"
+        },
+        {
+          "nombre": "Michael Boxall",
+          "club": "Minnesota United",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qk0evh1766426076.png"
+        },
+        {
+          "nombre": "Tyler Bindon",
+          "club": "Reading",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/yk1l1c1761393067.png"
+        },
+        {
+          "nombre": "Finn Surman",
+          "club": "Portland Timbers",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/qmadd81766760097.png"
+        },
+        {
+          "nombre": "Joe Bell",
+          "club": "Viking",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/0jpz121654114672.png"
+        },
+        {
+          "nombre": "Matthew Garbett",
+          "club": "NAC Breda",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/dhl8lt1766326507.png"
+        },
+        {
+          "nombre": "Elijah Just",
+          "club": "Hibernian",
+          "categoria": "Plata",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/gb5m291779220774.png"
+        },
+        {
+          "nombre": "Ben Old",
+          "club": "St. Mirren",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/u99llb1727952719.png"
+        },
+        {
+          "nombre": "Sarpreet Singh",
+          "club": "Ratchaburi",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/am1x821779222665.png"
+        },
+        {
+          "nombre": "Kosta Barbarouses",
+          "club": "Auckland FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/7rkwj31765802941.png"
+        },
+        {
+          "nombre": "Bill Tuiloma",
+          "club": "Charlotte FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/jl6sfi1771582590.png"
+        },
+        {
+          "nombre": "Storm Roux",
+          "club": "Auckland FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/69ul721765804225.png"
+        },
+        {
+          "nombre": "Nando Pijnaker",
+          "club": "Sligo Rovers",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/tro7j91765703310.png"
+        },
+        {
+          "nombre": "Callum McCowatt",
+          "club": "Auckland FC",
+          "categoria": "Bronce",
+          "imagenUrl": "https://r2.thesportsdb.com/images/media/player/cutout/wy8ibg1765647125.png"
+        }
+      ]
+    }
+  ]
+}

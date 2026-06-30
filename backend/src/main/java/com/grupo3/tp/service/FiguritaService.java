@@ -49,7 +49,8 @@ public class FiguritaService {
                         group.get(0).getFiguritaBase().getEquipo().getNombre(),
                         group.get(0).getFiguritaBase().getCategoria().getNombre(),
                         group.get(0).getOwner().getId(),
-                        group.get(0).getOwner().getUsername()
+                        group.get(0).getOwner().getUsername(),
+                        group.get(0).getFiguritaBase().getImagenUrl()
                 ))
                 .toList();
     }
@@ -70,7 +71,8 @@ public class FiguritaService {
                         base.getJugador().getNombre(),
                         base.getSeleccion().getNombre(),
                         base.getEquipo().getNombre(),
-                        base.getCategoria().getNombre()
+                        base.getCategoria().getNombre(),
+                        base.getImagenUrl()
                 ))
                 .toList();
     }
@@ -91,7 +93,8 @@ public class FiguritaService {
                         group.get(0).getFiguritaBase().getEquipo().getNombre(),
                         group.get(0).getFiguritaBase().getCategoria().getNombre(),
                         group.get(0).getOwner().getId(),
-                        group.get(0).getOwner().getUsername()
+                        group.get(0).getOwner().getUsername(),
+                        group.get(0).getFiguritaBase().getImagenUrl()
                 ))
                 .toList();
 
@@ -109,7 +112,8 @@ public class FiguritaService {
                         figurita.getFiguritaBase().getEquipo().getNombre(),
                         figurita.getFiguritaBase().getCategoria().getNombre(),
                         figurita.getOwner().getId(),
-                        figurita.getOwner().getUsername()
+                        figurita.getOwner().getUsername(),
+                        figurita.getFiguritaBase().getImagenUrl()
                 ))
                 .toList();
     }

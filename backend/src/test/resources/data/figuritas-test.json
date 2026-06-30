@@ -1,0 +1,14 @@
+{
+  "torneo": "Test Cup",
+  "categorias": ["Oro", "Plata"],
+  "selecciones": [
+    {
+      "nombre": "Argentina",
+      "confederacion": "CONMEBOL",
+      "jugadores": [
+        { "nombre": "Lionel Messi", "club": "Inter Miami", "categoria": "Oro", "imagenUrl": "https://img/messi.png" },
+        { "nombre": "Paulo Dybala", "club": "Roma", "categoria": "Plata", "imagenUrl": null }
+      ]
+    }
+  ]
+}

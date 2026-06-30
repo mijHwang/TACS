@@ -26,6 +26,7 @@ export default function TodasPage() {
             jugadorNombre={f.jugadorNombre}
             equipoNombre={f.equipoNombre}
             categoriaNombre={f.categoriaNombre}
+            imagenUrl={f.imagenUrl}
             footer={
               <span className="inline-block px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded">
                 x{f.count}

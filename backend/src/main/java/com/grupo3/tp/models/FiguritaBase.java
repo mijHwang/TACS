@@ -25,4 +25,5 @@ public class FiguritaBase {
     private CategoriaFigurita categoria;
     @DocumentReference(lazy = true)
     private Jugador jugador;
+    private String imagenUrl;
 }
