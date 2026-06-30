@@ -27,6 +27,17 @@ Frontend accessible at `http://localhost` (port 80), backend API at `http://loca
 
 **Required:** a `.env` file at the repo root provides `SPRING_MONGODB_URI` (the MongoDB Atlas connection string), consumed by the backend service in `docker-compose.yml`. See `.env.example` for the format. Without it the backend boots but every data operation fails. Connecting to Atlas requires the running machine's public IP to be in the cluster's Network Access list and valid Database Access credentials in the URI.
 
+### Production deploy (AWS EC2 + HTTPS + Cloudflare)
+
+Live at **https://tacs-g3-figuritas.dev/** (behind Cloudflare) and **https://tacs-g3-figuritas.duckdns.org/** (direct to origin). The base `docker-compose.yml` + `nginx.conf` are **HTTP-only for local dev**; production HTTPS is a committed override:
+
+```bash
+# On the EC2 (one-time cert bootstrap): ./init-letsencrypt.sh
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+```
+
+`docker-compose.prod.yml` exposes 443, adds a `certbot` renewal container, and mounts TLS material. `frontend/nginx.prod.conf` has two 443 server blocks: DuckDNS (Let's Encrypt, default) and `tacs-g3-figuritas.dev` (Cloudflare Origin Certificate, selected by SNI, Full strict). TLS secrets live under `./certbot/` and `./cloudflare/` on the EC2 — both **gitignored**, never committed. Full details (DNS records, cert rotation, Security Group) are in `README.md` (§ Online (AWS)). Deploy/infra specifics are in the agent's memory, not the repo.
+
 ## Task Management (Trello)
 
 The project's tasks/user stories live on the [Trello board TACS](https://trello.com/b/OjLlcKiN/tacs). A local helper to read it from the CLI/Claude lives in `scripts/trello/` (the whole `/scripts/` folder is **gitignored** — credentials are never committed):
@@ -37,7 +48,7 @@ node scripts/trello/trello.mjs lists   # board columns
 node scripts/trello/trello.mjs board   # board info (validates credentials)
 ```
 
-Credentials (Trello API key + token, read scope) go in `scripts/trello/trello.config.json`. Setup details: `scripts/trello/README.md`. If that folder is missing on a fresh checkout, follow its README to recreate it.
+Credentials (Trello API key + token) go in `scripts/trello/trello.config.json`. The bundled `trello.mjs` only does GETs (read), but the token has **write scope** too — moving cards or posting comments works via direct `PUT`/`POST` to the Trello API (used in past sessions to move cards to "Hecho"). Setup details: `scripts/trello/README.md`. If that folder is missing on a fresh checkout, follow its README to recreate it.
 
 ## Frontend Commands
 
