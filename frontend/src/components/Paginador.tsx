@@ -8,11 +8,10 @@ interface PaginadorProps {
 
 /** Paginador numerado con ventana (máx 7 botones). `page` es 0-based; las etiquetas son 1-based. */
 export default function Paginador({ page, totalPages, onChange }: PaginadorProps) {
-  if (totalPages <= 1) return null;
-
   const WINDOW = 7;
+  const pageCount = Math.max(1, totalPages);
   let start = Math.max(0, page - Math.floor(WINDOW / 2));
-  const end = Math.min(totalPages, start + WINDOW);
+  const end = Math.min(pageCount, start + WINDOW);
   start = Math.max(0, end - WINDOW);
   const pages = Array.from({ length: end - start }, (_, i) => start + i);
 
@@ -47,12 +46,12 @@ export default function Paginador({ page, totalPages, onChange }: PaginadorProps
       </button>
       {start > 0 && <span className="px-1 text-gray-400">…</span>}
       {pages.map(numBtn)}
-      {end < totalPages && <span className="px-1 text-gray-400">…</span>}
+      {end < pageCount && <span className="px-1 text-gray-400">…</span>}
       <button
         type="button"
         aria-label="Página siguiente"
         onClick={() => onChange(page + 1)}
-        disabled={page >= totalPages - 1}
+        disabled={page >= pageCount - 1}
         className="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
         style={{ borderColor: `${BLUE}40`, color: BLUE }}
       >

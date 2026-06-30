@@ -1,8 +1,6 @@
 import type { Auction, AuctionCondition, AuctionStatus, Bid, Sticker } from '../types/auction';
-import { apiFetch, mapSubasta, mapPage, type BackendSubasta, type PagedResponse } from './api';
+import { apiFetch, mapSubasta, mapPage, DEFAULT_PAGE_SIZE, type BackendSubasta, type PagedResponse } from './api';
 import type { SubastaResponseDTO } from '../hooks/useSubastas';
-
-const DEFAULT_PAGE_SIZE = 10;
 
 function mapFiguritaToSticker(figurita: {
   id: string; numero: number; jugadorNombre: string; seleccionNombre: string;

@@ -1,9 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../../services/api';
+import api, { type PagedResponse } from '../../services/api';
 import { useAuth } from '../../auth/useAuth';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 interface PublicacionResponseDTO {
   id: string;
@@ -37,10 +40,11 @@ export default function BuscarPage() {
   const [filterEquipo, setFilterEquipo] = useState('');
   const [filterCategoria, setFilterCategoria] = useState('');
 
+  const { pageSize, setPageSize, options } = usePageSize();
   const { data, isLoading } = useQuery({
-    queryKey: ['publicaciones', 'disponibles', user?.id, page],
+    queryKey: ['publicaciones', 'disponibles', user?.id, page, pageSize],
     queryFn: async (): Promise<PagedResponse<PublicacionResponseDTO>> =>
-      (await api.get(`/api/publicaciones/disponibles/${user!.id}`, { params: { page, size: DEFAULT_PAGE_SIZE } })).data,
+      (await api.get(`/api/publicaciones/disponibles/${user!.id}`, { params: { page, size: pageSize } })).data,
     enabled: !!user?.id,
     placeholderData: keepPreviousData,
   });
@@ -125,35 +129,38 @@ export default function BuscarPage() {
         />
       </div>
 
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
       {isLoading ? (
         <p className="text-text">Cargando figuritas publicadas...</p>
       ) : filtered.length === 0 ? (
         <p className="text-muted">No se encontraron figuritas disponibles.</p>
       ) : (
-        <>
-          <div className="grid grid-cols-3 gap-4">
-            {filtered.map((pub) => (
-              <div key={pub.id} className="bg-surface p-4 rounded-lg border border-border">
-                <p className="text-sm font-bold text-text mb-2">{pub.figuritaNumero}</p>
-                <p className="text-sm text-muted mb-2">{pub.figuritaSeleccionNombre || 'Sin selección'}</p>
-                <p className="text-xl font-bold text-primary mb-2">{pub.figuritaJugadorNombre || 'Sin nombre'}</p>
-                <p className="text-sm text-text mb-3">{pub.figuritaEquipoNombre || 'Sin equipo'}</p>
-                <p className="text-xs text-muted mb-4">{pub.figuritaCategoriaNombre || 'Sin categoría'}</p>
-                <p className="text-xs text-muted mb-2">
-                  Cantidad disponible: <span className="font-semibold text-text">{pub.cantidad}</span>
-                </p>
-                <p className="text-xs text-muted mb-2">De: @{pub.usuarioUsername || 'Usuario desconocido'}</p>
-                <button
-                  onClick={() => handleProponer(pub)}
-                  className="w-full p-2 bg-primary text-white font-bold rounded-lg hover:opacity-90 transition-opacity"
-                >
-                  Hacer Propuesta
-                </button>
-              </div>
-            ))}
-          </div>
-          <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
-        </>
+        <div className="grid grid-cols-3 gap-4">
+          {filtered.map((pub) => (
+            <div key={pub.id} className="bg-surface p-4 rounded-lg border border-border">
+              <p className="text-sm font-bold text-text mb-2">{pub.figuritaNumero}</p>
+              <p className="text-sm text-muted mb-2">{pub.figuritaSeleccionNombre || 'Sin selección'}</p>
+              <p className="text-xl font-bold text-primary mb-2">{pub.figuritaJugadorNombre || 'Sin nombre'}</p>
+              <p className="text-sm text-text mb-3">{pub.figuritaEquipoNombre || 'Sin equipo'}</p>
+              <p className="text-xs text-muted mb-4">{pub.figuritaCategoriaNombre || 'Sin categoría'}</p>
+              <p className="text-xs text-muted mb-2">
+                Cantidad disponible: <span className="font-semibold text-text">{pub.cantidad}</span>
+              </p>
+              <p className="text-xs text-muted mb-2">De: @{pub.usuarioUsername || 'Usuario desconocido'}</p>
+              <button
+                onClick={() => handleProponer(pub)}
+                className="w-full p-2 bg-primary text-white font-bold rounded-lg hover:opacity-90 transition-opacity"
+              >
+                Hacer Propuesta
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {!isLoading && (
+        <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
       )}
     </div>
   );

@@ -9,6 +9,8 @@ import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
 
 /**
  * Vista "Todas": la colección del usuario, agrupada, paginada y filtrada server-side.
@@ -17,7 +19,7 @@ import Paginador from '../../components/Paginador';
 export default function TodasPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { filtros, page, setPage, params } = useFiltrosServidor();
+  const { filtros, page, setPage, params, pageSize, setPageSize, options } = useFiltrosServidor();
   const { data, isLoading, refetch } = useFiguritasPaginadas(user?.username, params);
   const figuritas = data?.content ?? [];
   const [publishingId, setPublishingId] = useState<string | null>(null);
@@ -55,6 +57,9 @@ export default function TodasPage() {
         <p className="text-text">Cargando figuritas...</p>
       ) : (
         <>
+          <ListToolbar total={data?.totalElements ?? 0}>
+            <PageSizeSelector value={pageSize} options={options} onChange={(n) => setPageSize(n)} />
+          </ListToolbar>
           <GrillaFiguritas isEmpty={figuritas.length === 0} emptyMessage="No tienes figuritas aún">
             {figuritas.map((f) => (
               <TarjetaColeccion

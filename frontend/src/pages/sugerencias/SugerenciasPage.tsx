@@ -6,6 +6,9 @@ import type { FiguritaResponseDTO } from '../../hooks/useFiguritas';
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 /**
  * Página de Sugerencias de Intercambio (US4): muestra intercambios bidireccionales posibles
@@ -16,7 +19,8 @@ export default function SugerenciasPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
-  const { data, isLoading, isError, refetch } = useSugerencias(user?.username, page);
+  const { pageSize, setPageSize, options } = usePageSize();
+  const { data, isLoading, isError, refetch } = useSugerencias(user?.username, page, pageSize);
   const sugerencias = data?.content ?? [];
 
   const proponer = (s: SugerenciaResponseDTO, f: FiguritaResponseDTO) => {
@@ -44,10 +48,13 @@ export default function SugerenciasPage() {
       <h1 className="text-2xl font-bold text-text mb-1">Sugerencias de Intercambio</h1>
       <p className="text-sm text-muted mb-6">Intercambios posibles con otros usuarios. Se actualizan a diario.</p>
 
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
+
       {sugerencias.length === 0 ? (
         <p className="text-muted">No tenés sugerencias por ahora.</p>
       ) : (
-        <>
         <div className="flex flex-col gap-6">
           {sugerencias.map((s) => (
             <div key={s.contraparteId} className="bg-surface border border-border rounded-lg p-5">
@@ -88,9 +95,8 @@ export default function SugerenciasPage() {
             </div>
           ))}
         </div>
-        <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
-        </>
       )}
+      <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
     </div>
   );
 }

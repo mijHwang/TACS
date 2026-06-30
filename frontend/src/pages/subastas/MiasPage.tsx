@@ -6,6 +6,9 @@ import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import EmptyState from '../../components/EmptyState';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 import { useMisSubastas, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
@@ -16,7 +19,8 @@ const RED = '#D82D31';
 export default function SubastasMiasPage() {
   const { user } = useAuth();
   const [page, setPage] = useState(0);
-  const { data, isLoading, isError, refetch } = useMisSubastas(user?.id, page);
+  const { pageSize, setPageSize, options } = usePageSize();
+  const { data, isLoading, isError, refetch } = useMisSubastas(user?.id, page, pageSize);
   const auctions = data?.content ?? [];
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
@@ -26,23 +30,6 @@ export default function SubastasMiasPage() {
   const pending = auctions.filter(a => a.estado === 'PENDIENTE');
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado === 'FINALIZADA');
-
-  if (auctions.length === 0) {
-    return (
-      <div className="page-enter">
-        <EmptyState
-          title="Todavía no creaste subastas"
-          subtitle='Publicá una subasta desde la pestaña "+ Nueva".'
-          accentColor={RED}
-          icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.8" className="w-6 h-6">
-              <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" /><path d="m13 13 6 6" />
-            </svg>
-          }
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="page-enter flex flex-col gap-6">
@@ -85,17 +72,34 @@ export default function SubastasMiasPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {auctions.map(auction => (
-          <AuctionCard
-            key={auction.id}
-            auction={auction}
-            onViewDetail={setSelected}
-          />
-        ))}
-      </div>
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
 
-      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
+      {auctions.length === 0 ? (
+        <EmptyState
+          title="Todavía no creaste subastas"
+          subtitle='Publicá una subasta desde la pestaña "+ Nueva".'
+          accentColor={RED}
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.8" className="w-6 h-6">
+              <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" /><path d="m13 13 6 6" />
+            </svg>
+          }
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {auctions.map(auction => (
+            <AuctionCard
+              key={auction.id}
+              auction={auction}
+              onViewDetail={setSelected}
+            />
+          ))}
+        </div>
+      )}
+
+      <Paginador page={page} totalPages={data?.totalPages ?? 0} onChange={setPage} />
 
       {selected && (
         <AuctionDetailModal

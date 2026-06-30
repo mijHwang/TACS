@@ -11,6 +11,9 @@ import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import EmptyState from '../../components/EmptyState';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
@@ -18,7 +21,8 @@ const BLUE = '#03BAE9';
 export default function ParticipandoPage() {
   const { user } = useAuth();
   const [page, setPage] = useState(0);
-  const { data, isLoading, isError, refetch } = useSubastasParticipando(user?.id, page);
+  const { pageSize, setPageSize, options } = usePageSize();
+  const { data, isLoading, isError, refetch } = useSubastasParticipando(user?.id, page, pageSize);
   const auctions = data?.content ?? [];
   const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
@@ -63,23 +67,23 @@ export default function ParticipandoPage() {
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado !== 'EN_CURSO');
 
-  if (auctions.length === 0) {
-    return (
-      <EmptyState
-        title="No estás participando en ninguna subasta"
-        subtitle="Hacé una oferta en una subasta activa para verla acá."
-        accentColor={BLUE}
-        icon={
-          <svg viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="1.8" className="w-6 h-6" aria-hidden="true">
-            <path d="M7 16V4m0 0L3 8m4-4 4 4M17 8v12m0 0 4-4m-4 4-4-4" />
-          </svg>
-        }
-      />
-    );
-  }
-
   return (
     <div className="page-enter flex flex-col gap-8">
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
+      {auctions.length === 0 && (
+        <EmptyState
+          title="No estás participando en ninguna subasta"
+          subtitle="Hacé una oferta en una subasta activa para verla acá."
+          accentColor={BLUE}
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="1.8" className="w-6 h-6" aria-hidden="true">
+              <path d="M7 16V4m0 0L3 8m4-4 4 4M17 8v12m0 0 4-4m-4 4-4-4" />
+            </svg>
+          }
+        />
+      )}
       {active.length > 0 && (
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
@@ -125,7 +129,7 @@ export default function ParticipandoPage() {
         </section>
       )}
 
-      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
+      <Paginador page={page} totalPages={data?.totalPages ?? 0} onChange={setPage} />
 
       {selected && (
         <AuctionDetailModal

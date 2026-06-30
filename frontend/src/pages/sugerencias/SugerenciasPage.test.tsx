@@ -48,8 +48,8 @@ describe('SugerenciasPage', () => {
     useSugerencias.mockReturnValue({ data: page([sugerencia], 3), isLoading: false, isError: false, refetch: vi.fn() });
     render(<SugerenciasPage />);
     // arranca en página 0
-    expect(useSugerencias).toHaveBeenLastCalledWith('lio', 0);
+    expect(useSugerencias).toHaveBeenLastCalledWith('lio', 0, 10);
     fireEvent.click(screen.getByRole('button', { name: '2' }));
-    expect(useSugerencias).toHaveBeenLastCalledWith('lio', 1);
+    expect(useSugerencias).toHaveBeenLastCalledWith('lio', 1, 10);
   });
 });

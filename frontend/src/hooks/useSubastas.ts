@@ -22,30 +22,30 @@ export interface SubastaResponseDTO {
 }
 
 // El backend filtra por estado server-side (ActivasPage pasa estado=EN_CURSO).
-export function useSubastasActivas(page = 0, estado = 'EN_CURSO') {
+export function useSubastasActivas(page = 0, size = DEFAULT_PAGE_SIZE, estado = 'EN_CURSO') {
   return useQuery({
-    queryKey: ['subastas', 'activas', estado, page],
+    queryKey: ['subastas', 'activas', estado, page, size],
     queryFn: async (): Promise<PagedResponse<SubastaResponseDTO>> =>
-      (await api.get('/api/subastas', { params: { estado, page, size: DEFAULT_PAGE_SIZE } })).data,
+      (await api.get('/api/subastas', { params: { estado, page, size } })).data,
     placeholderData: keepPreviousData,
   });
 }
 
-export function useMisSubastas(userId: string | undefined, page = 0) {
+export function useMisSubastas(userId: string | undefined, page = 0, size = DEFAULT_PAGE_SIZE) {
   return useQuery({
-    queryKey: ['subastas', 'mias', userId, page],
+    queryKey: ['subastas', 'mias', userId, page, size],
     queryFn: async (): Promise<PagedResponse<SubastaResponseDTO>> =>
-      (await api.get(`/api/subastas/usuario/${userId}`, { params: { page, size: DEFAULT_PAGE_SIZE } })).data,
+      (await api.get(`/api/subastas/usuario/${userId}`, { params: { page, size } })).data,
     enabled: !!userId,
     placeholderData: keepPreviousData,
   });
 }
 
-export function useSubastasParticipando(userId: string | undefined, page = 0) {
+export function useSubastasParticipando(userId: string | undefined, page = 0, size = DEFAULT_PAGE_SIZE) {
   return useQuery({
-    queryKey: ['subastas', 'participando', userId, page],
+    queryKey: ['subastas', 'participando', userId, page, size],
     queryFn: async (): Promise<PagedResponse<SubastaResponseDTO>> =>
-      (await api.get(`/api/subastas/participando/${userId}`, { params: { page, size: DEFAULT_PAGE_SIZE } })).data,
+      (await api.get(`/api/subastas/participando/${userId}`, { params: { page, size } })).data,
     enabled: !!userId,
     placeholderData: keepPreviousData,
   });

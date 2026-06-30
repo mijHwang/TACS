@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import { usePropuestasRecibidas, useResponderPropuesta } from '../../hooks/usePropuestas';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 export default function PropuestasRecibidasPage() {
   const { user } = useAuth();
   const [page, setPage] = useState(0);
-  const { data, isLoading } = usePropuestasRecibidas(user?.id, page);
+  const { pageSize, setPageSize, options } = usePageSize();
+  const { data, isLoading } = usePropuestasRecibidas(user?.id, page, pageSize);
   const propuestasRecibidas = data?.content ?? [];
   const responder = useResponderPropuesta();
 
@@ -56,6 +60,10 @@ export default function PropuestasRecibidasPage() {
           No se pudo procesar la propuesta. Intentá de nuevo.
         </p>
       )}
+
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
 
       {propuestasRecibidas.length === 0 ? (
         <p className="text-muted">No hay propuestas recibidas</p>
@@ -120,7 +128,7 @@ export default function PropuestasRecibidasPage() {
         </div>
       )}
 
-      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
+      <Paginador page={page} totalPages={data?.totalPages ?? 0} onChange={setPage} />
     </div>
   );
 }

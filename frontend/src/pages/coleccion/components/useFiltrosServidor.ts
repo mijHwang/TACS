@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import { useFiltrosFigurita, type FiltrosFiguritaState } from './useFiltrosFigurita';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 import type { FiltrosColeccion } from '../../../hooks/useFiguritas';
+import { usePageSize } from '../../../hooks/usePageSize';
 
 export interface FiltrosServidor {
   /** Estado compatible con `<FiltrosFigurita>` (setters envueltos para resetear la página). */
@@ -10,6 +11,9 @@ export interface FiltrosServidor {
   setPage: (p: number) => void;
   /** Filtros listos para los hooks paginados (search debounced, vacíos → undefined). */
   params: FiltrosColeccion;
+  pageSize: number;
+  setPageSize: (n: number) => void;
+  options: number[];
 }
 
 /**
@@ -20,6 +24,8 @@ export interface FiltrosServidor {
 export function useFiltrosServidor(): FiltrosServidor {
   const base = useFiltrosFigurita();
   const [page, setPage] = useState(0);
+  const { pageSize, setPageSize: setPageSizeRaw, options } = usePageSize();
+  const setPageSize = (n: number) => { setPageSizeRaw(n); setPage(0); };
 
   const wrap =
     (setter: Dispatch<SetStateAction<string>>) =>
@@ -36,11 +42,12 @@ export function useFiltrosServidor(): FiltrosServidor {
   const debouncedSearch = useDebouncedValue(base.searchTerm, 300);
   const params: FiltrosColeccion = {
     page,
+    size: pageSize,
     search: debouncedSearch.trim() || undefined,
     seleccion: base.filterSeleccion.trim() || undefined,
     equipo: base.filterEquipo.trim() || undefined,
     categoria: base.filterCategoria.trim() || undefined,
   };
 
-  return { filtros, page, setPage, params };
+  return { filtros, page, setPage, params, pageSize, setPageSize, options };
 }

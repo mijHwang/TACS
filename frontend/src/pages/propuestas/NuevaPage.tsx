@@ -150,7 +150,7 @@ export default function PropuestasNuevaPage() {
                 </label>
               ))
             )}
-            <Paginador page={paginaSel} totalPages={totalPagesSel} onChange={setPaginaSel} />
+            {totalPagesSel > 1 && <Paginador page={paginaSel} totalPages={totalPagesSel} onChange={setPaginaSel} />}
           </div>
         )}
       </div>

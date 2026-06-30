@@ -11,6 +11,9 @@ import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import EmptyState from '../../components/EmptyState';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
@@ -18,8 +21,9 @@ const BLUE = '#03BAE9';
 export default function SubastasActivasPage() {
   const { user } = useAuth();
   const [page, setPage] = useState(0);
+  const { pageSize, setPageSize, options } = usePageSize();
   // El servidor ya filtra por estado=EN_CURSO; no se filtra en JS.
-  const { data, isLoading, isError, refetch } = useSubastasActivas(page);
+  const { data, isLoading, isError, refetch } = useSubastasActivas(page, pageSize);
   const auctions = data?.content ?? [];
   const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
@@ -74,6 +78,10 @@ export default function SubastasActivasPage() {
         </span>
       </div>
 
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
+
       {auctions.length === 0 ? (
         <EmptyState
           title="No hay subastas activas"
@@ -97,7 +105,7 @@ export default function SubastasActivasPage() {
         </div>
       )}
 
-      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
+      <Paginador page={page} totalPages={data?.totalPages ?? 0} onChange={setPage} />
 
       {selected && (
         <AuctionDetailModal

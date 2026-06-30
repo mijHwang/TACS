@@ -11,6 +11,8 @@ import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
 
 /**
  * Vista "Mis repetidas": sólo figuritas con count>1, paginadas y filtradas server-side.
@@ -20,7 +22,7 @@ import Paginador from '../../components/Paginador';
 export default function RepetidasPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { filtros, page, setPage, params } = useFiltrosServidor();
+  const { filtros, page, setPage, params, pageSize, setPageSize, options } = useFiltrosServidor();
   const { data, isLoading, isError, refetch } = useRepetidasPaginadas(user?.username, params);
   const repetidas = data?.content ?? [];
   const [publishingId, setPublishingId] = useState<string | null>(null);
@@ -60,6 +62,9 @@ export default function RepetidasPage() {
         <Spinner label="Cargando repetidas…" />
       ) : (
         <>
+          <ListToolbar total={data?.totalElements ?? 0}>
+            <PageSizeSelector value={pageSize} options={options} onChange={(n) => setPageSize(n)} />
+          </ListToolbar>
           <GrillaFiguritas isEmpty={repetidas.length === 0} emptyMessage="No tenés figuritas repetidas">
             {repetidas.map((f) => (
               <TarjetaColeccion

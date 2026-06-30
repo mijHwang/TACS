@@ -8,12 +8,14 @@ import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
 
 /** Vista "Mis faltantes": figuritas que el usuario no tiene, paginadas y filtradas server-side. */
 export default function ColeccionFaltantesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { filtros, page, setPage, params } = useFiltrosServidor();
+  const { filtros, page, setPage, params, pageSize, setPageSize, options } = useFiltrosServidor();
   const { data, isLoading, isError, refetch } = useFaltantesPaginadas(user?.username, params);
   const faltantes = data?.content ?? [];
 
@@ -26,6 +28,9 @@ export default function ColeccionFaltantesPage() {
         <Spinner label="Cargando faltantes…" />
       ) : (
         <>
+          <ListToolbar total={data?.totalElements ?? 0}>
+            <PageSizeSelector value={pageSize} options={options} onChange={(n) => setPageSize(n)} />
+          </ListToolbar>
           <GrillaFiguritas isEmpty={faltantes.length === 0} emptyMessage="¡Tienes todas las figuritas!">
             {faltantes.map((f) => (
               <TarjetaColeccion

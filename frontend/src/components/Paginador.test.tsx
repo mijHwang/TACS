@@ -4,9 +4,17 @@ import { describe, it, expect, vi } from 'vitest';
 import Paginador from './Paginador';
 
 describe('Paginador', () => {
-  it('renders nothing when there is a single page', () => {
-    const { container } = render(<Paginador page={0} totalPages={1} onChange={() => {}} />);
-    expect(container).toBeEmptyDOMElement();
+  it('always renders the number row, showing "1" for a single page', () => {
+    render(<Paginador page={0} totalPages={1} onChange={() => {}} />);
+    expect(screen.getByRole('button', { name: '1' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByLabelText('Página anterior')).toBeDisabled();
+    expect(screen.getByLabelText('Página siguiente')).toBeDisabled();
+  });
+
+  it('renders "1" even with zero total pages', () => {
+    render(<Paginador page={0} totalPages={0} onChange={() => {}} />);
+    expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Página siguiente')).toBeDisabled();
   });
 
   it('shows 1-based labels for 0-based pages and marks the current one', () => {

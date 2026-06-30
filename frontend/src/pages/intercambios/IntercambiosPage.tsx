@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../../services/api';
+import api, { type PagedResponse } from '../../services/api';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 interface IntercambioResponseDTO {
   id: string;
@@ -24,6 +27,7 @@ export default function IntercambiosPage() {
   const { user } = useAuth();
   const [intercambios, setIntercambios] = useState<IntercambioResponseDTO[]>([]);
   const [page, setPage] = useState(0);
+  const { pageSize, setPageSize, options } = usePageSize();
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(Boolean(user?.id && user.id !== user.username));
@@ -38,7 +42,7 @@ export default function IntercambiosPage() {
     // visibles hasta que llega la nueva página (UX tipo keepPreviousData). El spinner
     // inicial se cubre con el estado loading inicial (true).
     api.get<PagedResponse<IntercambioResponseDTO>>(`/api/intercambios/usuario/${user.id}`, {
-      params: { page, size: DEFAULT_PAGE_SIZE },
+      params: { page, size: pageSize },
     })
       .then(res => {
         setIntercambios(res.data.content);
@@ -47,7 +51,7 @@ export default function IntercambiosPage() {
       })
       .catch(() => setError('No se pudieron cargar los intercambios.'))
       .finally(() => setLoading(false));
-  }, [user?.id, user?.username, page]);
+  }, [user?.id, user?.username, page, pageSize]);
 
   const handleCalificar = async (intercambioId: string, puntaje: number) => {
     if (!user?.id) return;
@@ -96,6 +100,10 @@ export default function IntercambiosPage() {
           {totalElements}
         </span>
       </div>
+
+      <ListToolbar total={totalElements}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
 
       {intercambios.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
@@ -203,9 +211,9 @@ export default function IntercambiosPage() {
               </div>
             );
           })}
-          <Paginador page={page} totalPages={totalPages} onChange={setPage} />
         </div>
       )}
+      <Paginador page={page} totalPages={totalPages} onChange={setPage} />
     </div>
   );
 }

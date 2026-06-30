@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import { usePropuestasEnviadas } from '../../hooks/usePropuestas';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 export default function PropuestasEnviadasPage() {
   const { user } = useAuth();
   const [page, setPage] = useState(0);
-  const { data, isLoading } = usePropuestasEnviadas(user?.id, page);
+  const { pageSize, setPageSize, options } = usePageSize();
+  const { data, isLoading } = usePropuestasEnviadas(user?.id, page, pageSize);
   const propuestasEnviadas = data?.content ?? [];
 
   const getStatusColor = (estado: string) => {
@@ -46,6 +50,10 @@ export default function PropuestasEnviadasPage() {
   return (
     <div className="page-enter">
       <h2 className="text-xl font-semibold text-text mb-6">Propuestas · Enviadas</h2>
+
+      <ListToolbar total={data?.totalElements ?? 0}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
 
       {propuestasEnviadas.length === 0 ? (
         <p className="text-muted">No hay propuestas enviadas</p>
@@ -92,7 +100,7 @@ export default function PropuestasEnviadasPage() {
         </div>
       )}
 
-      {data && <Paginador page={page} totalPages={data.totalPages} onChange={setPage} />}
+      <Paginador page={page} totalPages={data?.totalPages ?? 0} onChange={setPage} />
     </div>
   );
 }

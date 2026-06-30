@@ -188,7 +188,7 @@ export default function AdminGiftPage() {
                   </button>
                 ))}
               </div>
-              <Paginador page={basePage} totalPages={baseData?.totalPages ?? 1} onChange={setBasePage} />
+              {(baseData?.totalPages ?? 1) > 1 && <Paginador page={basePage} totalPages={baseData?.totalPages ?? 1} onChange={setBasePage} />}
             </>
           )}
 

@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import { useNotificaciones, useMarcarLeida, useEliminarNotificacion, useLimpiarNotificaciones } from '../../hooks/useNotificaciones';
 import Paginador from '../../components/Paginador';
+import ListToolbar from '../../components/ListToolbar';
+import PageSizeSelector from '../../components/PageSizeSelector';
+import { usePageSize } from '../../hooks/usePageSize';
 
 export default function NotificacionesPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [page, setPage] = useState(0);
-  const { data, isLoading } = useNotificaciones(user?.id, page);
+  const { pageSize, setPageSize, options } = usePageSize();
+  const { data, isLoading } = useNotificaciones(user?.id, page, pageSize);
   const notificaciones = data?.content ?? [];
   const totalElements = data?.totalElements ?? 0;
   const totalPages = data?.totalPages ?? 0;
@@ -78,6 +82,10 @@ export default function NotificacionesPage() {
           </button>
         )}
       </div>
+
+      <ListToolbar total={totalElements}>
+        <PageSizeSelector value={pageSize} options={options} onChange={(n) => { setPageSize(n); setPage(0); }} />
+      </ListToolbar>
 
       {totalElements === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
