@@ -1,5 +1,6 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.CatalogoFiltro;
 import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.PagedResponse;
@@ -46,11 +47,23 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Colección del usuario, paginada y agrupada por figurita-base. Filtros server-side.
+     * Admite {@code size} grande (hasta 2000) para que "Nueva propuesta" cargue la colección completa.
+     */
     @GetMapping("/{userName}/figuritas")
-    public ResponseEntity<List<FiguritaResponseDTO>> getFiguritasByUsuario(@PathVariable String userName) {
+    public ResponseEntity<PagedResponse<FiguritaResponseDTO>> getFiguritasByUsuario(
+            @PathVariable String userName,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String seleccion,
+            @RequestParam(required = false) String equipo,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Usuario usuario = service.loadUserByUsername(userName);
-        List<FiguritaResponseDTO> figuritas = figuritaService.obtenerPorUserId(usuario.getId());
-        return ResponseEntity.ok(figuritas);
+        CatalogoFiltro filtro = new CatalogoFiltro(usuario.getId(), null, null, search, seleccion, equipo, categoria);
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 2000));
+        return ResponseEntity.ok(PagedResponse.from(figuritaService.obtenerPorUserIdPaginado(filtro, pageable)));
     }
 
     @GetMapping("/by-username/{userName}")
@@ -89,17 +102,36 @@ public class UsuarioController {
         return ResponseEntity.notFound().build();
     }
 
+    /** Faltantes del usuario (bases que no tiene), paginadas y filtradas server-side. */
     @GetMapping("/{userName}/figuritas/faltantes")
-    public ResponseEntity<List<FiguritaBaseDTO>> getFaltantes(@PathVariable String userName) {
+    public ResponseEntity<PagedResponse<FiguritaBaseDTO>> getFaltantes(
+            @PathVariable String userName,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String seleccion,
+            @RequestParam(required = false) String equipo,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Usuario usuario = service.loadUserByUsername(userName);
-        List<FiguritaBaseDTO> faltantes = figuritaService.obtenerFaltantes(usuario.getId());
-        return ResponseEntity.ok(faltantes);
+        CatalogoFiltro filtro = new CatalogoFiltro(usuario.getId(), null, null, search, seleccion, equipo, categoria);
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
+        return ResponseEntity.ok(PagedResponse.from(figuritaService.obtenerFaltantesPaginado(filtro, pageable)));
     }
 
+    /** Repetidas del usuario (count &gt; 1), paginadas y filtradas server-side. */
     @GetMapping("/{userName}/figuritas/repetidas")
-    public ResponseEntity<List<FiguritaResponseDTO>> getRepetidas(@PathVariable String userName) {
+    public ResponseEntity<PagedResponse<FiguritaResponseDTO>> getRepetidas(
+            @PathVariable String userName,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String seleccion,
+            @RequestParam(required = false) String equipo,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Usuario usuario = service.loadUserByUsername(userName);
-        return ResponseEntity.ok(figuritaService.obtenerRepetidas(usuario.getId()));
+        CatalogoFiltro filtro = new CatalogoFiltro(usuario.getId(), null, null, search, seleccion, equipo, categoria);
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
+        return ResponseEntity.ok(PagedResponse.from(figuritaService.obtenerRepetidasPaginado(filtro, pageable)));
     }
 
     @GetMapping("/{userName}/sugerencias")

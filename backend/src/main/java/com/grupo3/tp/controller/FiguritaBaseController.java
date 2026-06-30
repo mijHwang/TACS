@@ -1,8 +1,11 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaBaseRequestDTO;
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.service.*;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +21,38 @@ public class FiguritaBaseController {
     private final JugadorService jugadorService;
     private final CategoriaFiguritaService  categoriaService;
     private final EquipoService equipoService;
+    private final FiguritaService figuritaService;
 
     public FiguritaBaseController(FiguritaBaseService service,
                                   SeleccionService seleccionService,
                                   JugadorService jugadorService,
                                   CategoriaFiguritaService categoriaService,
-                                  EquipoService equipoService) {
+                                  EquipoService equipoService,
+                                  FiguritaService figuritaService) {
         this.service = service;
         this.seleccionService = seleccionService;
         this.jugadorService = jugadorService;
         this.categoriaService = categoriaService;
         this.equipoService = equipoService;
+        this.figuritaService = figuritaService;
     }
 
     @GetMapping
     public ResponseEntity<List<FiguritaBase>> getAll() {
         return ResponseEntity.ok(service.obtenerTodas());
+    }
+
+    /**
+     * Búsqueda paginada de figuritas-base por texto (nombre de jugador/selección o número).
+     * Pensada para el typeahead de "regalar figurita" (admin), que antes cargaba las ~826 de una.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<PagedResponse<FiguritaBaseDTO>> search(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
+        return ResponseEntity.ok(PagedResponse.from(figuritaService.buscarBasesPaginado(search, pageable)));
     }
 
     @GetMapping("/{id}")

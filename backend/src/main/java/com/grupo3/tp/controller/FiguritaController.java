@@ -1,7 +1,9 @@
 package com.grupo3.tp.controller;
 
+import com.grupo3.tp.dtos.CatalogoFiltro;
 import com.grupo3.tp.dtos.FiguritaRequestDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
+import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
@@ -9,6 +11,7 @@ import com.grupo3.tp.repository.SubastaRepository;
 import com.grupo3.tp.service.FiguritaBaseService;
 import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.UsuarioService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +34,24 @@ public class FiguritaController {
         this.usuarioService = usuarioService;
     }
 
+    /**
+     * Catálogo paginado (una entrada por figurita-base, agrupada). Filtros server-side.
+     * {@code usuarioId} es el caller: se EXCLUYEN sus propias figuritas del catálogo.
+     */
     @GetMapping()
-    public ResponseEntity<List<FiguritaResponseDTO>> getAll() {
-        return ResponseEntity.ok(service.obtenerTodas());
+    public ResponseEntity<PagedResponse<FiguritaResponseDTO>> getAll(
+            @RequestParam(required = false) String usuarioId,
+            @RequestParam(required = false) String figuritaBaseId,
+            @RequestParam(required = false) Integer numero,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String seleccion,
+            @RequestParam(required = false) String equipo,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        CatalogoFiltro filtro = new CatalogoFiltro(usuarioId, figuritaBaseId, numero, search, seleccion, equipo, categoria);
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
+        return ResponseEntity.ok(PagedResponse.from(service.obtenerCatalogoPaginado(filtro, pageable)));
     }
 
     @GetMapping("/{id}")

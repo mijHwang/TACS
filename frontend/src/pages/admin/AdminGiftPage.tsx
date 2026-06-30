@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { useBaseSearch } from '../../hooks/useBaseSearch';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
+import Paginador from '../../components/Paginador';
 
 interface Usuario {
   id: string;
@@ -8,54 +11,34 @@ interface Usuario {
   email: string;
 }
 
-interface FiguritaBase {
-  id: string;
-  numero: number;
-  jugador: { id: string; nombre: string };
-  seleccion: { id: string; nombre: string };
-  equipo: { id: string; nombre: string };
-  categoria: { id: string; nombre: string };
-}
-
 export default function AdminGiftPage() {
   const navigate = useNavigate();
-  const [figuritaBases, setFiguritaBases] = useState<FiguritaBase[]>([]);
-  const [loading, setLoading] = useState(true);
-  
+
   // User search
   const [userSearch, setUserSearch] = useState('');
   const [userResults, setUserResults] = useState<Usuario[]>([]);
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedUserName, setSelectedUserName] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
-  
-  // FiguritaBase selection
+
+  // FiguritaBase typeahead (server-side, paginado)
+  const [baseSearch, setBaseSearch] = useState('');
+  const [basePage, setBasePage] = useState(0);
   const [selectedBaseId, setSelectedBaseId] = useState('');
-  
+  const [selectedBaseLabel, setSelectedBaseLabel] = useState('');
+  const debouncedBaseSearch = useDebouncedValue(baseSearch, 300);
+  const { data: baseData, isFetching: baseFetching } = useBaseSearch(debouncedBaseSearch, basePage);
+  const baseResults = baseData?.content ?? [];
+
   // Feedback
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
   const [gifting, setGifting] = useState(false);
 
-  // Load all figuritaBases on mount
-  useEffect(() => {
-    api.get('/api/figuritas-base')
-      .then(res => {
-        setFiguritaBases(res.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error loading figuritaBases:', error);
-        setMessage('Error al cargar figuritas');
-        setMessageType('error');
-        setLoading(false);
-      });
-  }, []);
-
   // Search users
   const handleUserSearch = async (query: string) => {
     setUserSearch(query);
-    
+
     if (query.length < 2) {
       setUserResults([]);
       return;
@@ -80,6 +63,13 @@ export default function AdminGiftPage() {
     setUserSearch('');
   };
 
+  const selectBase = (id: string, label: string) => {
+    setSelectedBaseId(id);
+    setSelectedBaseLabel(label);
+    setBaseSearch('');
+    setBasePage(0);
+  };
+
   const handleGift = async () => {
     if (!selectedUserId) {
       setMessage('Selecciona un usuario');
@@ -94,19 +84,20 @@ export default function AdminGiftPage() {
 
     setGifting(true);
     setMessage('');
-    
+
     try {
       await api.post(`/api/admin/users/${selectedUserId}/gift-figurita/${selectedBaseId}`);
-      
+
       setMessage(`✓ Figurita regalada a ${selectedUserName}!`);
       setMessageType('success');
-      
+
       // Reset form
       setSelectedUserId('');
       setSelectedUserName('');
       setSelectedBaseId('');
+      setSelectedBaseLabel('');
       setUserSearch('');
-      
+
       setTimeout(() => {
         setMessage('');
         setMessageType('');
@@ -120,14 +111,6 @@ export default function AdminGiftPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="page-enter">
-        <p className="text-text">Cargando figuritas...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="page-enter">
       <h1 className="text-3xl font-bold text-text mb-6">Regalar Figurita (Admin)</h1>
@@ -140,7 +123,7 @@ export default function AdminGiftPage() {
       </button>
 
       <div className="max-w-md mx-auto bg-surface p-6 rounded-lg border border-border">
-        
+
         {/* User Search */}
         <div className="mb-6">
           <label htmlFor="gift-user-search" className="block text-sm font-semibold text-text mb-2">Selecciona Usuario</label>
@@ -152,9 +135,9 @@ export default function AdminGiftPage() {
             onChange={(e) => handleUserSearch(e.target.value)}
             className="w-full p-3 bg-surface border border-border rounded-lg text-text placeholder-muted focus:outline-none focus:border-primary mb-2"
           />
-          
+
           {searchLoading && <p className="text-sm text-muted">Buscando...</p>}
-          
+
           {userResults.length > 0 && (
             <div className="border border-border rounded-lg overflow-hidden">
               {userResults.map(user => (
@@ -177,28 +160,49 @@ export default function AdminGiftPage() {
           )}
         </div>
 
-        {/* FiguritaBase Dropdown */}
+        {/* FiguritaBase typeahead */}
         <div className="mb-6">
-          <label htmlFor="gift-figurita" className="block text-sm font-semibold text-text mb-2">Selecciona Figurita</label>
-          <select
-            id="gift-figurita"
-            value={selectedBaseId}
-            onChange={(e) => setSelectedBaseId(e.target.value)}
-            className="w-full p-3 bg-surface border border-border rounded-lg text-text focus:outline-none focus:border-primary"
-          >
-            <option value="">-- Elige una figurita --</option>
-            {figuritaBases.map(fig => (
-              <option key={fig.id} value={fig.id}>
-                #{fig.numero} - {fig.jugador.nombre} ({fig.seleccion.nombre})
-              </option>
-            ))}
-          </select>
+          <label htmlFor="gift-figurita-search" className="block text-sm font-semibold text-text mb-2">Selecciona Figurita</label>
+          <input
+            id="gift-figurita-search"
+            type="text"
+            placeholder="Buscar por jugador, selección o número..."
+            value={baseSearch}
+            onChange={(e) => { setBaseSearch(e.target.value); setBasePage(0); }}
+            className="w-full p-3 bg-surface border border-border rounded-lg text-text placeholder-muted focus:outline-none focus:border-primary mb-2"
+          />
+
+          {baseFetching && baseResults.length === 0 && <p className="text-sm text-muted">Buscando...</p>}
+
+          {baseResults.length > 0 && (
+            <>
+              <div className="border border-border rounded-lg overflow-hidden">
+                {baseResults.map(base => (
+                  <button
+                    key={base.id}
+                    onClick={() => selectBase(base.id, `#${base.numero} - ${base.jugadorNombre} (${base.seleccionNombre})`)}
+                    className="w-full text-left p-3 bg-surface hover:bg-surface/80 border-b border-border last:border-b-0 transition-colors"
+                  >
+                    <p className="text-text font-semibold">#{base.numero} - {base.jugadorNombre}</p>
+                    <p className="text-xs text-muted">{base.seleccionNombre}</p>
+                  </button>
+                ))}
+              </div>
+              <Paginador page={basePage} totalPages={baseData?.totalPages ?? 1} onChange={setBasePage} />
+            </>
+          )}
+
+          {selectedBaseLabel && (
+            <div className="mt-2 p-3 bg-primary/15 rounded-lg border border-primary/50">
+              <p className="text-sm text-primary font-semibold">✓ {selectedBaseLabel}</p>
+            </div>
+          )}
         </div>
 
         {/* Message */}
         {message && (
           <div className={`mb-4 p-3 rounded-lg text-sm font-semibold ${
-            messageType === 'success' 
+            messageType === 'success'
               ? 'bg-green-900/30 text-green-400 border border-green-500/50'
               : 'bg-red-900/30 text-red-400 border border-red-500/50'
           }`}>

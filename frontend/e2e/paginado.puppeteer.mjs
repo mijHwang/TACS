@@ -82,6 +82,34 @@ try {
   await page.screenshot({ path: `${SHOTS}subastas-activas.png` });
   ok(true, 'subastas/activas carga sin errores (ver screenshot)');
 
+  // ── Buscar (catálogo): grilla paginada + filtros server-side ─────────────────
+  // El catálogo agrupa por figurita-base y pagina server-side; el <Paginador> aparece
+  // si hay >10 figuritas-base disponibles de otros usuarios.
+  await page.goto(`${BASE_URL}/buscar`, { waitUntil: 'networkidle2' });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${SHOTS}buscar-catalogo-p1.png` });
+
+  const buscarPager = await page.$('[aria-label="Página siguiente"]');
+  if (!buscarPager) {
+    console.log('⚠ No hay paginador en Buscar (¿menos de 11 figuritas-base disponibles?). ' +
+      'Sembrá más datos para verificar el paso de página del catálogo.');
+  } else {
+    const firstP1 = await $txt(page, 'main, [role="main"], body');
+    await page.click('[aria-label="Página siguiente"]');
+    await page.waitForTimeout(800);
+    await page.screenshot({ path: `${SHOTS}buscar-catalogo-p2.png` });
+    const current = await $txt(page, 'button[aria-current="page"]');
+    ok(current === '2', `Buscar: la página actual es 2 (fue: ${current})`);
+    const firstP2 = await $txt(page, 'main, [role="main"], body');
+    ok(firstP1 !== firstP2, 'Buscar: el contenido cambió entre página 1 y 2');
+  }
+
+  // ── Mi Colección · Faltantes: grilla paginada server-side ────────────────────
+  await page.goto(`${BASE_URL}/coleccion/faltantes`, { waitUntil: 'networkidle2' });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${SHOTS}coleccion-faltantes.png` });
+  ok(true, 'coleccion/faltantes carga sin errores (ver screenshot)');
+
 } catch (e) {
   console.error('E2E error:', e);
   failures++;

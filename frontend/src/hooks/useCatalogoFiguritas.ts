@@ -1,11 +1,26 @@
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../services/api';
 import type { FiguritaResponseDTO } from './useFiguritas';
 
-/** Catálogo global de figuritas (todas las publicadas, GET /api/figuritas). */
-export function useCatalogoFiguritas() {
+/** Parámetros del catálogo paginado. `usuarioId` = caller a excluir (no muestra lo propio). */
+export interface CatalogoParams {
+  page: number;
+  size?: number;
+  usuarioId?: string;
+  figuritaBaseId?: string;
+  numero?: number;
+  search?: string;
+  seleccion?: string;
+  equipo?: string;
+  categoria?: string;
+}
+
+/** Catálogo de figuritas paginado y filtrado server-side (agrupado por figurita-base). */
+export function useCatalogoFiguritas(params: CatalogoParams) {
   return useQuery({
-    queryKey: ['figuritas', 'catalogo'],
-    queryFn: async (): Promise<FiguritaResponseDTO[]> => (await api.get('/api/figuritas')).data,
+    queryKey: ['figuritas', 'catalogo', params],
+    queryFn: async (): Promise<PagedResponse<FiguritaResponseDTO>> =>
+      (await api.get('/api/figuritas', { params: { size: DEFAULT_PAGE_SIZE, ...params } })).data,
+    placeholderData: keepPreviousData,
   });
 }

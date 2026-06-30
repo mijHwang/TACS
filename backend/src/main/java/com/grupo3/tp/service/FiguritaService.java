@@ -1,5 +1,6 @@
 package com.grupo3.tp.service;
 
+import com.grupo3.tp.dtos.CatalogoFiltro;
 import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.models.Figurita;
@@ -7,6 +8,8 @@ import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaBaseRepository;
 import com.grupo3.tp.repository.FiguritaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -158,5 +161,32 @@ public class FiguritaService {
 
     public List<FiguritaResponseDTO> obtenerRepetidas(String usuarioId) {
         return repository.findRepetidas(usuarioId);
+    }
+
+    // ── Variantes paginadas (aggregation server-side) ─────────────────────────
+
+    /** Catálogo paginado y filtrado. {@code filtro.usuarioId()} = caller a excluir (nullable). */
+    public Page<FiguritaResponseDTO> obtenerCatalogoPaginado(CatalogoFiltro filtro, Pageable pageable) {
+        return repository.findCatalogoPaged(filtro, pageable);
+    }
+
+    /** Colección del usuario, paginada y filtrada. {@code filtro.usuarioId()} = dueño. */
+    public Page<FiguritaResponseDTO> obtenerPorUserIdPaginado(CatalogoFiltro filtro, Pageable pageable) {
+        return repository.findByOwnerPaged(filtro, pageable);
+    }
+
+    /** Repetidas del usuario, paginadas y filtradas. {@code filtro.usuarioId()} = dueño. */
+    public Page<FiguritaResponseDTO> obtenerRepetidasPaginado(CatalogoFiltro filtro, Pageable pageable) {
+        return repository.findRepetidasPaged(filtro, pageable);
+    }
+
+    /** Faltantes del usuario, paginadas y filtradas. {@code filtro.usuarioId()} = dueño. */
+    public Page<FiguritaBaseDTO> obtenerFaltantesPaginado(CatalogoFiltro filtro, Pageable pageable) {
+        return figuritaBaseRepository.findFaltantesPaged(filtro, pageable);
+    }
+
+    /** Búsqueda paginada de figuritas-base por texto (typeahead admin). */
+    public Page<FiguritaBaseDTO> buscarBasesPaginado(String search, Pageable pageable) {
+        return figuritaBaseRepository.searchPaged(search, pageable);
     }
 }

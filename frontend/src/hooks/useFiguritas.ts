@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import api, { DEFAULT_PAGE_SIZE, type PagedResponse } from '../services/api';
 
 export interface FiguritaResponseDTO {
   id: string;
@@ -15,18 +15,6 @@ export interface FiguritaResponseDTO {
   imagenUrl?: string | null;
 }
 
-/** Colección completa del usuario, cacheada por username. */
-export function useFiguritas(username: string | undefined) {
-  return useQuery({
-    queryKey: ['figuritas', username],
-    queryFn: async (): Promise<FiguritaResponseDTO[]> => {
-      const res = await api.get(`/api/usuarios/${username}/figuritas`);
-      return res.data;
-    },
-    enabled: !!username,
-  });
-}
-
 export interface FiguritaBaseDTO {
   id: string;
   numero: number;
@@ -37,22 +25,61 @@ export interface FiguritaBaseDTO {
   imagenUrl?: string | null;
 }
 
-/** Repetidas del usuario (count > 1). Solo lectura. */
-export function useRepetidas(username: string | undefined) {
+/** Filtros server-side comunes a colección/faltantes/repetidas. */
+export interface FiltrosColeccion {
+  page: number;
+  size?: number;
+  search?: string;
+  seleccion?: string;
+  equipo?: string;
+  categoria?: string;
+}
+
+/**
+ * Colección COMPLETA del usuario (sin paginar). La usa "Nueva propuesta", que necesita toda la
+ * lista para mantener la selección entre páginas y el prefill desde Sugerencia. Pide una página
+ * grande y devuelve sólo el contenido.
+ */
+export function useFiguritas(username: string | undefined) {
   return useQuery({
-    queryKey: ['figuritas', 'repetidas', username],
-    queryFn: async (): Promise<FiguritaResponseDTO[]> =>
-      (await api.get(`/api/usuarios/${username}/figuritas/repetidas`)).data,
+    queryKey: ['figuritas', username, 'all'],
+    queryFn: async (): Promise<FiguritaResponseDTO[]> => {
+      const res = await api.get(`/api/usuarios/${username}/figuritas`, { params: { page: 0, size: 2000 } });
+      return res.data.content as FiguritaResponseDTO[];
+    },
     enabled: !!username,
   });
 }
 
-/** Figuritas que el usuario no tiene. */
-export function useFaltantes(username: string | undefined) {
+/** Colección del usuario paginada y filtrada server-side (agrupada por base, con cantidad). */
+export function useFiguritasPaginadas(username: string | undefined, p: FiltrosColeccion) {
   return useQuery({
-    queryKey: ['figuritas', 'faltantes', username],
-    queryFn: async (): Promise<FiguritaBaseDTO[]> =>
-      (await api.get(`/api/usuarios/${username}/figuritas/faltantes`)).data,
+    queryKey: ['figuritas', 'pag', username, p],
+    queryFn: async (): Promise<PagedResponse<FiguritaResponseDTO>> =>
+      (await api.get(`/api/usuarios/${username}/figuritas`, { params: { size: DEFAULT_PAGE_SIZE, ...p } })).data,
     enabled: !!username,
+    placeholderData: keepPreviousData,
+  });
+}
+
+/** Repetidas del usuario (count > 1) paginadas y filtradas server-side. */
+export function useRepetidasPaginadas(username: string | undefined, p: FiltrosColeccion) {
+  return useQuery({
+    queryKey: ['figuritas', 'repetidas', 'pag', username, p],
+    queryFn: async (): Promise<PagedResponse<FiguritaResponseDTO>> =>
+      (await api.get(`/api/usuarios/${username}/figuritas/repetidas`, { params: { size: DEFAULT_PAGE_SIZE, ...p } })).data,
+    enabled: !!username,
+    placeholderData: keepPreviousData,
+  });
+}
+
+/** Figuritas que el usuario no tiene, paginadas y filtradas server-side. */
+export function useFaltantesPaginadas(username: string | undefined, p: FiltrosColeccion) {
+  return useQuery({
+    queryKey: ['figuritas', 'faltantes', 'pag', username, p],
+    queryFn: async (): Promise<PagedResponse<FiguritaBaseDTO>> =>
+      (await api.get(`/api/usuarios/${username}/figuritas/faltantes`, { params: { size: DEFAULT_PAGE_SIZE, ...p } })).data,
+    enabled: !!username,
+    placeholderData: keepPreviousData,
   });
 }

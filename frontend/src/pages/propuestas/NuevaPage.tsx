@@ -3,6 +3,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../auth/useAuth';
 import { useFiguritas } from '../../hooks/useFiguritas';
 import { useCrearPropuesta } from '../../hooks/usePropuestas';
+import Paginador from '../../components/Paginador';
+
+const SEL_PAGE_SIZE = 10;
 
 export default function PropuestasNuevaPage() {
   const location = useLocation();
@@ -17,8 +20,20 @@ export default function PropuestasNuevaPage() {
   const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || '');
   const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>([]);
   const [expandedMias, setExpandedMias] = useState<boolean>(false);
+  const [busqueda, setBusqueda] = useState('');
+  const [paginaSel, setPaginaSel] = useState(0);
   const [formError, setFormError] = useState<string | null>(null);
   const prefillApplied = useRef(false);
+
+  // Filtrado + paginado client-side de la lista de selección (la colección puede tener 100+).
+  // La selección (figuritasOfrecidas) es independiente de la página, así que persiste al navegar.
+  const q = busqueda.trim().toLowerCase();
+  const filtradas = q === ''
+    ? misFiguritas
+    : misFiguritas.filter((f) =>
+        f.jugadorNombre.toLowerCase().includes(q) || f.seleccionNombre.toLowerCase().includes(q));
+  const totalPagesSel = Math.ceil(filtradas.length / SEL_PAGE_SIZE);
+  const visibles = filtradas.slice(paginaSel * SEL_PAGE_SIZE, paginaSel * SEL_PAGE_SIZE + SEL_PAGE_SIZE);
 
   // Handle checkbox for figuritas to offer
   const handleToggleFigurita = (id: string) => {
@@ -99,25 +114,43 @@ export default function PropuestasNuevaPage() {
           onClick={() => setExpandedMias(!expandedMias)}
           className="w-full flex items-center justify-between p-4 bg-surface border border-border rounded-lg hover:bg-surface/80 transition-colors mb-2"
         >
-          <h3 className="text-lg font-semibold text-text">¿Qué figuritas ofreces?</h3>
+          <h3 className="text-lg font-semibold text-text">
+            ¿Qué figuritas ofreces?
+            {figuritasOfrecidas.length > 0 && (
+              <span className="ml-2 text-sm font-normal text-primary">({figuritasOfrecidas.length} elegidas)</span>
+            )}
+          </h3>
           <span className="text-primary text-xl">{expandedMias ? '▼' : '►'}</span>
         </button>
 
         {expandedMias && (
           <div className="space-y-2">
-            {misFiguritas.map(fig => (
-              <label key={fig.id} className="flex items-center p-3 bg-surface rounded-lg border border-border cursor-pointer hover:bg-surface/80 transition-colors">
-                <input
-                  type="checkbox"
-                  checked={figuritasOfrecidas.includes(fig.id)}
-                  onChange={() => handleToggleFigurita(fig.id)}
-                  className="w-4 h-4 cursor-pointer"
-                />
-                <span className="ml-3 text-text">
-                  {fig.jugadorNombre} - {fig.seleccionNombre}
-                </span>
-              </label>
-            ))}
+            <input
+              type="text"
+              aria-label="Buscar en tus figuritas"
+              placeholder="Buscar en tus figuritas..."
+              value={busqueda}
+              onChange={(e) => { setBusqueda(e.target.value); setPaginaSel(0); }}
+              className="w-full p-3 bg-surface border border-border rounded-lg text-text placeholder-muted focus:outline-none focus:border-primary"
+            />
+            {visibles.length === 0 ? (
+              <p className="text-muted p-3">No se encontraron figuritas.</p>
+            ) : (
+              visibles.map(fig => (
+                <label key={fig.id} className="flex items-center p-3 bg-surface rounded-lg border border-border cursor-pointer hover:bg-surface/80 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={figuritasOfrecidas.includes(fig.id)}
+                    onChange={() => handleToggleFigurita(fig.id)}
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                  <span className="ml-3 text-text">
+                    {fig.jugadorNombre} - {fig.seleccionNombre}
+                  </span>
+                </label>
+              ))
+            )}
+            <Paginador page={paginaSel} totalPages={totalPagesSel} onChange={setPaginaSel} />
           </div>
         )}
       </div>

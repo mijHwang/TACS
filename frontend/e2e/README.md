@@ -5,6 +5,14 @@ login → pantalla paginada → el `<Paginador>` aparece (cuando hay >1 página)
 deshabilitado en la página 1, el contenido cambia al pasar de página, y `subastas/activas`
 carga con el filtro de estado server-side.
 
+Cubre también las pantallas agregadas en la 2ª tanda de paginado (catálogo + colección con
+**aggregation MongoDB**): **Buscar** (`/buscar`, catálogo agrupado por figurita-base, paginado y
+filtrado server-side) y **Mi Colección · Faltantes** (`/coleccion/faltantes`). Las otras pantallas
+de esa tanda — colección Todas/Repetidas, Nueva propuesta (selección paginada client-side) y
+Admin · regalar (typeahead) — quedan cubiertas por los tests de Vitest; el grueso de la verificación
+de los pipelines de agregación se hizo con curl en vivo contra Atlas (ver el plan en
+`docs/superpowers/plans/2026-06-30-paginado-catalogo.md`).
+
 ## Cómo correrlo
 
 ```bash
