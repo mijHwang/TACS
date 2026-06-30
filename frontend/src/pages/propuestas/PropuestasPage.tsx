@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useMatch } from 'react-router-dom';
+import { Suspense } from 'react';
 
 
 const subLinks = [
@@ -33,7 +34,12 @@ export default function PropuestasPage() {
 
       {isIndex
         ? <p className="text-sm text-muted">Seleccioná una sección.</p>
-        : <Outlet />}
+        : (
+          /* Suspense propio: la sub-página lazy carga sin desmontar el título ni los tabs. */
+          <Suspense fallback={<div className="py-10 text-center text-muted text-sm tracking-widest">Cargando…</div>}>
+            <Outlet />
+          </Suspense>
+        )}
     </div>
   );
 }

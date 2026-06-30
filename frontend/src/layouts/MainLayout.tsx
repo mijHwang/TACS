@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Suspense } from 'react';
 import { useAuth } from '../auth/useAuth';
 import type { JSX } from 'react';
 
@@ -165,7 +166,17 @@ export default function MainLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-7 bg-gray-50">
-          <Outlet />
+          {/* Suspense acotado al contenido: al cargar el chunk de una página lazy,
+              sólo parpadea esta área — el sidebar y el topbar permanecen montados. */}
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full text-gray-400 text-sm tracking-widest">
+                Cargando…
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

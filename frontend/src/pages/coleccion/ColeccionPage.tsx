@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { Suspense } from 'react';
 
 const tabs = [
   { to: '', label: 'Todas', end: true },
@@ -31,7 +32,10 @@ export default function ColeccionPage() {
         ))}
       </nav>
 
-      <Outlet />
+      {/* Suspense propio: la sub-página lazy carga sin desmontar el título ni los tabs. */}
+      <Suspense fallback={<div className="py-10 text-center text-muted text-sm tracking-widest">Cargando…</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 }

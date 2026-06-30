@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { Suspense } from 'react';
 
 const RED = '#D82D31';
 
@@ -42,7 +43,10 @@ export default function SubastasPage() {
         ))}
       </nav>
 
-      <Outlet />
+      {/* Suspense propio: la sub-página lazy carga sin desmontar el título ni los tabs. */}
+      <Suspense fallback={<div className="py-10 text-center text-gray-400 text-sm tracking-widest">Cargando…</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 }
