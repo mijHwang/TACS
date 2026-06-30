@@ -33,9 +33,15 @@ public class Usuario implements UserDetails {
 
     private String email;
     private Role role;
+    // @JsonIgnore: estas colecciones lazy NO se serializan en las respuestas de Usuario.
+    // Evita el N+1 a Atlas al resolver figuritaBase/seleccion/equipo/categoria/jugador/owner
+    // de cada figurita durante la serialización (la hidratación by-username tardaba ~20s).
+    // La colección se obtiene aparte vía GET /api/usuarios/{username}/figuritas (paginado).
     @DocumentReference(lazy = true)
+    @JsonIgnore
     private List<Figurita> figuritas;
     @DocumentReference(lazy = true)
+    @JsonIgnore
     private List<Subasta> subastasFavoritas;
 
     @Override

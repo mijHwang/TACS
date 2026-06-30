@@ -6,7 +6,6 @@ import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.dtos.SugerenciaResponseDTO;
 import com.grupo3.tp.dtos.UsuarioDTO;
-import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.SugerenciaService;
@@ -68,12 +67,9 @@ public class UsuarioController {
 
     @GetMapping("/by-username/{userName}")
     public ResponseEntity<Usuario> getByUserName(@PathVariable String userName) {
-         Usuario usuario = service.loadUserByUsername(userName);
-
-        List<Figurita> figuritas = figuritaService.obtenerTodasInternaPorUserId(usuario.getId());
-        usuario.setFiguritas(figuritas);
-
-        return  ResponseEntity.ok(usuario);
+        // Solo carga el usuario; figuritas/subastasFavoritas van @JsonIgnore (ver Usuario).
+        Usuario usuario = service.loadUserByUsername(userName);
+        return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("/search")

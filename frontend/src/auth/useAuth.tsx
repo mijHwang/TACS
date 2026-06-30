@@ -25,7 +25,10 @@ function userFromToken(token: string): User | null {
   const decoded = decodeToken(token);
   if (!decoded) return null;
   const role = decoded.roles.some((r) => r.includes('ADMIN')) ? 'admin' : 'user';
-  return { id: decoded.sub, username: decoded.sub, email: '', role };
+  // El JWT trae el username como `sub`, no el id. Dejamos `id` vacío hasta que la
+  // hidratación (by-username) traiga el id real: así los `enabled: !!userId` de los
+  // hooks no disparan llamadas keyed-by-id usando el username por error.
+  return { id: '', username: decoded.sub, email: '', role };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
