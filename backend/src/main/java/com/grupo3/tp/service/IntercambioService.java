@@ -2,7 +2,10 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.dtos.IntercambioResponseDTO;
 import com.grupo3.tp.dtos.ReputacionResponseDTO;
+import com.grupo3.tp.models.Calificacion;
 import com.grupo3.tp.models.Intercambio;
+import com.grupo3.tp.models.Usuario;
+import com.grupo3.tp.repository.CalificacionRepository;
 import com.grupo3.tp.repository.IntercambioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +18,12 @@ import java.util.Optional;
 public class IntercambioService {
 
     private final IntercambioRepository repository;
+    private final CalificacionRepository calificacionRepository;
 
-    public IntercambioService(IntercambioRepository repository) {
+    public IntercambioService(IntercambioRepository repository,
+                              CalificacionRepository calificacionRepository) {
         this.repository = repository;
+        this.calificacionRepository = calificacionRepository;
     }
 
     public Intercambio crear(Intercambio intercambio) {
@@ -67,59 +73,65 @@ public class IntercambioService {
             throw new IllegalArgumentException("El puntaje debe ser entre 1 y 5");
         }
 
-        String generadorId = intercambio.getUsuarioGenerador().getId();
-        String intercambiadorId = intercambio.getUsuarioIntercambiador().getId();
+        Usuario generador = intercambio.getUsuarioGenerador();
+        Usuario intercambiador = intercambio.getUsuarioIntercambiador();
+        Usuario calificador;
+        Usuario calificado;
 
-        if (calificadorId.equals(generadorId)) {
+        if (calificadorId.equals(generador.getId())) {
             // generador is rating intercambiador
             if (intercambio.getPuntajeIntercambiador() != null) {
                 throw new IllegalArgumentException("Ya calificaste este intercambio");
             }
             intercambio.setPuntajeIntercambiador(puntaje);
+            calificador = generador;
+            calificado = intercambiador;
 
-        } else if (calificadorId.equals(intercambiadorId)) {
+        } else if (calificadorId.equals(intercambiador.getId())) {
             // intercambiador is rating generador
             if (intercambio.getPuntajeGenerador() != null) {
                 throw new IllegalArgumentException("Ya calificaste este intercambio");
             }
             intercambio.setPuntajeGenerador(puntaje);
+            calificador = intercambiador;
+            calificado = generador;
 
         } else {
             throw new IllegalArgumentException("No sos parte de este intercambio");
         }
 
-        return repository.save(intercambio);
+        // El puntaje embebido en el Intercambio es el estado "¿ya califiqué este intercambio?"
+        // del front; la Calificacion es la que alimenta la reputación (ver calcularReputacion).
+        repository.save(intercambio);
+        calificacionRepository.save(Calificacion.builder()
+                .usuarioCalificador(calificador)
+                .usuarioCalificado(calificado)
+                .intercambio(intercambio)
+                .calificacion(puntaje)
+                .build());
+
+        return intercambio;
     }
 
 
     public ReputacionResponseDTO calcularReputacion(String usuarioId) {
-        List<Intercambio> intercambios = repository.findByUsuarioId(usuarioId);
+        List<Calificacion> recibidas = calificacionRepository.findByUsuarioCalificadoId(usuarioId);
 
         int total = 0;
         double suma = 0;
-        int[] counts = new int[6]; // Índices 1 a 5
+        int[] counts = new int[6]; // índices 1..5
 
-        for (Intercambio i : intercambios) {
-            Integer puntajeRecibido = null;
-
-            // Extraer el puntaje dependiendo de si el usuario generó o aceptó el intercambio
-            if (i.getUsuarioGenerador().getId().equals(usuarioId)) {
-                puntajeRecibido = i.getPuntajeGenerador();
-            } else if (i.getUsuarioIntercambiador().getId().equals(usuarioId)) {
-                puntajeRecibido = i.getPuntajeIntercambiador();
-            }
-
-            // Si hay un puntaje válido, sumar a las estadísticas
-            if (puntajeRecibido != null && puntajeRecibido >= 1 && puntajeRecibido <= 5) {
+        for (Calificacion c : recibidas) {
+            Integer puntaje = c.getCalificacion();
+            if (puntaje != null && puntaje >= 1 && puntaje <= 5) {
                 total++;
-                suma += puntajeRecibido;
-                counts[puntajeRecibido]++;
+                suma += puntaje;
+                counts[puntaje]++;
             }
         }
 
         double score = total > 0 ? Math.round((suma / total) * 10.0) / 10.0 : 0.0;
 
-        // El constructor es inyectado por @AllArgsConstructor de Lombok
         return new ReputacionResponseDTO(
                 score,
                 total,

@@ -8,8 +8,11 @@ import com.grupo3.tp.models.Seleccion;
 import com.grupo3.tp.models.Equipo;
 import com.grupo3.tp.models.CategoriaFigurita;
 import com.grupo3.tp.models.Jugador;
+import com.grupo3.tp.models.Calificacion;
 import com.grupo3.tp.dtos.IntercambioResponseDTO;
+import com.grupo3.tp.dtos.ReputacionResponseDTO;
 import com.grupo3.tp.repository.IntercambioRepository;
+import com.grupo3.tp.repository.CalificacionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +40,9 @@ public class IntercambioServiceTest {
 
     @Mock
     private IntercambioRepository repo;
+
+    @Mock
+    private CalificacionRepository calificacionRepo;
 
     @InjectMocks
     private IntercambioService service;
@@ -296,5 +302,103 @@ public class IntercambioServiceTest {
         verify(repo, times(1)).findByUsuarioId(eq("user-1"), captor.capture());
         assertEquals(0, captor.getValue().getPageNumber());
         assertEquals(10, captor.getValue().getPageSize());
+    }
+
+    // ============= CALIFICAR TESTS =============
+    @Test
+    public void testCalificarComoGeneradorCreaCalificacion() {
+        // user-1 (generador) califica a user-2 (intercambiador) con 5
+        when(repo.findById("int-1")).thenReturn(Optional.of(intercambio1));
+        when(repo.save(any(Intercambio.class))).thenAnswer(i -> i.getArgument(0));
+
+        Intercambio result = service.calificar("int-1", "user-1", 5);
+
+        // el puntaje recibido por el intercambiador queda en el Intercambio (estado por-intercambio del front)
+        assertEquals(5, result.getPuntajeIntercambiador());
+        assertNull(result.getPuntajeGenerador());
+
+        // y además se persiste una Calificacion que alimenta la reputación
+        ArgumentCaptor<Calificacion> captor = ArgumentCaptor.forClass(Calificacion.class);
+        verify(calificacionRepo, times(1)).save(captor.capture());
+        Calificacion creada = captor.getValue();
+        assertEquals("user-1", creada.getUsuarioCalificador().getId());
+        assertEquals("user-2", creada.getUsuarioCalificado().getId());
+        assertEquals("int-1", creada.getIntercambio().getId());
+        assertEquals(5, creada.getCalificacion());
+    }
+
+    @Test
+    public void testCalificarComoIntercambiadorCreaCalificacion() {
+        // user-2 (intercambiador) califica a user-1 (generador) con 4
+        when(repo.findById("int-1")).thenReturn(Optional.of(intercambio1));
+        when(repo.save(any(Intercambio.class))).thenAnswer(i -> i.getArgument(0));
+
+        Intercambio result = service.calificar("int-1", "user-2", 4);
+
+        assertEquals(4, result.getPuntajeGenerador());
+        assertNull(result.getPuntajeIntercambiador());
+
+        ArgumentCaptor<Calificacion> captor = ArgumentCaptor.forClass(Calificacion.class);
+        verify(calificacionRepo, times(1)).save(captor.capture());
+        Calificacion creada = captor.getValue();
+        assertEquals("user-2", creada.getUsuarioCalificador().getId());
+        assertEquals("user-1", creada.getUsuarioCalificado().getId());
+        assertEquals(4, creada.getCalificacion());
+    }
+
+    @Test
+    public void testCalificarDuplicadoNoCreaCalificacion() {
+        intercambio1.setPuntajeIntercambiador(3); // user-1 ya calificó este intercambio
+        when(repo.findById("int-1")).thenReturn(Optional.of(intercambio1));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.calificar("int-1", "user-1", 5));
+
+        verify(calificacionRepo, never()).save(any());
+        verify(repo, never()).save(any());
+    }
+
+    @Test
+    public void testCalificarAjenoNoCreaCalificacion() {
+        when(repo.findById("int-1")).thenReturn(Optional.of(intercambio1));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.calificar("int-1", "user-99", 5));
+
+        verify(calificacionRepo, never()).save(any());
+        verify(repo, never()).save(any());
+    }
+
+    // ============= REPUTACION TESTS =============
+    @Test
+    public void testCalcularReputacionDesdeCalificaciones() {
+        // user-2 recibió 5, 4, 4 → promedio 4.3, histograma 5★=1, 4★=2
+        List<Calificacion> recibidas = List.of(
+                Calificacion.builder().usuarioCalificado(usuario2).calificacion(5).build(),
+                Calificacion.builder().usuarioCalificado(usuario2).calificacion(4).build(),
+                Calificacion.builder().usuarioCalificado(usuario2).calificacion(4).build()
+        );
+        when(calificacionRepo.findByUsuarioCalificadoId("user-2")).thenReturn(recibidas);
+
+        ReputacionResponseDTO rep = service.calcularReputacion("user-2");
+
+        assertEquals(4.3, rep.getScore(), 0.0001);
+        assertEquals(3, rep.getTotal());
+        assertEquals(1, rep.getCincoEstrellas());
+        assertEquals(2, rep.getCuatroEstrellas());
+        assertEquals(0, rep.getTresEstrellas());
+        assertEquals(0, rep.getDosEstrellas());
+        assertEquals(0, rep.getUnaEstrella());
+    }
+
+    @Test
+    public void testCalcularReputacionSinCalificaciones() {
+        when(calificacionRepo.findByUsuarioCalificadoId("user-1")).thenReturn(List.of());
+
+        ReputacionResponseDTO rep = service.calcularReputacion("user-1");
+
+        assertEquals(0.0, rep.getScore(), 0.0001);
+        assertEquals(0, rep.getTotal());
+        assertEquals(0, rep.getCincoEstrellas());
     }
 }

@@ -305,6 +305,11 @@ public class DemoSeedService {
                     .usuarioCalificador(a).usuarioCalificado(b).intercambio(it).calificacion(5).build());
             calificacionService.crear(Calificacion.builder()
                     .usuarioCalificador(b).usuarioCalificado(a).intercambio(it).calificacion(4).build());
+            // Marcar el intercambio como ya calificado por ambas partes: el front lo muestra
+            // como "calificado" (no re-calificable) y evita un segundo conteo en la reputación.
+            it.setPuntajeIntercambiador(5); // b (intercambiador) recibió 5 de a
+            it.setPuntajeGenerador(4);      // a (generador) recibió 4 de b
+            intercambioRepo.save(it);
         }
     }
 

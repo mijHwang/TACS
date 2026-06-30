@@ -1,9 +1,12 @@
 package com.grupo3.tp.service;
 
+import com.grupo3.tp.models.Intercambio;
 import com.grupo3.tp.models.Role;
 import com.grupo3.tp.models.Usuario;
+import com.grupo3.tp.repository.IntercambioRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +23,8 @@ public class DemoSeedServiceTest {
     @Mock PasswordEncoder passwordEncoder;
     @Mock com.grupo3.tp.repository.FiguritaBaseRepository figuritaBaseRepo;
     @Mock CatalogoService catalogoService;
+    @Mock IntercambioRepository intercambioRepo;
+    @Mock CalificacionService calificacionService;
     @InjectMocks DemoSeedService service;
 
     @Test
@@ -54,5 +59,23 @@ public class DemoSeedServiceTest {
         assertTrue(sub.containsKey(1));
         assertTrue(sub.containsKey(48));
         assertFalse(sub.containsKey(49));
+    }
+
+    @Test
+    void seedCalificacionesMarcaElIntercambioComoCalificadoPorAmbasPartes() {
+        Usuario a = Usuario.builder().id("u-a").username("a").build();
+        Usuario b = Usuario.builder().id("u-b").username("b").build();
+        Intercambio it = Intercambio.builder()
+                .id("it-1").usuarioGenerador(a).usuarioIntercambiador(b).build();
+        when(intercambioRepo.findAll()).thenReturn(java.util.List.of(it));
+
+        service.seedCalificaciones();
+
+        // El seed setea los puntajes embebidos para que el intercambio NO se vea "sin calificar"
+        // en el front y no se pueda volver a calificar (evita doble conteo en reputación).
+        ArgumentCaptor<Intercambio> captor = ArgumentCaptor.forClass(Intercambio.class);
+        verify(intercambioRepo).save(captor.capture());
+        assertEquals(5, captor.getValue().getPuntajeIntercambiador()); // b (intercambiador) recibió 5
+        assertEquals(4, captor.getValue().getPuntajeGenerador());      // a (generador) recibió 4
     }
 }

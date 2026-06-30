@@ -21,7 +21,6 @@ con otros usuarios, realicen propuestas de intercambio, completen operaciones de
 
 **Pendientes principales** (detalle en [Cobertura de User Stories](#cobertura-de-user-stories)):
 
-- US10 — sistema de reputación (hoy solo CRUD de calificaciones, sin promedio)
 - US11 — alertas proactivas (figurita faltante / subasta por finalizar)
 - US3 — búsqueda con filtros del lado del servidor
 - **Integración con Telegram** y **load test (Vegeta/wrk)** — requeridos para promoción
@@ -207,7 +206,7 @@ Leyenda: ✅ completo · ⚠️ parcial · ❌ no implementado
 | US7 | Ofertar en subasta | ✅ | ⚠️ | ⚠️ backend OK; la UI oferta con `MOCK_MY_STICKERS` |
 | US8 | Ver publicaciones/propuestas/subastas y estado | ✅ | ✅ | ✅ Dashboard con datos reales vía `dashboardService`: figuritas publicadas, propuestas enviadas/recibidas, subastas activas, alertas; bonus: progreso de colección (US2) y acciones rápidas |
 | US9 | Aceptar / rechazar propuestas | ✅ | ✅ | ✅ aceptar transfiere figuritas, crea `Intercambio` y notifica |
-| US10 | Calificar / reputación | ⚠️ CRUD | ❌ mock | ❌ sin cálculo de reputación ni validación de intercambio previo |
+| US10 | Calificar / reputación | ✅ | ✅ | ✅ reputación = promedio + histograma 1–5★ sobre la colección `Calificacion` (`calcularReputacion`, `GET /api/intercambios/usuario/{id}/reputacion`); `calificar` persiste la `Calificacion` validando participación y bloqueando recalificar; front califica con estrellas (`IntercambiosPage`) y muestra el widget real (`PerfilPage` vía `useReputacion`). Pendiente menor: `POST /api/calificaciones` genérico sin validación |
 | US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ⚠️ | ⚠️ | ⚠️ solo notificaciones in-app por evento; alertas proactivas son stubs |
 | US12 | Estadísticas de admin | ✅ | ✅ | ⚠️ stats limitadas a subastas/ofertas/usuarios |
 
