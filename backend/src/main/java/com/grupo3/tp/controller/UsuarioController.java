@@ -114,7 +114,8 @@ public class UsuarioController {
             @RequestParam(defaultValue = "10") int size) {
         Usuario usuario = service.loadUserByUsername(userName);
         CatalogoFiltro filtro = new CatalogoFiltro(usuario.getId(), null, null, search, seleccion, equipo, categoria);
-        PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
+        // Tope 2000 (como /figuritas) para que el dashboard pueda traer el álbum completo y contar exacto.
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 2000));
         return ResponseEntity.ok(PagedResponse.from(figuritaService.obtenerFaltantesPaginado(filtro, pageable)));
     }
 
@@ -130,7 +131,8 @@ public class UsuarioController {
             @RequestParam(defaultValue = "10") int size) {
         Usuario usuario = service.loadUserByUsername(userName);
         CatalogoFiltro filtro = new CatalogoFiltro(usuario.getId(), null, null, search, seleccion, equipo, categoria);
-        PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
+        // Tope 2000: las pantallas de subasta (publicar/ofertar) cargan todas las repetidas para elegir.
+        PageRequest pageable = PageRequest.of(page, Math.min(size, 2000));
         return ResponseEntity.ok(PagedResponse.from(figuritaService.obtenerRepetidasPaginado(filtro, pageable)));
     }
 

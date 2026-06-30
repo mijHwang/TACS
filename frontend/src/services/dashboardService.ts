@@ -21,14 +21,14 @@ export interface DashboardDeps {
   fetchSugerencias: (username: string) => Promise<SugerenciaResponseDTO[]>;
 }
 
-// El dashboard sólo necesita un resumen; de los endpoints ahora paginados pedimos la primera
-// página grande (size=100, el máximo) y leemos `.content`. Los contadores quedan exactos hasta
-// 100 ítems por fuente (suficiente para el resumen). Las fuentes no paginadas (figuritas,
-// faltantes) se piden igual.
+// El dashboard sólo necesita un resumen; de los endpoints paginados pedimos la primera página
+// grande y leemos `.content`. Colección y faltantes usan ALBUM_SIZE (cubre el álbum completo, ~826)
+// para que los contadores de progreso del álbum sean exactos; para el resto DASH_SIZE alcanza.
 const DASH_SIZE = 100;
+const ALBUM_SIZE = 2000;
 const defaultDeps: DashboardDeps = {
-  fetchFiguritas: (u) => apiFetch<FiguritaResponseDTO[]>(`/usuarios/${u}/figuritas`),
-  fetchFaltantes: (u) => apiFetch<unknown[]>(`/usuarios/${u}/figuritas/faltantes`),
+  fetchFiguritas: (u) => apiFetch<PagedResponse<FiguritaResponseDTO>>(`/usuarios/${u}/figuritas?page=0&size=${ALBUM_SIZE}`).then(r => r.content),
+  fetchFaltantes: (u) => apiFetch<PagedResponse<unknown>>(`/usuarios/${u}/figuritas/faltantes?page=0&size=${ALBUM_SIZE}`).then(r => r.content),
   fetchEnviadas: (id) => apiFetch<PagedResponse<SolicitudDeIntercambio>>(`/solicitudes-intercambio/enviadas/${id}?page=0&size=${DASH_SIZE}`).then(r => r.content),
   fetchRecibidas: (id) => apiFetch<PagedResponse<SolicitudDeIntercambio>>(`/solicitudes-intercambio/recibidas/${id}?page=0&size=${DASH_SIZE}`).then(r => r.content),
   fetchMisSubastas: (id) => auctionService.getByUsuario(id, 0, DASH_SIZE),

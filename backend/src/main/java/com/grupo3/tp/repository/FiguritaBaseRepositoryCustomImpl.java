@@ -84,7 +84,8 @@ public class FiguritaBaseRepositoryCustomImpl implements FiguritaBaseRepositoryC
         }
 
         List<AggregationOperation> contentOps = new ArrayList<>(base);
-        contentOps.add(sort(Sort.by(Sort.Direction.ASC, "numero")));
+        // Tiebreaker _id asc: numero no es único, así el skip/limit es determinista entre páginas.
+        contentOps.add(sort(Sort.by(Sort.Direction.ASC, "numero").and(Sort.by(Sort.Direction.ASC, "_id"))));
         contentOps.add(skip(pageable.getOffset()));
         contentOps.add(limit(pageable.getPageSize()));
         contentOps.add(project("numero", "imagenUrl")

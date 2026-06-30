@@ -46,7 +46,7 @@ try {
   // ── Pantalla paginada: Notificaciones ───────────────────────────────────────
   // El <Paginador> sólo se renderiza si totalPages > 1 (hace falta >10 ítems).
   await page.goto(`${BASE_URL}/notificaciones`, { waitUntil: 'networkidle2' });
-  await page.waitForTimeout(800);
+  await new Promise((r) => setTimeout(r, 800));
 
   const pager = await page.$('[aria-label="Página siguiente"]');
   if (!pager) {
@@ -66,7 +66,7 @@ try {
     const p2 = await page.$('button[aria-current="page"]');
     void p2;
     await page.click('[aria-label="Página siguiente"]');
-    await page.waitForTimeout(800);
+    await new Promise((r) => setTimeout(r, 800));
     await page.screenshot({ path: `${SHOTS}notificaciones-p2.png` });
 
     const current = await $txt(page, 'button[aria-current="page"]');
@@ -78,7 +78,7 @@ try {
 
   // ── Subastas activas: filtro estado server-side + reset de página ────────────
   await page.goto(`${BASE_URL}/subastas/activas`, { waitUntil: 'networkidle2' });
-  await page.waitForTimeout(800);
+  await new Promise((r) => setTimeout(r, 800));
   await page.screenshot({ path: `${SHOTS}subastas-activas.png` });
   ok(true, 'subastas/activas carga sin errores (ver screenshot)');
 
@@ -86,7 +86,7 @@ try {
   // El catálogo agrupa por figurita-base y pagina server-side; el <Paginador> aparece
   // si hay >10 figuritas-base disponibles de otros usuarios.
   await page.goto(`${BASE_URL}/buscar`, { waitUntil: 'networkidle2' });
-  await page.waitForTimeout(800);
+  await new Promise((r) => setTimeout(r, 800));
   await page.screenshot({ path: `${SHOTS}buscar-catalogo-p1.png` });
 
   const buscarPager = await page.$('[aria-label="Página siguiente"]');
@@ -96,7 +96,7 @@ try {
   } else {
     const firstP1 = await $txt(page, 'main, [role="main"], body');
     await page.click('[aria-label="Página siguiente"]');
-    await page.waitForTimeout(800);
+    await new Promise((r) => setTimeout(r, 800));
     await page.screenshot({ path: `${SHOTS}buscar-catalogo-p2.png` });
     const current = await $txt(page, 'button[aria-current="page"]');
     ok(current === '2', `Buscar: la página actual es 2 (fue: ${current})`);
@@ -106,7 +106,7 @@ try {
 
   // ── Mi Colección · Faltantes: grilla paginada server-side ────────────────────
   await page.goto(`${BASE_URL}/coleccion/faltantes`, { waitUntil: 'networkidle2' });
-  await page.waitForTimeout(800);
+  await new Promise((r) => setTimeout(r, 800));
   await page.screenshot({ path: `${SHOTS}coleccion-faltantes.png` });
   ok(true, 'coleccion/faltantes carga sin errores (ver screenshot)');
 

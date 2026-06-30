@@ -32,8 +32,8 @@ export default function ParticipandoPage() {
     if (user?.username) {
       setFetchingStickers(true);
       try {
-        const res = await api.get(`/api/usuarios/${user.username}/figuritas/repetidas`);
-        const mapped = res.data.map(mapFiguritaToSticker);
+        const res = await api.get(`/api/usuarios/${user.username}/figuritas/repetidas`, { params: { page: 0, size: 2000 } });
+        const mapped = res.data.content.map(mapFiguritaToSticker);
         setBidFormStickers(mapped);
       } catch (err) {
         console.error('Error fetching stickers:', err);

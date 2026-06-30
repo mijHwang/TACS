@@ -20,9 +20,9 @@ export default function SubastasNuevaPage() {
   // FETCH REAL STICKERS
   useEffect(() => {
     if (!user?.username) return;
-    api.get(`/api/usuarios/${user.username}/figuritas/repetidas`)
+    api.get(`/api/usuarios/${user.username}/figuritas/repetidas`, { params: { page: 0, size: 2000 } })
       .then(res => {
-        const mapped = res.data.map(mapFiguritaToSticker);
+        const mapped = res.data.content.map(mapFiguritaToSticker);
         setMyStickers(mapped);
         setLoading(false);
       })

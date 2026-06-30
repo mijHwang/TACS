@@ -7,8 +7,8 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -131,8 +131,10 @@ public class FiguritaRepositoryCustomImpl implements FiguritaRepositoryCustom {
 
         // ── contenido de la página ──
         List<AggregationOperation> contentOps = new ArrayList<>(base);
-        contentOps.add(sort(org.springframework.data.domain.Sort.by(
-                org.springframework.data.domain.Sort.Direction.ASC, "base.numero")));
+        // Tiebreaker _id asc: numero no es único (admin puede crear bases con número repetido),
+        // y sin desempate determinista el skip/limit puede repetir u omitir filas entre páginas.
+        contentOps.add(sort(Sort.by(Sort.Direction.ASC, "base.numero")
+                .and(Sort.by(Sort.Direction.ASC, "_id"))));
         contentOps.add(skip(pageable.getOffset()));
         contentOps.add(limit(pageable.getPageSize()));
         // Spring Data mapea FiguritaResponseDTO.id desde el _id del documento, así que el
