@@ -1,9 +1,12 @@
 package com.grupo3.tp.service;
 
 import com.grupo3.tp.models.Notificacion;
+import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.NotificacionRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +50,41 @@ public class NotificacionService {
             return true;
         }
         return false;
+    }
+
+    @Async
+    public void notificarUsuariosFaltantesSubasta(List<Usuario> interesados, String jugadorNombre, String creadorId, String subastaId) {
+        List<Notificacion> nuevasNotificaciones = interesados.stream()
+                .filter(u -> !u.getId().equals(creadorId)) // Don't notify the creator
+                .map(u -> Notificacion.builder()
+                        .usuario(u)
+                        .tipo("subasta")
+                        .titulo("Subasta de figurita faltante")
+                        .mensaje("¡Se inició una subasta de una figurita que te falta! (" + jugadorNombre + ")")
+                        .enlace("/subastas/" + subastaId)
+                        .leida(false)
+                        .fecha(LocalDateTime.now())
+                        .build())
+                .toList();
+
+        if (!nuevasNotificaciones.isEmpty()) {
+            repository.saveAll(nuevasNotificaciones); // One database hit for all users
+        }
+    }
+
+    @Async
+    public void notificarUsuariosFaltantes(List<Usuario> interesados, String jugadorNombre, String publicadorId) {
+        for (Usuario u : interesados) {
+            if (!u.getId().equals(publicadorId)) {
+                Notificacion notif = Notificacion.builder()
+                        .usuario(u)
+                        .tipo("publicacion")
+                        .mensaje("Se publicó una figurita que te falta: " + jugadorNombre)
+                        .leida(false)
+                        .fecha(LocalDateTime.now())
+                        .build();
+                this.crear(notif); // saves to DB
+            }
+        }
     }
 }

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminService, type PlatformStats } from '../../services/adminService';
-import { PageLoading, PageError } from '../subastas/ActivasPage';
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
+import SeedDemoCard from './components/SeedDemoCard';
 import {
   StatCard,
   SectionHeader,
@@ -57,15 +59,15 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadStats = () => {
     adminService.getStats()
-      .then(setStats)
-      .catch(() => setError('No se pudieron cargar las estadísticas.'))
-      .finally(() => setLoading(false));
-  }, []);
+      .then((data) => { setStats(data); setLoading(false); })
+      .catch(() => { setError('No se pudieron cargar las estadísticas.'); setLoading(false); });
+  };
+  useEffect(() => { loadStats(); }, []);
 
-  if (loading) return <PageLoading label="Cargando estadísticas…" />;
-  if (error || !stats) return <PageError message={error ?? 'Error inesperado.'} />;
+  if (loading) return <Spinner label="Cargando estadísticas…" />;
+  if (error || !stats) return <ErrorState message={error ?? 'Error inesperado.'} />;
 
   const engagementRate = stats.totalAuctions > 0
     ? Math.round((stats.auctionsWithBids / stats.totalAuctions) * 100)
@@ -97,6 +99,8 @@ export default function AdminPage() {
           Regalar Figurita
         </button>
       </div>
+
+      <SeedDemoCard onDone={loadStats} />
 
       {/* ── KPI cards ───────────────────────────────────────────────────────── */}
       <section>

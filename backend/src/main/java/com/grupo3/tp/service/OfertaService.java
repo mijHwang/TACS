@@ -8,6 +8,7 @@ import com.grupo3.tp.repository.SubastaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +43,13 @@ public class OfertaService {
             throw new RuntimeException("Subasta not found");
         }
         Subasta subasta = subastaOpt.get();
+
+        // Una subasta recién creada puede tener `ofertas` en null (no se inicializa al crearla);
+        // los callers (controller / seed) recién lo protegen DESPUÉS de llamar a crear(), así que
+        // guardamos acá para no romper en la primera oferta.
+        if (subasta.getOfertas() == null) {
+            subasta.setOfertas(new ArrayList<>());
+        }
 
         Usuario usuario = usuarioService.obtenerPorId(ofertaDTO.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario not found"));

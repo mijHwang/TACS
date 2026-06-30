@@ -9,6 +9,16 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+let onUnauthorized: (() => void) | null = null;
+export function setUnauthorizedHandler(fn: (() => void) | null) {
+  onUnauthorized = fn;
+}
+
+function handleUnauthorized() {
+  localStorage.removeItem('token');
+  onUnauthorized?.();
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -19,8 +29,7 @@ api.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      handleUnauthorized();
     }
     return Promise.reject(error);
   }
@@ -154,6 +163,10 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     ...init,
     headers: { ...headers, ...(init?.headers as Record<string, string>) },
   });
+  if (res.status === 401) {
+    handleUnauthorized();
+    throw new Error(`API 401: ${path}`);
+  }
   if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;

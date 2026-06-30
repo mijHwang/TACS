@@ -1,6 +1,7 @@
 // AuctionDetailModal.tsx
 import { useEffect } from 'react';
 import { useAuth } from '../../../auth/useAuth';
+import type { Sticker } from '../../../types/auction';
 import CountdownBadge from './CountdownBadge';
 import BidForm from './BidForm';
 
@@ -26,11 +27,12 @@ interface SubastaResponseDTO {
 
 interface AuctionDetailModalProps {
   auction: SubastaResponseDTO;
-  myStickers: any[];
+  myStickers: Sticker[];
   onClose: () => void;
   onBid: (auctionId: string, stickerIds: string[]) => void;
   isSubmitting?: boolean;
   isFetchingStickers?: boolean;
+  errorMessage?: string | null;
 }
 
 export default function AuctionDetailModal({
@@ -40,6 +42,7 @@ export default function AuctionDetailModal({
   onBid,
   isSubmitting = false,
   isFetchingStickers = false,
+  errorMessage = null,
 }: AuctionDetailModalProps) {
   const { user } = useAuth();
   const isOwner = user?.username === auction.usuarioUsername;
@@ -151,12 +154,19 @@ export default function AuctionDetailModal({
               {isFetchingStickers ? (
                 <p className="text-xs text-muted text-center py-3">Cargando figuritas…</p>
               ) : myStickers.length > 0 ? (
-                <BidForm
-                  myStickers={myStickers}
-                  conditions={[]}
-                  onBid={(ids) => onBid(auction.id, ids)}
-                  isSubmitting={isSubmitting}
-                />
+                <>
+                  {errorMessage && (
+                    <p className="text-xs font-semibold text-center" style={{ color: '#D82D31' }}>
+                      {errorMessage}
+                    </p>
+                  )}
+                  <BidForm
+                    myStickers={myStickers}
+                    conditions={[]}
+                    onBid={(ids) => onBid(auction.id, ids)}
+                    isSubmitting={isSubmitting}
+                  />
+                </>
               ) : (
                 <p className="text-xs text-muted text-center py-3">
                   No tenés figuritas disponibles para ofertar.

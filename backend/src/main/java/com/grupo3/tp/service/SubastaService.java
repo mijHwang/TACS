@@ -4,6 +4,7 @@ import com.grupo3.tp.dtos.SubastaDTO;
 import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.SubastaRepository;
+import com.grupo3.tp.repository.UsuarioRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,17 +22,20 @@ public class SubastaService {
     private final FiguritaService figuritaService;
     private final NotificacionService notificacionService;
     private final UsuarioService usuarioService;
+    private final UsuarioRepository usuarioRepository;
 
 
 
     public SubastaService(SubastaRepository repository,
                           FiguritaService figuritaService,
                           NotificacionService notificacionService,
-                          UsuarioService usuarioService) {
+                          UsuarioService usuarioService,
+                          UsuarioRepository usuarioRepository) {
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.notificacionService = notificacionService;
         this.usuarioService = usuarioService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Subasta crear(SubastaDTO dto) {
@@ -42,8 +46,6 @@ public class SubastaService {
         Figurita figurita = figuritaService.obtenerPorId(dto.getFiguritaId())
                 .orElseThrow(() -> new RuntimeException("Figurita no encontrada"));
 
-
-
         Subasta subasta = Subasta.builder()
                 .usuario(usuario)
                 .figurita(figurita)
@@ -52,7 +54,6 @@ public class SubastaService {
                 .condiciones(dto.getCondiciones())
                 .build();
 
-
         if (subasta.getHoraInicio() == null) {
             subasta.setHoraInicio(LocalDateTime.now());
         }
@@ -60,10 +61,24 @@ public class SubastaService {
             subasta.setHoraFin(subasta.getHoraInicio().plusHours(subasta.getDuracion()));
         }
 
-        repository.save(subasta);
+        Subasta saved = repository.save(subasta);
 
-        return repository.findById(subasta.getId()).orElse(subasta);
+        try {
 
+            String baseId = figurita.getFiguritaBase().getId();
+            List<Usuario> interesados = usuarioRepository.findUsuariosQueLesFaltaFigurita(baseId);
+
+            notificacionService.notificarUsuariosFaltantesSubasta(
+                    interesados,
+                    figurita.getFiguritaBase().getJugador().getNombre(),
+                    dto.getUsuarioId(),
+                    saved.getId()
+            );
+        } catch (Exception e) {
+            System.err.println("Error generating background auction lack-notifications: " + e.getMessage());
+        }
+
+        return repository.findById(saved.getId()).orElse(saved);
     }
 
     @ConditionalOnProperty(name = "app.scheduling.enabled", havingValue = "true", matchIfMissing = true)

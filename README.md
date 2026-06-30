@@ -49,21 +49,73 @@ docker compose up --build
 ```
 
 ### Online (AWS)
-La aplicación está alojada en una instancia AWS:
+La aplicación está alojada en una instancia AWS y accesible por HTTPS. URL principal (detrás de Cloudflare):
 ```
-http://34.195.221.240/
+https://tacs-g3-figuritas.dev/
 ```
+
+El dominio es **`tacs-g3-figuritas.dev`** (registrado en **Name.com**, gratis vía GitHub Student Pack), delegado a **Cloudflare** (proxy/CDN/DDoS) y apuntando a la IP elástica `34.195.221.240`. Cloudflare termina el TLS público con su Universal SSL y reconecta al origen en **Full (strict)** validando un Cloudflare Origin Certificate instalado en Nginx.
+
+> **DuckDNS quedó deprecado.** El dominio que se usa es el de Name.com (`.dev`). El viejo `tacs-g3-figuritas.duckdns.org` (con su cert de Let's Encrypt) puede seguir resolviendo a la EC2 como remanente, pero **ya no se usa** y queda pendiente de limpieza del server.
 
 | URL | Descripción |
 |---|---|
 | `http://localhost` | Aplicación web (frontend) |
 | `http://localhost:8080/api/health` | Health check del backend |
 
+#### Deploy con HTTPS (Cloudflare)
+
+El TLS público lo termina **Cloudflare** (Universal SSL), que reconecta al origen en modo
+**Full (strict)** validando un **Cloudflare Origin Certificate** (15 años) instalado en el Nginx
+del frontend. Toda la config de prod vive en el repo y se activa con un **override de producción**
+(`docker-compose.prod.yml`), así el `docker compose up` de desarrollo —que usa el `nginx.conf` HTTP
+simple— no se ve afectado.
+
+**Requisitos previos en la EC2:** el dominio resuelve vía Cloudflare a la IP pública + puertos
+**80 y 443** abiertos en el Security Group + el Origin Certificate presente en `./cloudflare/`.
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+```
+
+| Archivo | Rol |
+|---|---|
+| `frontend/nginx.prod.conf` | Server 443 con el Origin Certificate + `real_ip` de Cloudflare; redirect 80→443 |
+| `docker-compose.prod.yml` | Expone 443 y monta `./cloudflare` (el cert de origen) |
+
+**Cómo está armado Cloudflare:**
+
+- **DNS (Cloudflare):** `A @ → 34.195.221.240` (Proxied) + `A www → 34.195.221.240` (Proxied).
+- **Edge ↔ navegador:** Universal SSL (cert gratis de Cloudflare para el dominio).
+- **Cloudflare ↔ origen:** el Origin Certificate (SAN `tacs-g3-figuritas.dev` + `*.`) se selecciona
+  por SNI en `frontend/nginx.prod.conf` y es el `default_server` 443.
+- **IP real:** Nginx usa `real_ip` con los rangos de Cloudflare (`CF-Connecting-IP`), así el backend
+  ve la IP del visitante y no la de Cloudflare.
+- El cert/key de origen viven en `./cloudflare/origin.{pem,key}` en la EC2 (**gitignored**, nunca se
+  commitean). **Rotación:** regenerar el Origin Certificate en Cloudflare, reemplazar esos 2 archivos
+  y recrear el contenedor `frontend`.
+
+> El setup anterior con DuckDNS + Let's Encrypt (`certbot`, `init-letsencrypt.sh`) fue **removido**:
+> el dominio en uso es el de Name.com vía Cloudflare.
+
 ### Usuarios de prueba
 
 > Los datos se persisten en **MongoDB Atlas**, por lo que **sobreviven** al reinicio de los contenedores.
 
 Se puede crear usuarios a través del formulario de registro en la UI. El usuario con username `admin` recibe rol ADMIN; el resto, rol USER.
+
+#### Cargar datos de demo (reset + seed)
+
+Para poblar el sistema con un escenario realista y poder visualizar/probar todas las pantallas, hay un botón en la pantalla de **Admin**:
+
+1. Logueate como **`admin`** / `adminpass123` (si la base está vacía, registralo primero desde la UI; el username `admin` recibe rol ADMIN automáticamente).
+2. Andá a **`/admin`** → tarjeta **"Mantenimiento de datos"** → botón **"Resetear base y cargar datos de demo"**.
+3. En el modal, escribí **`RESET`** para habilitar la confirmación.
+4. Al terminar verás un resumen (usuarios, figuritas, propuestas, subastas, etc.). Logueate como **`juanca`** / `demo1234` para ver el dashboard completo.
+
+> ⚠️ **Acción destructiva.** El endpoint `POST /api/admin/seed-demo` (admin-only) hace `dropCollection` de **todas** las colecciones antes de sembrar. Como local y el deploy comparten cluster de Atlas, **no lo ejecutes contra la base de producción** salvo que realmente quieras resetearla. La única guarda es el rol ADMIN + la confirmación tipeada en la UI (decisión de diseño: sin flag de entorno).
+
+**Cohorte sembrada:** `admin` (ADMIN) + `juanca` (protagonista) + 10 contrapartes (`sofia`, `mateo`, `valen`, `cami`, `nico`, `lucas`, `martina`, `thiago`, `agus`, `flor`) — todas con password **`demo1234`**. Incluye catálogo de 48 figuritas, colecciones con repetidas/faltantes, propuestas en sus 3 estados, intercambios, subastas activas con ofertas, calificaciones y sugerencias. La lógica vive en `DemoSeedService` (backend) y `SeedDemoCard` (frontend).
 
 ### Comandos útiles
 

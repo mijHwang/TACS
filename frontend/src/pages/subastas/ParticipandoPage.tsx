@@ -1,63 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Sticker } from '../../types/auction';
 import { useAuth } from '../../auth/useAuth';
 import { mapFiguritaToSticker } from '../../services/auctionService';
+import { getApiErrorMessage } from '../../services/errors';
 import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
-import { PageLoading, PageError } from './ActivasPage';
-
-interface SubastaResponseDTO {
-  id: string;
-  usuarioId: string;
-  usuarioUsername: string;
-  figuritaId: string;
-  figuritaNumero: number;
-  figuritaJugadorNombre: string;
-  figuritaSeleccionNombre: string;
-  figuritaEquipoNombre: string;
-  figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
-  duracion: number;
-  horaInicio: string;
-  horaFin: string;
-  ofertasCount: number;
-  liderId: string | null;
-  liderUsername: string;
-  liderFiguritasNombres: string[];
-}
+import { useSubastasParticipando, useOfertar, type SubastaResponseDTO } from '../../hooks/useSubastas';
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
+import EmptyState from '../../components/EmptyState';
 
 const RED = '#D82D31';
 const BLUE = '#03BAE9';
 
 export default function ParticipandoPage() {
   const { user } = useAuth();
-  const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: auctions = [], isLoading, isError, refetch } = useSubastasParticipando(user?.id);
+  const ofertar = useOfertar();
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
-  
-  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const [fetchingStickers, setFetchingStickers] = useState(false);
 
-  useEffect(() => {
-    if (!user?.id) { 
-      setLoading(false); 
-      return; 
-    }
-    
-    api.get(`/api/subastas/participando/${user.id}`)
-      .then(res => {
-        setAuctions(res.data);
-      })
-      .catch(() => setError('No se pudieron cargar las subastas.'))
-      .finally(() => setLoading(false));
-  }, [user?.id]);
+  const [bidFormStickers, setBidFormStickers] = useState<Sticker[]>([]);
+  const [fetchingStickers, setFetchingStickers] = useState(false);
 
   const handleSelectAuction = async (auction: SubastaResponseDTO) => {
     setSelected(auction);
-    
+
     if (user?.username) {
       setFetchingStickers(true);
       try {
@@ -73,31 +41,21 @@ export default function ParticipandoPage() {
     }
   };
 
-  // CHANGED: Fixed body field key mapping and decoupled validation failures from global error page unmounts
-  const handleBid = async (auctionId: string, stickerIds: string[]) => {
+  const handleBid = (auctionId: string, stickerIds: string[]) => {
     if (!user) return;
-    setSubmitting(true);
-    try {
-      await api.post(`/api/subastas/${auctionId}/ofertar`, { 
-        usuarioId: user.id,
-        figuritaIds: stickerIds // FIXED: Property matches backend expectations perfectly now
-      });
-      
-      const res = await api.get(`/api/subastas/participando/${user.id}`);
-      setAuctions(res.data);
-      setSelected(null);
-      setBidFormStickers([]);
-    } catch (err: any) {
-      console.error('Error placing bid:', err);
-      const serverMessage = err.response?.data?.message || 'Error al enviar la oferta.';
-      alert(serverMessage);
-    } finally {
-      setSubmitting(false);
-    }
+    ofertar.mutate(
+      { auctionId, usuarioId: user.id, figuritaIds: stickerIds },
+      {
+        onSuccess: () => {
+          setSelected(null);
+          setBidFormStickers([]);
+        },
+      },
+    );
   };
 
-  if (loading) return <PageLoading label="Cargando subastas…" />;
-  if (error) return <PageError message={error} />;
+  if (isLoading) return <Spinner label="Cargando subastas…" />;
+  if (isError) return <ErrorState message="No se pudieron cargar las subastas." onRetry={() => refetch()} />;
 
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado !== 'EN_CURSO');
@@ -108,6 +66,11 @@ export default function ParticipandoPage() {
         title="No estás participando en ninguna subasta"
         subtitle="Hacé una oferta en una subasta activa para verla acá."
         accentColor={BLUE}
+        icon={
+          <svg viewBox="0 0 24 24" fill="none" stroke={BLUE} strokeWidth="1.8" className="w-6 h-6" aria-hidden="true">
+            <path d="M7 16V4m0 0L3 8m4-4 4 4M17 8v12m0 0 4-4m-4 4-4-4" />
+          </svg>
+        }
       />
     );
   }
@@ -163,29 +126,13 @@ export default function ParticipandoPage() {
         <AuctionDetailModal
           auction={selected}
           myStickers={bidFormStickers}
-          onClose={() => {
-            setSelected(null);
-            setBidFormStickers([]);
-          }}
+          onClose={() => { setSelected(null); setBidFormStickers([]); ofertar.reset(); }}
           onBid={handleBid}
-          isSubmitting={submitting}
+          isSubmitting={ofertar.isPending}
           isFetchingStickers={fetchingStickers}
+          errorMessage={ofertar.isError ? getApiErrorMessage(ofertar.error, 'Error al enviar la oferta.') : null}
         />
       )}
-    </div>
-  );
-}
-
-function EmptyState({ title, subtitle, accentColor }: { title: string; subtitle: string; accentColor: string; }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-      <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: `${accentColor}12`, border: `1.5px solid ${accentColor}30` }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke={accentColor} strokeWidth="1.8" className="w-6 h-6">
-          <path d="M7 16V4m0 0L3 8m4-4 4 4M17 8v12m0 0 4-4m-4 4-4-4" />
-        </svg>
-      </div>
-      <p className="text-sm font-semibold text-text">{title}</p>
-      <p className="text-xs text-muted max-w-xs">{subtitle}</p>
     </div>
   );
 }

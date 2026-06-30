@@ -10,6 +10,7 @@ export default function FiltrosFigurita({ filtros }: { filtros: FiltrosFiguritaS
       <div className="mb-6">
         <input
           type="text"
+          aria-label="Buscar figurita"
           placeholder="Buscar figurita..."
           value={filtros.searchTerm}
           onChange={(e) => filtros.setSearchTerm(e.target.value)}
@@ -19,6 +20,7 @@ export default function FiltrosFigurita({ filtros }: { filtros: FiltrosFiguritaS
       <div className="grid grid-cols-3 gap-4 mb-6">
         <input
           type="text"
+          aria-label="Selección"
           placeholder="Selección"
           value={filtros.filterSeleccion}
           onChange={(e) => filtros.setFilterSeleccion(e.target.value)}
@@ -26,6 +28,7 @@ export default function FiltrosFigurita({ filtros }: { filtros: FiltrosFiguritaS
         />
         <input
           type="text"
+          aria-label="Equipo"
           placeholder="Equipo"
           value={filtros.filterEquipo}
           onChange={(e) => filtros.setFilterEquipo(e.target.value)}
@@ -33,6 +36,7 @@ export default function FiltrosFigurita({ filtros }: { filtros: FiltrosFiguritaS
         />
         <input
           type="text"
+          aria-label="Categoria"
           placeholder="Categoria"
           value={filtros.filterCategoria}
           onChange={(e) => filtros.setFilterCategoria(e.target.value)}

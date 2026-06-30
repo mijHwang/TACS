@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
 import { authService } from '../../services/auth/auth.service';
 import bgImage from '../../assets/mundial-2026-cartel-fifa.jpg';
@@ -9,6 +9,8 @@ type Mode = 'login' | 'forgot';
 export default function LoginPage() {
   const { loginWithToken } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/dashboard';
 
   const [mode, setMode] = useState<Mode>('login');
   const [username, setUsername] = useState('');
@@ -27,7 +29,7 @@ export default function LoginPage() {
       try {
         const token = await authService.login({ username, password });
         loginWithToken(token);
-        navigate('/dashboard', { replace: true });
+        navigate(from, { replace: true });
       } catch {
         setError('Usuario o contraseña incorrectos.');
       } finally {
@@ -87,8 +89,9 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Usuario */}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</label>
+              <label htmlFor="login-username" className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Usuario</label>
               <input
+                id="login-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -101,8 +104,9 @@ export default function LoginPage() {
             {/* Contraseña (solo en login) */}
             {mode === 'login' && (
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contraseña</label>
+                <label htmlFor="login-password" className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Contraseña</label>
                 <input
+                  id="login-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

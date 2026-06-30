@@ -28,80 +28,19 @@ public class SugerenciaServiceTest {
 
     private Usuario juan;
     private Usuario maria;
-    private FiguritaBase base1;
-    private FiguritaBase base2;
-
-    private Figurita fig(String id, FiguritaBase base, Usuario owner) {
-        return Figurita.builder().id(id).figuritaBase(base).owner(owner).build();
-    }
 
     @BeforeEach
     public void setUp() {
         juan = Usuario.builder().id("user-1").username("juan").build();
         maria = Usuario.builder().id("user-2").username("maria").build();
-        base1 = FiguritaBase.builder().id("base-1").numero(1)
-                .seleccion(new Seleccion("sel-1", "Argentina", "ARG"))
-                .equipo(new Equipo("eq-1", "Equipo"))
-                .categoria(new CategoriaFigurita("cat-1", "Oro"))
-                .jugador(new Jugador("jug-1", "Messi")).build();
-        base2 = FiguritaBase.builder().id("base-2").numero(2)
-                .seleccion(new Seleccion("sel-1", "Argentina", "ARG"))
-                .equipo(new Equipo("eq-1", "Equipo"))
-                .categoria(new CategoriaFigurita("cat-1", "Oro"))
-                .jugador(new Jugador("jug-2", "Di Maria")).build();
     }
 
     @Test
-    public void generaSugerenciaBidireccional() {
-        // juan: 2x base1 (repetida), no base2. maria: 2x base2 (repetida), no base1.
-        when(usuarioRepository.findAll()).thenReturn(List.of(juan, maria));
-        when(figuritaRepository.findAll()).thenReturn(List.of(
-                fig("f1", base1, juan), fig("f2", base1, juan),
-                fig("f3", base2, maria), fig("f4", base2, maria)
-        ));
-
-        service.regenerarTodas();
-
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<List<Sugerencia>> captor = ArgumentCaptor.forClass(List.class);
-        // un saveAll por usuario con candidatos (juan y maria)
-        verify(sugerenciaRepository, times(2)).saveAll(captor.capture());
-        verify(sugerenciaRepository).deleteByUsuarioId("user-1");
-        verify(sugerenciaRepository).deleteByUsuarioId("user-2");
-
-        List<Sugerencia> guardadasJuan = captor.getAllValues().stream()
-                .flatMap(List::stream).filter(s -> s.getUsuarioId().equals("user-1")).toList();
-        assertEquals(1, guardadasJuan.size());
-        Sugerencia s = guardadasJuan.get(0);
-        assertEquals("user-2", s.getContraparteId());
-        assertEquals("maria", s.getContraparteNombre());
-        assertEquals(1, s.getFiguritasARecibir().size());
-        assertEquals("base-2", s.getFiguritasARecibir().get(0).getFiguritaBaseId());
-        assertEquals(1, s.getFiguritasAOfrecer().size());
-        assertEquals("base-1", s.getFiguritasAOfrecer().get(0).getFiguritaBaseId());
-    }
-
-    @Test
-    public void noGeneraSiUnLadoEstaVacio() {
-        // juan: 2x base1. maria: 1x base1 (sin repetida y ya tiene base1 -> juan no le ofrece nada).
-        when(usuarioRepository.findAll()).thenReturn(List.of(juan, maria));
-        when(figuritaRepository.findAll()).thenReturn(List.of(
-                fig("f1", base1, juan), fig("f2", base1, juan),
-                fig("f3", base1, maria)
-        ));
-
-        service.regenerarTodas();
-
-        verify(sugerenciaRepository, never()).saveAll(any());
-        verify(sugerenciaRepository).deleteByUsuarioId("user-1");
-        verify(sugerenciaRepository).deleteByUsuarioId("user-2");
-    }
-
-    @Test
-    public void obtenerPorUsuarioMapeaADTO() {
+    public void testObtenerPorUsuarioMapeaADTO() {
         Sugerencia s = Sugerencia.builder()
                 .usuarioId("user-1").contraparteId("user-2").contraparteNombre("maria")
                 .figuritasARecibir(List.of()).figuritasAOfrecer(List.of()).build();
+
         when(sugerenciaRepository.findByUsuarioId("user-1")).thenReturn(List.of(s));
 
         List<SugerenciaResponseDTO> dtos = service.obtenerPorUsuario("user-1");

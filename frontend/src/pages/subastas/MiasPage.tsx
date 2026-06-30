@@ -1,30 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
 import AuctionCard from './components/AuctionCard';
 import AuctionDetailModal from './components/AuctionDetailModal';
-import { PageLoading, PageError } from './ActivasPage';
-
-// FIXED: Changed from Auction type to SubastaResponseDTO
-interface SubastaResponseDTO {
-  id: string;
-  usuarioId: string;
-  usuarioUsername: string;
-  figuritaId: string;
-  figuritaNumero: number;
-  figuritaJugadorNombre: string;
-  figuritaSeleccionNombre: string;
-  figuritaEquipoNombre: string;
-  figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
-  duracion: number;
-  horaInicio: string;
-  horaFin: string;
-  ofertasCount: number;
-  liderId: string | null;
-  liderUsername: string;
-  liderFiguritasNombres: string[];
-}
+import Spinner from '../../components/Spinner';
+import ErrorState from '../../components/ErrorState';
+import EmptyState from '../../components/EmptyState';
+import { useMisSubastas, type SubastaResponseDTO } from '../../hooks/useSubastas';
 
 const RED = '#D82D31';
 
@@ -33,49 +14,29 @@ const RED = '#D82D31';
 
 export default function SubastasMiasPage() {
   const { user } = useAuth();
-  // FIXED: Changed state type to SubastaResponseDTO
-  const [auctions, setAuctions] = useState<SubastaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  // FIXED: Changed selected type to SubastaResponseDTO
+  const { data: auctions = [], isLoading, isError, refetch } = useMisSubastas(user?.id);
   const [selected, setSelected] = useState<SubastaResponseDTO | null>(null);
 
-  // FIXED: Changed to use API endpoint instead of auctionService
-  useEffect(() => {
-    if (!user?.id) { 
-      setLoading(false); 
-      return; 
-    }
-    
-    api.get(`/api/subastas/usuario/${user.id}`)
-      .then(res => {
-        setAuctions(res.data);
-      })
-      .catch(() => setError('No se pudieron cargar tus subastas.'))
-      .finally(() => setLoading(false));
-  }, [user?.id]);
+  if (isLoading) return <Spinner label="Cargando tus subastas…" />;
+  if (isError) return <ErrorState message="No se pudieron cargar tus subastas." onRetry={() => refetch()} />;
 
-  if (loading) return <PageLoading label="Cargando tus subastas…" />;
-  if (error) return <PageError message={error} />;
-
-  // FIXED: Simplified status grouping based on DTO estado field
   const pending = auctions.filter(a => a.estado === 'PENDIENTE');
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado === 'FINALIZADA');
 
   if (auctions.length === 0) {
     return (
-      <div className="page-enter flex flex-col items-center justify-center gap-3 py-20 text-center">
-        <div
-          className="w-14 h-14 rounded-full flex items-center justify-center"
-          style={{ background: `${RED}12`, border: `1.5px solid ${RED}30` }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.8" className="w-6 h-6">
-            <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" /><path d="m13 13 6 6" />
-          </svg>
-        </div>
-        <p className="text-sm font-semibold text-text">Todavía no creaste subastas</p>
-        <p className="text-xs text-muted">Publicá una subasta desde la pestaña "+ Nueva".</p>
+      <div className="page-enter">
+        <EmptyState
+          title="Todavía no creaste subastas"
+          subtitle='Publicá una subasta desde la pestaña "+ Nueva".'
+          accentColor={RED}
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke={RED} strokeWidth="1.8" className="w-6 h-6">
+              <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" /><path d="m13 13 6 6" />
+            </svg>
+          }
+        />
       </div>
     );
   }
@@ -94,7 +55,6 @@ export default function SubastasMiasPage() {
         </span>
       </div>
 
-      {/* FIXED: Simplified status pills based on DTO estado */}
       <div className="flex gap-2 flex-wrap -mt-2">
         {pending.length > 0 && (
           <span

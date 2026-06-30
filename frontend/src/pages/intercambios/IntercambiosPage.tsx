@@ -22,16 +22,14 @@ const BLUE = '#03BAE9';
 export default function IntercambiosPage() {
   const { user } = useAuth();
   const [intercambios, setIntercambios] = useState<IntercambioResponseDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(user?.id && user.id !== user.username));
   const [error, setError] = useState<string | null>(null);
   const [hovered, setHovered] = useState<{ id: string; star: number } | null>(null);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
+  const [calificarError, setCalificarError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user?.id || user.id === user.username) {
-      setLoading(false);
-      return;
-    }
+    if (!user?.id || user.id === user.username) return;
     api.get(`/api/intercambios/usuario/${user.id}`)
       .then(res => setIntercambios(res.data))
       .catch(() => setError('No se pudieron cargar los intercambios.'))
@@ -40,6 +38,7 @@ export default function IntercambiosPage() {
 
   const handleCalificar = async (intercambioId: string, puntaje: number) => {
     if (!user?.id) return;
+    setCalificarError(null);
     setSubmittingId(intercambioId);
     try {
       const res = await api.patch(
@@ -50,8 +49,8 @@ export default function IntercambiosPage() {
       setIntercambios(prev =>
         prev.map(i => i.id === intercambioId ? res.data : i)
       );
-    } catch (err) {
-      alert('Error al calificar. Intentá de nuevo.');
+    } catch {
+      setCalificarError('No se pudo calificar. Intentá de nuevo.');
     } finally {
       setSubmittingId(null);
     }
@@ -157,29 +156,34 @@ export default function IntercambiosPage() {
                       <Stars value={miPuntaje!} readonly />
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3">
-                      <p className="text-xs text-muted shrink-0">Calificar a @{otroUsername}:</p>
-                      <div className="flex items-center gap-1">
-                        {[1, 2, 3, 4, 5].map(star => (
-                          <button
-                            key={star}
-                            disabled={isSubmitting}
-                            onClick={() => handleCalificar(intercambio.id, star)}
-                            onMouseEnter={() => setHovered({ id: intercambio.id, star })}
-                            onMouseLeave={() => setHovered(null)}
-                            className="transition-transform hover:scale-110 disabled:opacity-40"
-                          >
-                            <svg viewBox="0 0 24 24" className="w-5 h-5" fill={
-                              hovered?.id === intercambio.id && star <= hovered.star
-                                ? '#F59E0B'
-                                : 'none'
-                            } stroke="#F59E0B" strokeWidth="1.5">
-                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                            </svg>
-                          </button>
-                        ))}
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-3">
+                        <p className="text-xs text-muted shrink-0">Calificar a @{otroUsername}:</p>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <button
+                              key={star}
+                              disabled={isSubmitting}
+                              onClick={() => handleCalificar(intercambio.id, star)}
+                              onMouseEnter={() => setHovered({ id: intercambio.id, star })}
+                              onMouseLeave={() => setHovered(null)}
+                              className="transition-transform hover:scale-110 disabled:opacity-40"
+                            >
+                              <svg viewBox="0 0 24 24" className="w-5 h-5" fill={
+                                hovered?.id === intercambio.id && star <= hovered.star
+                                  ? '#F59E0B'
+                                  : 'none'
+                              } stroke="#F59E0B" strokeWidth="1.5">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                              </svg>
+                            </button>
+                          ))}
+                        </div>
+                        {isSubmitting && <span className="text-xs text-muted">Guardando…</span>}
                       </div>
-                      {isSubmitting && <span className="text-xs text-muted">Guardando…</span>}
+                      {calificarError && submittingId === null && (
+                        <p className="text-xs font-semibold mt-1" style={{ color: RED }}>{calificarError}</p>
+                      )}
                     </div>
                   )}
                 </div>

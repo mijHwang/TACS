@@ -23,6 +23,7 @@ export default function CreateAuctionForm({
   const [selectedSticker, setSelectedSticker] = useState<string>('');
   const [duration, setDuration] = useState<number>(24);
   const [conditions, setConditions] = useState<AuctionCondition[]>([]);
+  const [previewNow, setPreviewNow] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,9 +53,9 @@ export default function CreateAuctionForm({
 
         {/* LEFT: Sticker selector */}
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold text-text uppercase tracking-wider">
+          <span className="text-xs font-semibold text-text uppercase tracking-wider">
             Figurita a subastar
-          </label>
+          </span>
           <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 max-h-96 overflow-y-auto pr-1">
             {myStickers.map((sticker) => {
               const isSelected = selectedSticker === sticker.id;
@@ -62,7 +63,7 @@ export default function CreateAuctionForm({
                 <button
                   key={sticker.id}
                   type="button"
-                  onClick={() => setSelectedSticker(sticker.id)}
+                  onClick={() => { setSelectedSticker(sticker.id); setPreviewNow(Date.now()); }}
                   className={
                     `flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all duration-150 ` +
                     (isSelected
@@ -88,15 +89,15 @@ export default function CreateAuctionForm({
 
           {/* Duration selector */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-text uppercase tracking-wider">
+            <span className="text-xs font-semibold text-text uppercase tracking-wider">
               Duración
-            </label>
+            </span>
             <div className="flex gap-2 flex-wrap">
               {DURATION_OPTIONS.map(({ label, hours }) => (
                 <button
                   key={hours}
                   type="button"
-                  onClick={() => setDuration(hours)}
+                  onClick={() => { setDuration(hours); setPreviewNow(Date.now()); }}
                   className={
                     `px-4 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ` +
                     (duration === hours
@@ -113,9 +114,9 @@ export default function CreateAuctionForm({
           {/* Condiciones mínimas */}
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-text uppercase tracking-wider">
+              <span className="text-xs font-semibold text-text uppercase tracking-wider">
                 Condiciones mínimas
-              </label>
+              </span>
               {conditions.length > 0 && (
                 <span className="text-[0.65rem] text-primary font-medium">
                   {conditions.length} {conditions.length !== 1 ? 'condiciones' : 'condición'}
@@ -126,9 +127,9 @@ export default function CreateAuctionForm({
           </div>
 
           {/* Preview */}
-          {selectedSticker && (() => {
+          {selectedSticker && previewNow > 0 && (() => {
             const s = myStickers.find((st) => st.id === selectedSticker)!;
-            const end = new Date(Date.now() + duration * 3600 * 1000);
+            const end = new Date(previewNow + duration * 3600 * 1000);
             return (
               <div className="bg-surface2 border border-border rounded-lg px-4 py-3">
                 <p className="text-[0.65rem] text-muted uppercase tracking-wider mb-1">Vista previa</p>

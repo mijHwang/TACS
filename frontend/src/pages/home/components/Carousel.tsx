@@ -17,6 +17,7 @@ export default function Carousel({ children }: Props) {
       {/* Izquierda */}
       <button
         type="button"
+        aria-label="Anterior"
         onClick={() => scroll('left')}
         className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-8 h-8 rounded-full bg-white shadow-md border border-gray-100 flex items-center justify-center cursor-pointer hover:shadow-lg transition-all duration-150"
       >
@@ -37,6 +38,7 @@ export default function Carousel({ children }: Props) {
       {/* Derecha */}
       <button
         type="button"
+        aria-label="Siguiente"
         onClick={() => scroll('right')}
         className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-8 h-8 rounded-full bg-white shadow-md border border-gray-100 flex items-center justify-center cursor-pointer hover:shadow-lg transition-all duration-150"
       >

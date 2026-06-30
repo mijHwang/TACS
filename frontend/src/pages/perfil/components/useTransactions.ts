@@ -11,11 +11,13 @@ import {
 export function useTransactions(userId: string | undefined, username: string | undefined) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!userId || !username || userId === username) return;
 
     const fetchAll = async () => {
+      setError(false);
       try {
         const [intercambiosRes, participandoRes, misSubastasRes] = await Promise.all([
           api.get<IntercambioResponseDTO[]>(`/api/intercambios/usuario/${userId}`),
@@ -43,6 +45,7 @@ export function useTransactions(userId: string | undefined, username: string | u
         setTransactions(deduped);
       } catch (err) {
         console.error('Error fetching transactions:', err);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -51,5 +54,5 @@ export function useTransactions(userId: string | undefined, username: string | u
     fetchAll();
   }, [userId, username]);
 
-  return { transactions, loading };
+  return { transactions, loading, error };
 }

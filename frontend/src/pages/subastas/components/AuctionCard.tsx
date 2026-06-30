@@ -43,6 +43,7 @@ export default function AuctionCard({ auction, onViewDetail }: AuctionCardProps)
   const style = statusStyle[auction.estado] ?? statusStyle['EN_CURSO'];
   const finished = auction.estado !== 'EN_CURSO';
 
+  // TODO(a11y): idealmente un <button> real en vez de <article role="button"> (tabIndex y onKeyDown ya están); jsx-a11y/no-noninteractive-element-to-interactive-role quedó en 'warn'.
   return (
     <article
       className="rounded-2xl p-4 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
@@ -52,7 +53,7 @@ export default function AuctionCard({ auction, onViewDetail }: AuctionCardProps)
         opacity: finished ? 0.75 : 1,
       }}
       onClick={() => onViewDetail(auction)}
-      role="button" 
+      role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && onViewDetail(auction)}
     >

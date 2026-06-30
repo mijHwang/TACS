@@ -1,0 +1,23 @@
+###############################################################################
+# Override de PRODUCCIÓN — sirve HTTPS detrás de Cloudflare.
+#
+# El dominio tacs-g3-figuritas.dev (Name.com) está delegado a Cloudflare, que
+# reconecta al origen en Full (strict) validando un Cloudflare Origin Certificate
+# instalado a mano en la EC2 bajo ./cloudflare/ (gitignored, dura 15 años).
+#
+# Uso en la EC2:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+#
+# Requisitos: dominio apuntando vía Cloudflare a la IP pública + puertos 80 y 443
+# abiertos en el Security Group de la EC2.
+###############################################################################
+services:
+  frontend:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Config con TLS (reemplaza al nginx.conf HTTP del build)
+      - ./frontend/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      # Cloudflare Origin Certificate (gitignored; instalado a mano en la EC2)
+      - ./cloudflare:/etc/nginx/cloudflare:ro

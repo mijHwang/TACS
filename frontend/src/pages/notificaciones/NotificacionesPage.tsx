@@ -1,104 +1,18 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
-
-  interface Notificacion {
-  id: string;
-  usuario: Usuario;
-  tipo: string;
-  titulo: string;
-  mensaje: string;
-  leida: boolean;
-  fecha: string;
-  enlace: string;
-}
-
-interface Usuario {
-  id: string;
-  username: string;
-  password?: string;
-  email?: string;
-  figuritas?: Figurita[];
-}
-
-interface FiguritaBase {
-  id: string;
-  numero?: number;
-  seleccion: { id: string; nombre: string; grupo: string };
-  equipo: { id: string; nombre: string };
-  categoria: { id: string; nombre: string };
-  jugador: { id: string; nombre: string };
-}
-
-interface Figurita {
-  id: string;
-  figuritaBase: FiguritaBase;
-  owner?: Usuario;
-}
-
-
+import { useNotificaciones, useMarcarLeida, useEliminarNotificacion, useLimpiarNotificaciones } from '../../hooks/useNotificaciones';
 
 export default function NotificacionesPage() {
-
-
   const navigate = useNavigate();
- 
   const { user } = useAuth();
-  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: notificaciones = [], isLoading } = useNotificaciones(user?.id);
+  const marcarLeida = useMarcarLeida();
+  const eliminar = useEliminarNotificacion();
+  const limpiar = useLimpiarNotificaciones();
 
-  useEffect(() => {
-    if (!user?.id) return;
-  
-    api.get(`/api/notificaciones/usuario/${user.id}`)
-      .then(res => {
-
-        const ordered = [...res.data].sort(
-        (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-        );
-
-        setNotificaciones(ordered);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching notificaciones:', error);
-        setLoading(false);
-      });
-    }, [user?.id]);
-
-  // Mark notification as read
-  const handleLeerNotificacion = (id: string) => {
-  api.put(`/api/notificaciones/${id}/leer`)
-    .then(res => {
-        console.log(res, "hola");
-      setNotificaciones(prev =>
-        prev.map(notif => 
-        notif.id === id ? res.data : notif
-        )
-      );
-      })
-    .catch(error => console.error('Error:', error));
-  };
-
-  // Delete notification
-  const handleEliminarNotificacion = (id: string) => {
-  api.delete(`/api/notificaciones/${id}`)
-  .then(() => {
-    setNotificaciones(prev => prev.filter(notif => notif.id !== id));
-  })
-  .catch(error => console.error('Error:', error));
-  };
-
-  // Clear all notifications
-  const handleLimpiarTodas = () => {
-  notificaciones.forEach(notif => {
-    api.delete(`/api/notificaciones/${notif.id}`)
-    .catch(error => console.error('Error:', error));
-  });
-  setNotificaciones([]);
-  };
+  const handleLeerNotificacion = (id: string) => marcarLeida.mutate(id);
+  const handleEliminarNotificacion = (id: string) => eliminar.mutate(id);
+  const handleLimpiarTodas = () => limpiar.mutate(notificaciones.map((n) => n.id));
 
   // Get icon based on type
   const getIconoTipo = (tipo: string) => {
@@ -130,13 +44,12 @@ export default function NotificacionesPage() {
 
   const notificacionesNoLeidas = notificaciones.filter(n => !n.leida).length;
 
-
-  if (loading) {
-  return (
-    <div className="page-enter">
-      <p className="text-text">Cargando notificaciones...</p>
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className="page-enter">
+        <p className="text-text">Cargando notificaciones...</p>
+      </div>
+    );
   }
 
   return (

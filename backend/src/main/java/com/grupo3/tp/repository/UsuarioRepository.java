@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UsuarioRepository extends MongoRepository<Usuario, String> {
+public interface UsuarioRepository extends MongoRepository<Usuario, String>, UsuarioRepositoryCustom {
     Optional<Usuario> findByUsername(String username);
     List<Usuario> findByUsernameContainingIgnoreCase(String search);
 }

@@ -7,6 +7,7 @@ import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaPublicada;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaPublicadaRepository;
+import com.grupo3.tp.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,26 +22,31 @@ public class FiguritaPublicadaService {
     private final FiguritaPublicadaRepository repository;
     private final FiguritaService figuritaService;
     private final UsuarioService usuarioService;
+    private final NotificacionService notificacionService;
+    private final UsuarioRepository usuarioRepository;
+
 
 
     public FiguritaPublicadaService(
             FiguritaPublicadaRepository repository,
             FiguritaService figuritaService,
-            UsuarioService usuarioService) {
+            UsuarioService usuarioService,
+            NotificacionService notificacionService,
+            UsuarioRepository usuarioRepository) {
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.usuarioService = usuarioService;
+        this.notificacionService = notificacionService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public FiguritaPublicadaResponseDTO publicar(FiguritaPublicadaRequestDTO dto) {
-        // 1. Get all figuritas of this base owned by user
         List<Figurita> todasDelUsuario = figuritaService
                 .obtenerTodasInternaPorUserId(dto.getUsuarioId())
                 .stream()
                 .filter(f -> f.getFiguritaBase().getId().equals(dto.getFiguritaBaseId()))
                 .toList();
 
-        // 2. Get already published figurita IDs for this user
         Set<String> yaPublicadas = repository.findByUsuarioId(dto.getUsuarioId())
                 .stream()
                 .filter(p -> p.getEstado() == EstadoPublicacion.DISPONIBLE)
@@ -48,7 +54,6 @@ public class FiguritaPublicadaService {
                 .map(Figurita::getId)
                 .collect(Collectors.toSet());
 
-        // 3. Pick only unoccupied ones
         List<Figurita> disponibles = todasDelUsuario.stream()
                 .filter(f -> !yaPublicadas.contains(f.getId()))
                 .toList();
@@ -59,7 +64,6 @@ public class FiguritaPublicadaService {
             );
         }
 
-        // 4. Take only the requested amount
         List<Figurita> aPublicar = disponibles.subList(0, dto.getCantidad());
 
         Usuario usuario = usuarioService.obtenerPorId(dto.getUsuarioId())
@@ -73,7 +77,23 @@ public class FiguritaPublicadaService {
                 .estado(EstadoPublicacion.DISPONIBLE)
                 .build();
 
-        return mapToDTO(repository.save(publicacion));
+        FiguritaPublicada saved = repository.save(publicacion);
+
+        try {
+            Figurita primera = aPublicar.get(0);
+            // 🟢 Passing the base ID now instead of the physical instance ID
+            List<Usuario> interesados = usuarioRepository.findUsuariosQueLesFaltaFigurita(dto.getFiguritaBaseId());
+
+            notificacionService.notificarUsuariosFaltantes(
+                    interesados,
+                    primera.getFiguritaBase().getJugador().getNombre(),
+                    dto.getUsuarioId()
+            );
+        } catch (Exception e) {
+            System.err.println("Error generating background lack-notifications: " + e.getMessage());
+        }
+
+        return mapToDTO(saved);
     }
 
     public List<FiguritaPublicadaResponseDTO> obtenerDisponibles(String usuarioId) {

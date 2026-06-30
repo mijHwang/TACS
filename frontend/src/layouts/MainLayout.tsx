@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Suspense } from 'react';
 import { useAuth } from '../auth/useAuth';
 import type { JSX } from 'react';
 
@@ -71,6 +72,7 @@ const navLinks = [
 
 export default function MainLayout() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="flex w-screen h-screen overflow-hidden">
@@ -91,13 +93,11 @@ export default function MainLayout() {
               to={to}
               className={({ isActive }) =>
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium no-underline transition-all duration-150 ' +
-                (isActive ? 'font-semibold text-white' : 'text-red-200 hover:text-white')
+                (isActive ? 'font-semibold text-white' : 'text-red-200 hover:text-white hover:bg-[rgba(255,255,255,0.08)]')
               }
               style={({ isActive }) => isActive
                 ? { background: 'rgba(255,255,255,0.18)' }
                 : { }}
-              onMouseEnter={e => { if (!(e.currentTarget as HTMLElement).classList.contains('font-semibold')) (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.08)'; }}
-              onMouseLeave={e => { if (!(e.currentTarget as HTMLElement).classList.contains('font-semibold')) (e.currentTarget as HTMLElement).style.background = ''; }}
             >
               <span className="w-[18px] h-[18px] shrink-0 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">
                 {icons[icon]}
@@ -138,12 +138,10 @@ export default function MainLayout() {
             <span className="text-[0.7rem] capitalize" style={{ color: 'rgba(255,255,255,0.6)' }}>{user?.role ?? '—'}</span>
           </div>
           <button
-            className="bg-transparent border-none cursor-pointer w-[22px] h-[22px] flex items-center justify-center shrink-0 rounded p-0 transition-all duration-150 [&>svg]:w-4 [&>svg]:h-4"
-            style={{ color: 'rgba(255,255,255,0.7)' }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'white'}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.7)'}
+            className="bg-transparent border-none cursor-pointer w-[22px] h-[22px] flex items-center justify-center shrink-0 rounded p-0 transition-all duration-150 [&>svg]:w-4 [&>svg]:h-4 text-white/70 hover:text-white"
             onClick={logout}
             title="Cerrar sesión"
+            aria-label="Cerrar sesión"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
@@ -159,6 +157,8 @@ export default function MainLayout() {
             <button
               className="bg-transparent border border-gray-200 rounded-lg text-gray-400 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-150 hover:border-[#03BAE9] hover:text-[#03BAE9] [&>svg]:w-4 [&>svg]:h-4"
               title="Notificaciones"
+              aria-label="Notificaciones"
+              onClick={() => navigate('/notificaciones')}
             >
               {icons.notificaciones}
             </button>
@@ -166,7 +166,17 @@ export default function MainLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-7 bg-gray-50">
-          <Outlet />
+          {/* Suspense acotado al contenido: al cargar el chunk de una página lazy,
+              sólo parpadea esta área — el sidebar y el topbar permanecen montados. */}
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full text-gray-400 text-sm tracking-widest">
+                Cargando…
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

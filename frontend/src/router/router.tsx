@@ -102,20 +102,15 @@ const router = createBrowserRouter([
               { path: 'participando', element: <SubParticipandoPage /> },
             ],
           },
-        ],
-      },
-    ],
-  },
 
-  // Rutas protegidas — solo rol "admin"
-  {
-    element: <PrivateRoute requiredRole="admin" />,
-    children: [
-      {
-        element: <MainLayout />,
-        children: [
-          { path: 'admin', element: <AdminPage /> },
-          { path: 'admin/gift', element: <AdminGiftPage /> },
+          // Admin — sólo rol "admin", dentro del mismo MainLayout
+          {
+            element: <PrivateRoute requiredRole="admin" />,
+            children: [
+              { path: 'admin', element: <AdminPage /> },
+              { path: 'admin/gift', element: <AdminGiftPage /> },
+            ],
+          },
         ],
       },
     ],

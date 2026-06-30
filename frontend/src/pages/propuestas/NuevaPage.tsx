@@ -1,32 +1,24 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../auth/useAuth';
-import api from '../../services/api';
-
-interface FiguritaResponseDTO {
-  id: string;
-  figuritaBaseId: string;
-  numero: number;
-  jugadorNombre: string;
-  seleccionNombre: string;
-  equipoNombre: string;
-  categoriaNombre: string;
-  count: number;
-  ownerId: string;  // ADD THIS
-  ownerName: string;
-}
+import { useFiguritas } from '../../hooks/useFiguritas';
+import { useCrearPropuesta } from '../../hooks/usePropuestas';
 
 export default function PropuestasNuevaPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();  
+  const { user } = useAuth();
 
-  const figuritaDelLink = location.state?.figuritaSeleccionada as FiguritaResponseDTO | undefined;
+  const figuritaDelLink = location.state?.figuritaSeleccionada as { id: string; figuritaBaseId: string; jugadorNombre: string; ownerId: string } | undefined;
   const offeredBaseIds = location.state?.figuritasOfrecidasBaseIds as string[] | undefined;
-  const [misFiguritas, setMisFiguritas] = useState<FiguritaResponseDTO[]>([]);
-  const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || "");
+
+  const { data: misFiguritas = [] } = useFiguritas(user?.username);
+  const crearPropuesta = useCrearPropuesta();
+  const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || '');
   const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>([]);
   const [expandedMias, setExpandedMias] = useState<boolean>(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const prefillApplied = useRef(false);
 
   // Handle checkbox for figuritas to offer
   const handleToggleFigurita = (id: string) => {
@@ -37,64 +29,46 @@ export default function PropuestasNuevaPage() {
     }
   };
 
+  // Prefill desde sugerencia: pre-tildar figuritas a ofrecer por base id.
+  // One-shot initialization once async data arrives — intentional setState in effect.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (prefillApplied.current) return;
+    if (!offeredBaseIds || offeredBaseIds.length === 0 || misFiguritas.length === 0) return;
+    prefillApplied.current = true;
+    const ids = misFiguritas.filter((f) => offeredBaseIds.includes(f.figuritaBaseId)).map((f) => f.id);
+    if (ids.length > 0) {
+      setFiguritasOfrecidas(ids);
+      setExpandedMias(true);
+    }
+  }, [misFiguritas, offeredBaseIds]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
   // Handle submit
   const handleSubmit = () => {
+    setFormError(null);
     if (figuritaDelLink?.ownerId === user?.id) {
-      alert("No puedes querer tu propia figurita");
+      setFormError('No podés pedir tu propia figurita.');
       return;
     }
-
     if (!figuritaSeleccionada || figuritasOfrecidas.length === 0) {
-      alert("Debes seleccionar una figurita que quieres y al menos una que ofreces");
+      setFormError('Elegí una figurita que querés y al menos una que ofrecés.');
       return;
     }
-
-    const newSolicitud = {
-      usuarioId: user?.id,
-      usuarioDestino: figuritaDelLink?.ownerId,
-      figuritaId: figuritaSeleccionada,
-      figuritasOfrecidas: figuritasOfrecidas,
-      estado: "pendiente"
-    };
-
-    api.post('/api/solicitudes-intercambio', newSolicitud)
-      .then(res => {
-        console.log("Propuesta enviada:", res.data);
-        alert("¡Propuesta enviada!");
-        navigate('/propuestas/enviadas');
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        console.log(newSolicitud);
-        alert("Error al enviar propuesta");
-      });
+    crearPropuesta.mutate(
+      {
+        usuarioId: user!.id,
+        usuarioDestino: figuritaDelLink!.ownerId,
+        figuritaId: figuritaSeleccionada,
+        figuritasOfrecidas,
+        estado: 'pendiente',
+      },
+      {
+        onSuccess: () => navigate('/propuestas/enviadas'),
+        onError: () => setFormError('No se pudo enviar la propuesta. Intentá de nuevo.'),
+      },
+    );
   };
-
-  useEffect(() => {
-    if (!user?.username) return;  
-
-    console.log("Fetching figuritas for:", user.username);
-  
-    api.get(`/api/usuarios/${user.username}/figuritas`)
-      .then(res => {
-        const figs: FiguritaResponseDTO[] = res.data || [];
-        setMisFiguritas(figs);
-        // Prefill: si venimos desde una sugerencia, pre-tildar las figuritas a ofrecer (por base id)
-        if (offeredBaseIds && offeredBaseIds.length > 0) {
-          const ids = figs
-            .filter((f) => offeredBaseIds.includes(f.figuritaBaseId))
-            .map((f) => f.id);
-          if (ids.length > 0) {
-            setFiguritasOfrecidas(ids);
-            setExpandedMias(true);
-          }
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching figuritas:', error);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.username]);
 
   return (
     <div className="page-enter">
@@ -103,7 +77,7 @@ export default function PropuestasNuevaPage() {
       {/* Section 1: Figurita que quieres */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold text-text mb-4">¿Qué figurita quieres?</h3>
-        <button 
+        <button
           onClick={() => navigate('/buscar')}
           className="w-full p-3 bg-primary text-text font-bold rounded-lg hover:opacity-90 transition-opacity"
         >
@@ -128,7 +102,7 @@ export default function PropuestasNuevaPage() {
           <h3 className="text-lg font-semibold text-text">¿Qué figuritas ofreces?</h3>
           <span className="text-primary text-xl">{expandedMias ? '▼' : '►'}</span>
         </button>
-        
+
         {expandedMias && (
           <div className="space-y-2">
             {misFiguritas.map(fig => (
@@ -148,12 +122,18 @@ export default function PropuestasNuevaPage() {
         )}
       </div>
 
+      {/* Inline error */}
+      {formError && (
+        <p className="mb-3 text-sm font-semibold text-center" style={{ color: '#D82D31' }}>{formError}</p>
+      )}
+
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
+        disabled={crearPropuesta.isPending}
         className="w-full p-3 bg-primary text-text font-bold rounded-lg hover:opacity-90 transition-opacity"
       >
-        Enviar Propuesta
+        {crearPropuesta.isPending ? 'Enviando…' : 'Enviar Propuesta'}
       </button>
     </div>
   );
