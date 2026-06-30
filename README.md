@@ -49,11 +49,17 @@ docker compose up --build
 ```
 
 ### Online (AWS)
-La aplicación está alojada en una instancia AWS y accesible por dominio con HTTPS:
+La aplicación está alojada en una instancia AWS y accesible por HTTPS. URL principal (detrás de Cloudflare):
 ```
-https://tacs-g3-figuritas.duckdns.org/
+https://tacs-g3-figuritas.dev/
 ```
-(El dominio `tacs-g3-figuritas.duckdns.org` —vía [DuckDNS](https://www.duckdns.org)— apunta a la IP elástica de la EC2 `34.195.221.240`.)
+
+| URL | Vía | Notas |
+|---|---|---|
+| `https://tacs-g3-figuritas.dev` | **Cloudflare** (proxy/CDN) → EC2 | Dominio `.dev` (Name.com) delegado a Cloudflare. CDN + DDoS + SSL en el borde. **Principal.** |
+| `https://tacs-g3-figuritas.duckdns.org` | Directo a la EC2 (Let's Encrypt) | Sigue activo en paralelo (acceso directo al origen). |
+
+Ambos resuelven a la IP elástica `34.195.221.240`. Cloudflare termina el TLS público con su Universal SSL y reconecta al origen en **Full (strict)** validando un Cloudflare Origin Certificate instalado en Nginx.
 
 | URL | Descripción |
 |---|---|
@@ -87,6 +93,23 @@ Nginx recarga cada 6h). Los certificados se generan bajo `./certbot/` (gitignore
 | `frontend/nginx.prod.conf` | Server 443 con TLS + redirect 80→443 + challenge ACME |
 | `docker-compose.prod.yml` | Expone 443, monta certs, agrega el contenedor `certbot` |
 | `init-letsencrypt.sh` | Bootstrap del certificado (1ra vez) |
+
+#### Cloudflare (CDN + DDoS + edge SSL)
+
+El dominio `tacs-g3-figuritas.dev` (Name.com) está **delegado a Cloudflare** (nameservers de
+Cloudflare) y proxeado (nube naranja). Cloudflare aporta CDN, protección DDoS y SSL en el borde,
+y reconecta al origen en modo **Full (strict)**.
+
+- **DNS (Cloudflare):** registro `A @ → 34.195.221.240` (Proxied) + `A www → 34.195.221.240` (Proxied).
+- **Edge ↔ navegador:** Universal SSL (cert gratis de Cloudflare para el dominio).
+- **Cloudflare ↔ origen:** un **Cloudflare Origin Certificate** (15 años) instalado en Nginx. El
+  `server` block de `tacs-g3-figuritas.dev` en `frontend/nginx.prod.conf` lo usa y se selecciona por
+  SNI; el bloque del DuckDNS sigue como default para acceso directo a la IP.
+- **IP real:** Nginx usa `real_ip` con los rangos de Cloudflare (`CF-Connecting-IP`), así el backend
+  ve la IP del visitante y no la de Cloudflare.
+- El cert/key de origen viven en `./cloudflare/` en la EC2 (**gitignored**, nunca se commitean). Para
+  rotarlos: regenerar el Origin Certificate en Cloudflare, reemplazar `cloudflare/origin.{pem,key}` y
+  recrear el contenedor `frontend`.
 
 ### Usuarios de prueba
 
