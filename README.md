@@ -54,12 +54,9 @@ La aplicación está alojada en una instancia AWS y accesible por HTTPS. URL pri
 https://tacs-g3-figuritas.dev/
 ```
 
-| URL | Vía | Notas |
-|---|---|---|
-| `https://tacs-g3-figuritas.dev` | **Cloudflare** (proxy/CDN) → EC2 | Dominio `.dev` (Name.com) delegado a Cloudflare. CDN + DDoS + SSL en el borde. **Principal.** |
-| `https://tacs-g3-figuritas.duckdns.org` | Directo a la EC2 (Let's Encrypt) | Sigue activo en paralelo (acceso directo al origen). |
+El dominio es **`tacs-g3-figuritas.dev`** (registrado en **Name.com**, gratis vía GitHub Student Pack), delegado a **Cloudflare** (proxy/CDN/DDoS) y apuntando a la IP elástica `34.195.221.240`. Cloudflare termina el TLS público con su Universal SSL y reconecta al origen en **Full (strict)** validando un Cloudflare Origin Certificate instalado en Nginx.
 
-Ambos resuelven a la IP elástica `34.195.221.240`. Cloudflare termina el TLS público con su Universal SSL y reconecta al origen en **Full (strict)** validando un Cloudflare Origin Certificate instalado en Nginx.
+> **DuckDNS quedó deprecado.** El dominio que se usa es el de Name.com (`.dev`). El viejo `tacs-g3-figuritas.duckdns.org` (con su cert de Let's Encrypt) puede seguir resolviendo a la EC2 como remanente, pero **ya no se usa** y queda pendiente de limpieza del server.
 
 | URL | Descripción |
 |---|---|
@@ -104,7 +101,7 @@ y reconecta al origen en modo **Full (strict)**.
 - **Edge ↔ navegador:** Universal SSL (cert gratis de Cloudflare para el dominio).
 - **Cloudflare ↔ origen:** un **Cloudflare Origin Certificate** (15 años) instalado en Nginx. El
   `server` block de `tacs-g3-figuritas.dev` en `frontend/nginx.prod.conf` lo usa y se selecciona por
-  SNI; el bloque del DuckDNS sigue como default para acceso directo a la IP.
+  SNI. (Queda un `server` block legacy del DuckDNS como default — deprecado, pendiente de remover.)
 - **IP real:** Nginx usa `real_ip` con los rangos de Cloudflare (`CF-Connecting-IP`), así el backend
   ve la IP del visitante y no la de Cloudflare.
 - El cert/key de origen viven en `./cloudflare/` en la EC2 (**gitignored**, nunca se commitean). Para

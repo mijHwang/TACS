@@ -29,14 +29,14 @@ Frontend accessible at `http://localhost` (port 80), backend API at `http://loca
 
 ### Production deploy (AWS EC2 + HTTPS + Cloudflare)
 
-Live at **https://tacs-g3-figuritas.dev/** (behind Cloudflare) and **https://tacs-g3-figuritas.duckdns.org/** (direct to origin). The base `docker-compose.yml` + `nginx.conf` are **HTTP-only for local dev**; production HTTPS is a committed override:
+Live at **https://tacs-g3-figuritas.dev/** — the domain is `tacs-g3-figuritas.dev` (Name.com, free via GitHub Student Pack), delegated to Cloudflare (proxy/CDN/DDoS) → EC2. **DuckDNS is deprecated** (`tacs-g3-figuritas.duckdns.org` may still resolve as a leftover, but is no longer used). The base `docker-compose.yml` + `nginx.conf` are **HTTP-only for local dev**; production HTTPS is a committed override:
 
 ```bash
 # On the EC2 (one-time cert bootstrap): ./init-letsencrypt.sh
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 ```
 
-`docker-compose.prod.yml` exposes 443, adds a `certbot` renewal container, and mounts TLS material. `frontend/nginx.prod.conf` has two 443 server blocks: DuckDNS (Let's Encrypt, default) and `tacs-g3-figuritas.dev` (Cloudflare Origin Certificate, selected by SNI, Full strict). TLS secrets live under `./certbot/` and `./cloudflare/` on the EC2 — both **gitignored**, never committed. Full details (DNS records, cert rotation, Security Group) are in `README.md` (§ Online (AWS)). Deploy/infra specifics are in the agent's memory, not the repo.
+`docker-compose.prod.yml` exposes 443, adds a `certbot` renewal container, and mounts TLS material. `frontend/nginx.prod.conf` serves `tacs-g3-figuritas.dev` via a 443 server block with a Cloudflare Origin Certificate (selected by SNI, Full strict); a legacy DuckDNS server block (Let's Encrypt) is still present as default but deprecated. TLS secrets live under `./certbot/` and `./cloudflare/` on the EC2 — both **gitignored**, never committed. Full details (DNS records, cert rotation, Security Group) are in `README.md` (§ Online (AWS)). Deploy/infra specifics are in the agent's memory, not the repo.
 
 ## Task Management (Trello)
 
