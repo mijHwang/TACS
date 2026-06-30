@@ -48,3 +48,6 @@ docs/superpowers
 
 ### Certificados TLS de Let's Encrypt (generados en la EC2, NUNCA se commitean) ###
 /certbot/
+
+### Cloudflare Origin Certificate (instalado a mano en la EC2, NUNCA se commitea) ###
+/cloudflare/
