@@ -39,3 +39,6 @@ application-local.properties
 
 node_modules/
 .aider*
+
+### QA scripts (helpers locales, no parte de la app) ###
+/scripts/

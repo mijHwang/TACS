@@ -153,7 +153,7 @@ Leyenda: ✅ completo · ⚠️ parcial · ❌ no implementado
 | US5 | Proponer intercambio (1+ figuritas ofrecidas) | ✅ | ✅ | ✅ |
 | US6 | Publicar subasta (duración + condiciones) | ✅ | ✅ | ✅ |
 | US7 | Ofertar en subasta | ✅ | ⚠️ | ⚠️ backend OK; la UI oferta con `MOCK_MY_STICKERS` |
-| US8 | Ver publicaciones/propuestas/subastas y estado | ⚠️ | ⚠️ | ⚠️ páginas reales; el Dashboard ya muestra Sugerencias reales (Propuestas/Subastas/Alertas siguen mock) |
+| US8 | Ver publicaciones/propuestas/subastas y estado | ✅ | ✅ | ✅ Dashboard con datos reales vía `dashboardService`: figuritas publicadas, propuestas enviadas/recibidas, subastas activas, alertas; bonus: progreso de colección (US2) y acciones rápidas |
 | US9 | Aceptar / rechazar propuestas | ✅ | ✅ | ✅ aceptar transfiere figuritas, crea `Intercambio` y notifica |
 | US10 | Calificar / reputación | ⚠️ CRUD | ❌ mock | ❌ sin cálculo de reputación ni validación de intercambio previo |
 | US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ⚠️ | ⚠️ | ⚠️ solo notificaciones in-app por evento; alertas proactivas son stubs |

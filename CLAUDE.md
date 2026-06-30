@@ -27,6 +27,18 @@ Frontend accessible at `http://localhost` (port 80), backend API at `http://loca
 
 **Required:** a `.env` file at the repo root provides `SPRING_MONGODB_URI` (the MongoDB Atlas connection string), consumed by the backend service in `docker-compose.yml`. See `.env.example` for the format. Without it the backend boots but every data operation fails. Connecting to Atlas requires the running machine's public IP to be in the cluster's Network Access list and valid Database Access credentials in the URI.
 
+## Task Management (Trello)
+
+The project's tasks/user stories live on the [Trello board TACS](https://trello.com/b/OjLlcKiN/tacs). A local helper to read it from the CLI/Claude lives in `scripts/trello/` (the whole `/scripts/` folder is **gitignored** — credentials are never committed):
+
+```bash
+node scripts/trello/trello.mjs cards   # cards grouped by list (JSON)
+node scripts/trello/trello.mjs lists   # board columns
+node scripts/trello/trello.mjs board   # board info (validates credentials)
+```
+
+Credentials (Trello API key + token, read scope) go in `scripts/trello/trello.config.json`. Setup details: `scripts/trello/README.md`. If that folder is missing on a fresh checkout, follow its README to recreate it.
+
 ## Frontend Commands
 
 ```bash
