@@ -1,5 +1,7 @@
 // E2E: verifica que el catálogo real + fotos + wiring del front funcionan en el browser.
 // Precondición: app levantada y seed-demo ejecutado (existe juanca/demo1234).
+// Requiere puppeteer (NO es dependencia commiteada para no romper el build Docker):
+//   npm install -D puppeteer
 // Uso: BASE_URL=http://localhost npm run e2e
 import assert from 'node:assert/strict';
 import puppeteer from 'puppeteer';
