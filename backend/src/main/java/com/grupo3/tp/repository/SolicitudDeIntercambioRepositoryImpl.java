@@ -19,11 +19,10 @@ public class SolicitudDeIntercambioRepositoryImpl implements SolicitudDeIntercam
 
     @Override
     public List<SolicitudDeIntercambio> findByFiguritaOwnerId(String usuarioId) {
-        return mongoTemplate.findAll(SolicitudDeIntercambio.class).stream()
-                .filter(s -> s.getFigurita() != null
-                          && s.getFigurita().getOwner() != null
-                          && usuarioId.equals(s.getFigurita().getOwner().getId()))
-                .collect(Collectors.toList());
+        Query query = Query.query(
+                Criteria.where("figurita.owner").is(new ObjectId(usuarioId))
+        );
+        return mongoTemplate.find(query, SolicitudDeIntercambio.class);
     }
 
     @Override
@@ -32,5 +31,12 @@ public class SolicitudDeIntercambioRepositoryImpl implements SolicitudDeIntercam
                 Query.query(Criteria.where("usuario").is(new ObjectId(usuarioId))),
                 SolicitudDeIntercambio.class
         );
+    }
+
+    @Override
+    public List<SolicitudDeIntercambio> findByFiguritaIds(List<String> figuritaIds) {
+        List<ObjectId> objectIds = figuritaIds.stream().map(ObjectId::new).toList();
+        Query query = Query.query(Criteria.where("figurita").in(objectIds));
+        return mongoTemplate.find(query, SolicitudDeIntercambio.class);
     }
 }

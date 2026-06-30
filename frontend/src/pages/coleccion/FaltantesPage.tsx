@@ -16,7 +16,6 @@ interface FiguritaBaseDTO {
   categoriaNombre: string;
 }
 
-/** Vista "Mis faltantes": figuritas que el usuario no tiene. Click → /buscar para encontrarla. */
 export default function ColeccionFaltantesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -40,15 +39,22 @@ export default function ColeccionFaltantesPage() {
       <FiltrosFigurita filtros={filtros} />
       <GrillaFiguritas isEmpty={visibles.length === 0} emptyMessage="¡Tienes todas las figuritas!">
         {visibles.map((f) => (
-          <TarjetaColeccion
+          // 🟢 The key and onClick are now on the wrapper div
+          <div
             key={f.id}
-            seleccionNombre={f.seleccionNombre}
-            jugadorNombre={f.jugadorNombre}
-            equipoNombre={f.equipoNombre}
-            categoriaNombre={f.categoriaNombre}
-            onClick={() => navigate('/buscar', { state: { filterByBaseId: f.id, figuritaInfo: f } })}
-            footer={<p className="text-xs text-muted">#{f.numero}</p>}
-          />
+            onClick={() => navigate('/buscar', { 
+              state: { filterByBaseId: f.id, figuritaInfo: f } 
+            })}
+            className="cursor-pointer" // Makes it obvious it's clickable
+          >
+            <TarjetaColeccion
+              seleccionNombre={f.seleccionNombre}
+              jugadorNombre={f.jugadorNombre}
+              equipoNombre={f.equipoNombre}
+              categoriaNombre={f.categoriaNombre}
+              footer={<p className="text-xs text-muted">#{f.numero}</p>}
+            />
+          </div>
         ))}
       </GrillaFiguritas>
     </>

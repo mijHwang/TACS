@@ -8,4 +8,5 @@ public interface FiguritaPublicadaRepositoryCustom {
     List<FiguritaPublicada> findDisponibles();
     List<FiguritaPublicada> findByUsuarioId(String usuarioId);
     List<FiguritaPublicada> findByFiguritaBaseId(String figuritaBaseId);
+    List<FiguritaPublicada> findByFiguritaId(String figuritaId); // New method
 }

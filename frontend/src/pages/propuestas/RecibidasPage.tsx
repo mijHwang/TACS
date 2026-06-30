@@ -42,23 +42,23 @@ export default function PropuestasRecibidasPage() {
   const [localState, setLocalState] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (!user?.id) return;
+  if (!user?.id || user.id === user.username) return;
 
-    api.get(`/api/solicitudes-intercambio/recibidas/${user.id}`)
-      .then(res => {
-        setPropuestasRecibidas(res.data);
-        const initialState = res.data.reduce((acc: any, prop: any) => ({ 
-          ...acc, 
-          [prop.id]: prop.estado 
-        }), {});
-        setLocalState(initialState);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching propuestas recibidas:', error);
-        setLoading(false);
-      });
-  }, []);
+  api.get(`/api/solicitudes-intercambio/recibidas/${user.id}`)
+    .then(res => {
+      setPropuestasRecibidas(res.data);
+      const initialState = res.data.reduce((acc: any, prop: any) => ({ 
+        ...acc, 
+        [prop.id]: prop.estado 
+      }), {});
+      setLocalState(initialState);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('Error fetching propuestas recibidas:', error);
+      setLoading(false);
+    });
+}, [user?.id, user?.username]);
 
   const handleAceptar = (propuestaId: string) => {
     api.put(`/api/solicitudes-intercambio/${propuestaId}/aceptar`)

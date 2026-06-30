@@ -22,6 +22,7 @@ public class FiguritaPublicadaService {
     private final FiguritaService figuritaService;
     private final UsuarioService usuarioService;
 
+
     public FiguritaPublicadaService(
             FiguritaPublicadaRepository repository,
             FiguritaService figuritaService,
@@ -76,11 +77,13 @@ public class FiguritaPublicadaService {
     }
 
     public List<FiguritaPublicadaResponseDTO> obtenerDisponibles(String usuarioId) {
-        return repository.findDisponibles().stream()
-                .filter(p -> !p.getUsuario().getId().equals(usuarioId))
+        List<FiguritaPublicada> publicaciones = repository.findDisponibles();
+
+        return publicaciones.stream()
                 .map(this::mapToDTO)
                 .toList();
     }
+
 
     public List<FiguritaPublicadaResponseDTO> obtenerPorUsuario(String usuarioId) {
         return repository.findByUsuarioId(usuarioId).stream()
@@ -121,5 +124,18 @@ public class FiguritaPublicadaService {
                 p.getFechaPublicacion(),
                 p.getEstado().name()
         );
+    }
+
+    public void removeFiguritaFromPublications(String figuritaId) {
+        List<FiguritaPublicada> publications = repository.findByFiguritaId(figuritaId);
+        for (FiguritaPublicada pub : publications) {
+            boolean removed = pub.getFiguritas().removeIf(f -> f.getId().equals(figuritaId));
+            if (removed) {
+                if (pub.getFiguritas().isEmpty()) {
+                    pub.setEstado(EstadoPublicacion.RETIRADA);
+                }
+                repository.save(pub);
+            }
+        }
     }
 }

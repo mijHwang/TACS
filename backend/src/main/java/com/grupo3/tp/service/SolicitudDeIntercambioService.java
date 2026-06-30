@@ -19,23 +19,28 @@ public class SolicitudDeIntercambioService {
     private final SolicitudDeIntercambioRepository repository;
     private final FiguritaService figuritaService;
     private final IntercambioService intercambioService;
+    private final FiguritaPublicadaService publicadaService;
 
     public SolicitudDeIntercambioService(SolicitudDeIntercambioRepository repository,
                                          NotificacionService notificacion,
                                          FiguritaService figuritaService,
-                                         IntercambioService intercambioService) {
+                                         IntercambioService intercambioService,
+                                         FiguritaPublicadaService publicadaService) {
         this.notificacionService = notificacion;
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.intercambioService = intercambioService;
+        this.publicadaService = publicadaService;
 
     }
 
     public SolicitudDeIntercambio crear(SolicitudDeIntercambio solicitud) {
 
+        solicitud.setEstado(SolicitudDeIntercambio.EstadoSolicitud.PENDIENTE);
+
         SolicitudDeIntercambio saved = repository.save(solicitud);
 
-        solicitud.setEstado(SolicitudDeIntercambio.EstadoSolicitud.PENDIENTE);
+
         Notificacion notif = Notificacion.builder()
                 .usuario(solicitud.getFigurita().getOwner())
                 .tipo("propuesta")
@@ -78,7 +83,11 @@ public class SolicitudDeIntercambioService {
     }
 
     public List<SolicitudDeIntercambio> obtenerRecibidas(String usuarioId) {
-        return repository.findByFiguritaOwnerId(usuarioId);
+        List<Figurita> misFiguritas = figuritaService.obtenerTodasInternaPorUserId(usuarioId);
+        List<String> misFiguritaIds = misFiguritas.stream()
+                .map(Figurita::getId)
+                .toList();
+        return repository.findByFiguritaIds(misFiguritaIds);
     }
 
     public List<SolicitudDeIntercambio> obtenerEnviadas(String usuarioId) {
@@ -126,6 +135,11 @@ public class SolicitudDeIntercambioService {
                             build();
 
             intercambioService.crear(intAux);
+
+            publicadaService.removeFiguritaFromPublications(aux.getFigurita().getId());
+            for (Figurita f : aux.getFiguritasOfrecidas()) {
+                publicadaService.removeFiguritaFromPublications(f.getId());
+            }
 
             Notificacion notif = Notificacion.builder()
                     .usuario(solicitud.get().getUsuario())
