@@ -63,50 +63,40 @@ El dominio es **`tacs-g3-figuritas.dev`** (registrado en **Name.com**, gratis v�
 | `http://localhost` | Aplicación web (frontend) |
 | `http://localhost:8080/api/health` | Health check del backend |
 
-#### Deploy con HTTPS (Let's Encrypt)
+#### Deploy con HTTPS (Cloudflare)
 
-El TLS se sirve desde el Nginx del frontend con certificados gratuitos de Let's Encrypt,
-renovados automáticamente por un contenedor `certbot`. Toda la config vive en el repo y se
-activa con un **override de producción** (`docker-compose.prod.yml`), así el `docker compose up`
-de desarrollo —que usa el `nginx.conf` HTTP simple— no se ve afectado.
+El TLS público lo termina **Cloudflare** (Universal SSL), que reconecta al origen en modo
+**Full (strict)** validando un **Cloudflare Origin Certificate** (15 años) instalado en el Nginx
+del frontend. Toda la config de prod vive en el repo y se activa con un **override de producción**
+(`docker-compose.prod.yml`), así el `docker compose up` de desarrollo —que usa el `nginx.conf` HTTP
+simple— no se ve afectado.
 
-**Requisitos previos en la EC2:** el dominio resuelve a la IP pública + puertos **80 y 443**
-abiertos en el Security Group.
+**Requisitos previos en la EC2:** el dominio resuelve vía Cloudflare a la IP pública + puertos
+**80 y 443** abiertos en el Security Group + el Origin Certificate presente en `./cloudflare/`.
 
 ```bash
-# 1) (UNA sola vez) emitir el certificado
-chmod +x init-letsencrypt.sh
-./init-letsencrypt.sh
-
-# 2) Levantar/actualizar el deploy con HTTPS
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 ```
 
-Las siguientes veces alcanza con el paso 2. El certificado se renueva solo (certbot cada 12h;
-Nginx recarga cada 6h). Los certificados se generan bajo `./certbot/` (gitignored, nunca se commitean).
-
 | Archivo | Rol |
 |---|---|
-| `frontend/nginx.prod.conf` | Server 443 con TLS + redirect 80→443 + challenge ACME |
-| `docker-compose.prod.yml` | Expone 443, monta certs, agrega el contenedor `certbot` |
-| `init-letsencrypt.sh` | Bootstrap del certificado (1ra vez) |
+| `frontend/nginx.prod.conf` | Server 443 con el Origin Certificate + `real_ip` de Cloudflare; redirect 80→443 |
+| `docker-compose.prod.yml` | Expone 443 y monta `./cloudflare` (el cert de origen) |
 
-#### Cloudflare (CDN + DDoS + edge SSL)
+**Cómo está armado Cloudflare:**
 
-El dominio `tacs-g3-figuritas.dev` (Name.com) está **delegado a Cloudflare** (nameservers de
-Cloudflare) y proxeado (nube naranja). Cloudflare aporta CDN, protección DDoS y SSL en el borde,
-y reconecta al origen en modo **Full (strict)**.
-
-- **DNS (Cloudflare):** registro `A @ → 34.195.221.240` (Proxied) + `A www → 34.195.221.240` (Proxied).
+- **DNS (Cloudflare):** `A @ → 34.195.221.240` (Proxied) + `A www → 34.195.221.240` (Proxied).
 - **Edge ↔ navegador:** Universal SSL (cert gratis de Cloudflare para el dominio).
-- **Cloudflare ↔ origen:** un **Cloudflare Origin Certificate** (15 años) instalado en Nginx. El
-  `server` block de `tacs-g3-figuritas.dev` en `frontend/nginx.prod.conf` lo usa y se selecciona por
-  SNI. (Queda un `server` block legacy del DuckDNS como default — deprecado, pendiente de remover.)
+- **Cloudflare ↔ origen:** el Origin Certificate (SAN `tacs-g3-figuritas.dev` + `*.`) se selecciona
+  por SNI en `frontend/nginx.prod.conf` y es el `default_server` 443.
 - **IP real:** Nginx usa `real_ip` con los rangos de Cloudflare (`CF-Connecting-IP`), así el backend
   ve la IP del visitante y no la de Cloudflare.
-- El cert/key de origen viven en `./cloudflare/` en la EC2 (**gitignored**, nunca se commitean). Para
-  rotarlos: regenerar el Origin Certificate en Cloudflare, reemplazar `cloudflare/origin.{pem,key}` y
-  recrear el contenedor `frontend`.
+- El cert/key de origen viven en `./cloudflare/origin.{pem,key}` en la EC2 (**gitignored**, nunca se
+  commitean). **Rotación:** regenerar el Origin Certificate en Cloudflare, reemplazar esos 2 archivos
+  y recrear el contenedor `frontend`.
+
+> El setup anterior con DuckDNS + Let's Encrypt (`certbot`, `init-letsencrypt.sh`) fue **removido**:
+> el dominio en uso es el de Name.com vía Cloudflare.
 
 ### Usuarios de prueba
 

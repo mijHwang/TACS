@@ -1,0 +1,6 @@
+# Override local (NO se commitea): expone el frontend en 8090 además del 80,
+# porque en esta máquina Apache ocupa el puerto 80. Acceder por http://localhost:8090
+services:
+  frontend:
+    ports:
+      - "8090:80"
