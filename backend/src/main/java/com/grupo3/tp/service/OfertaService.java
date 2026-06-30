@@ -88,7 +88,7 @@ public class OfertaService {
                 .usuario(subasta.getUsuario())
                 .tipo("subasta")
                 .titulo("nueva oferta")
-                .mensaje(ofertaDTO.getUsuarioId() + " te manda una nueva oferta.")
+                .mensaje(usuario.getUsername() + " te manda una nueva oferta.")
                 .enlace("/subastas/" + ofertaDTO.getSubastaId())
                 .leida(false)
                 .fecha(LocalDateTime.now())
