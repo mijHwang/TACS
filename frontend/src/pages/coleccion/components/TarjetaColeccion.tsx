@@ -1,10 +1,12 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 interface TarjetaColeccionProps {
   seleccionNombre: string;
   jugadorNombre: string;
   equipoNombre: string;
   categoriaNombre: string;
+  /** Foto real del jugador; si falta o falla la carga, se muestra el placeholder. */
+  imagenUrl?: string | null;
   /** Contenido del pie de la tarjeta: badge de cantidad, número, etc. */
   footer?: ReactNode;
   /** Si se provee, la tarjeta es clickeable (cursor + hover). */
@@ -16,19 +18,32 @@ interface TarjetaColeccionProps {
  * El contenido variable (badge de cantidad vs. número de figurita) se pasa por `footer`.
  */
 export default function TarjetaColeccion({
-  seleccionNombre, jugadorNombre, equipoNombre, categoriaNombre, footer, onClick,
+  seleccionNombre, jugadorNombre, equipoNombre, categoriaNombre, imagenUrl, footer, onClick,
 }: TarjetaColeccionProps) {
   const clickable = typeof onClick === 'function';
+  const [imgError, setImgError] = useState(false);
+  const mostrarImagen = !!imagenUrl && !imgError;
+
   return (
     <div
+      data-testid="figurita-card"
       onClick={onClick}
       className={
         'bg-surface p-4 rounded-lg border border-border flex flex-col ' +
         (clickable ? 'cursor-pointer hover:bg-surface/80 transition-colors' : '')
       }
     >
-      <div className="w-full aspect-square bg-surface2 rounded-md mb-3 flex items-center justify-center">
-        <p className="text-xs text-muted">Imagen</p>
+      <div className="w-full aspect-square bg-surface2 rounded-md mb-3 flex items-center justify-center overflow-hidden">
+        {mostrarImagen ? (
+          <img
+            src={imagenUrl!}
+            alt={jugadorNombre}
+            className="w-full h-full object-contain"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <p className="text-xs text-muted">Imagen</p>
+        )}
       </div>
       <p className="text-xs text-muted mb-2">{seleccionNombre}</p>
       <p className="text-sm font-bold text-primary mb-2">{jugadorNombre}</p>

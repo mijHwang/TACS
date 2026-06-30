@@ -18,6 +18,8 @@ public class DemoSeedServiceTest {
 
     @Mock MongoTemplate mongoTemplate;
     @Mock PasswordEncoder passwordEncoder;
+    @Mock com.grupo3.tp.repository.FiguritaBaseRepository figuritaBaseRepo;
+    @Mock CatalogoService catalogoService;
     @InjectMocks DemoSeedService service;
 
     @Test
@@ -37,5 +39,20 @@ public class DemoSeedServiceTest {
         assertEquals("HASH", u.getPassword());
         assertEquals(Role.USER, u.getRole());
         verify(passwordEncoder).encode("demo1234");
+    }
+
+    @Test
+    void primerasBasesPorNumeroTomaElSubsetUnoAN() {
+        var b1   = com.grupo3.tp.models.FiguritaBase.builder().id("b1").numero(1).build();
+        var b48  = com.grupo3.tp.models.FiguritaBase.builder().id("b48").numero(48).build();
+        var b49  = com.grupo3.tp.models.FiguritaBase.builder().id("b49").numero(49).build();
+        when(figuritaBaseRepo.findAll()).thenReturn(java.util.List.of(b1, b48, b49));
+
+        var sub = service.primerasBasesPorNumero(48);
+
+        assertEquals(2, sub.size());
+        assertTrue(sub.containsKey(1));
+        assertTrue(sub.containsKey(48));
+        assertFalse(sub.containsKey(49));
     }
 }

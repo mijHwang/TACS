@@ -12,6 +12,7 @@ export interface FiguritaResponseDTO {
   count: number;
   ownerId: string;
   ownerName: string;
+  imagenUrl?: string | null;
 }
 
 /** Colección completa del usuario, cacheada por username. */
@@ -33,6 +34,7 @@ export interface FiguritaBaseDTO {
   seleccionNombre: string;
   equipoNombre: string;
   categoriaNombre: string;
+  imagenUrl?: string | null;
 }
 
 /** Repetidas del usuario (count > 1). Solo lectura. */

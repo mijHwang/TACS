@@ -139,7 +139,8 @@ public class SugerenciaService {
                 f.getFiguritaBase().getEquipo().getNombre(),
                 f.getFiguritaBase().getCategoria().getNombre(),
                 f.getOwner().getId(),
-                f.getOwner().getUsername()
+                f.getOwner().getUsername(),
+                f.getFiguritaBase().getImagenUrl()
         );
     }
 }

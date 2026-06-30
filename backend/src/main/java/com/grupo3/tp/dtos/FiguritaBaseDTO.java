@@ -14,4 +14,5 @@ public class FiguritaBaseDTO {
     private String seleccionNombre;
     private String equipoNombre;
     private String categoriaNombre;
+    private String imagenUrl;
 }
