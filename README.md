@@ -49,15 +49,44 @@ docker compose up --build
 ```
 
 ### Online (AWS)
-La aplicación está alojada en una instancia AWS:
+La aplicación está alojada en una instancia AWS y accesible por dominio con HTTPS:
 ```
-http://34.195.221.240/
+https://tacs-g3-figuritas.duckdns.org/
 ```
+(El dominio `tacs-g3-figuritas.duckdns.org` —vía [DuckDNS](https://www.duckdns.org)— apunta a la IP elástica de la EC2 `34.195.221.240`.)
 
 | URL | Descripción |
 |---|---|
 | `http://localhost` | Aplicación web (frontend) |
 | `http://localhost:8080/api/health` | Health check del backend |
+
+#### Deploy con HTTPS (Let's Encrypt)
+
+El TLS se sirve desde el Nginx del frontend con certificados gratuitos de Let's Encrypt,
+renovados automáticamente por un contenedor `certbot`. Toda la config vive en el repo y se
+activa con un **override de producción** (`docker-compose.prod.yml`), así el `docker compose up`
+de desarrollo —que usa el `nginx.conf` HTTP simple— no se ve afectado.
+
+**Requisitos previos en la EC2:** el dominio resuelve a la IP pública + puertos **80 y 443**
+abiertos en el Security Group.
+
+```bash
+# 1) (UNA sola vez) emitir el certificado
+chmod +x init-letsencrypt.sh
+./init-letsencrypt.sh
+
+# 2) Levantar/actualizar el deploy con HTTPS
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+```
+
+Las siguientes veces alcanza con el paso 2. El certificado se renueva solo (certbot cada 12h;
+Nginx recarga cada 6h). Los certificados se generan bajo `./certbot/` (gitignored, nunca se commitean).
+
+| Archivo | Rol |
+|---|---|
+| `frontend/nginx.prod.conf` | Server 443 con TLS + redirect 80→443 + challenge ACME |
+| `docker-compose.prod.yml` | Expone 443, monta certs, agrega el contenedor `certbot` |
+| `init-letsencrypt.sh` | Bootstrap del certificado (1ra vez) |
 
 ### Usuarios de prueba
 

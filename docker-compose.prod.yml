@@ -1,0 +1,37 @@
+###############################################################################
+# Override de PRODUCCIÓN — agrega HTTPS (Let's Encrypt) sobre el deploy base.
+#
+# Uso en la instancia EC2 (la PRIMERA vez):
+#   1) ./init-letsencrypt.sh        # emite el certificado para el dominio
+#   2) docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+#
+# Las siguientes veces alcanza con el paso 2. El contenedor `certbot` renueva el
+# certificado automáticamente y el `frontend` recarga Nginx cada 6h para tomarlo.
+#
+# Requisitos: dominio apuntando a la IP pública + puertos 80 y 443 abiertos en el
+# Security Group de la EC2.
+###############################################################################
+services:
+  frontend:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Config con TLS (reemplaza al nginx.conf HTTP del build)
+      - ./frontend/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      # Certificados y challenge compartidos con certbot
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # Recarga Nginx cada 6h para tomar certificados renovados sin reiniciar el contenedor
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+  certbot:
+    image: certbot/certbot
+    container_name: tacs-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    networks:
+      - tacs-net
+    # Intenta renovar cada 12h. Let's Encrypt sólo renueva si faltan <30 días.
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
