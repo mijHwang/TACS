@@ -9,6 +9,8 @@ TACS is a sticker collection trading platform (FIFA World Cup figuritas) with au
 ## Running the Application
 
 ```bash
+# Primera vez: crear el .env (trae un JWT_SECRET de desarrollo; sin .env el backend no arranca bajo el perfil docker)
+cp .env.example .env
 # Start everything (recommended)
 docker compose up --build
 
@@ -25,7 +27,7 @@ docker compose down
 
 Frontend accessible at `http://localhost` (port 80), backend API at `http://localhost:8080`.
 
-**Required:** a `.env` file at the repo root provides `SPRING_MONGODB_URI` (the MongoDB Atlas connection string), consumed by the backend service in `docker-compose.yml`. See `.env.example` for the format. Without it the backend boots but every data operation fails. Connecting to Atlas requires the running machine's public IP to be in the cluster's Network Access list and valid Database Access credentials in the URI.
+**Database:** `docker-compose.yml` includes a `mongo` service (MongoDB 7, named volume `mongo-data`); the backend connects to it by default (`SPRING_MONGODB_URI` defaults to `mongodb://mongo:27017/tacs`). So a fresh `docker compose up` is fully self-contained — no external DB needed. To use **MongoDB Atlas** instead, set `SPRING_MONGODB_URI` in `.env` (see `.env.example`); the backend still needs `JWT_SECRET` (a dev value ships in `.env.example`).
 
 ### Production deploy (AWS EC2 + HTTPS + Cloudflare)
 
@@ -72,7 +74,7 @@ cd backend
 ## Architecture
 
 **Two-service setup:**
-- **Backend** (Spring Boot, port 8080): REST API with layered architecture — Controller → Service → Repository. Persistence via MongoDB Atlas (Spring Data MongoDB); repositories extend `MongoRepository`. JWT-based auth with Spring Security.
+- **Backend** (Spring Boot, port 8080): REST API with layered architecture — Controller → Service → Repository. Persistence via MongoDB (Spring Data MongoDB); repositories extend `MongoRepository`. JWT-based auth with Spring Security.
 - **Frontend** (React + Nginx, port 80): Nginx serves the SPA and reverse-proxies `/api/*` to the backend, eliminating CORS issues. All API calls go through Nginx.
 
 **Auth flow:** JWT tokens stored in localStorage, decoded client-side to extract user ID and roles. Admin role gates the `/admin` route.
@@ -89,14 +91,14 @@ cd backend
 
 | Layer | Technology |
 |---|---|
-| Backend | Java 21, Spring Boot 4.0.5, Spring Data MongoDB (Atlas), Spring Security + JWT (jjwt 0.12.6), Lombok, Maven |
+| Backend | Java 21, Spring Boot 4.0.5, Spring Data MongoDB, Spring Security + JWT (jjwt 0.12.6), Lombok, Maven |
 | Frontend | React 19, Vite 8, TypeScript 6, TailwindCSS v4 (Vite plugin), React Router 6, Axios |
 | Infra | Docker, Docker Compose, Nginx |
 
 ## Key Design Decisions
 
-- Persistence uses MongoDB Atlas via Spring Data MongoDB. The connection string is injected through `SPRING_MONGODB_URI` (from `.env`); the `docker` profile (`application-docker.properties`) reads it. An earlier in-memory HashMap implementation was replaced by this MongoDB migration.
-- Secrets are injected via env vars, never hardcoded: `SPRING_MONGODB_URI` and `JWT_SECRET` (the JWT signing key, bound to `jwt.secret`). Only `.env.example` (placeholders) is committed; the real `.env` is gitignored.
+- Persistence uses MongoDB via Spring Data MongoDB. By default it's a containerized `mongo` service in `docker-compose.yml` (volume `mongo-data`); the connection string is injected through `SPRING_MONGODB_URI` (defaults to `mongodb://mongo:27017/tacs`, overridable in `.env` to point at MongoDB Atlas). The `docker` profile (`application-docker.properties`) reads it. An earlier in-memory HashMap implementation was replaced by this MongoDB migration.
+- Secrets are injected via env vars, never hardcoded: `SPRING_MONGODB_URI` and `JWT_SECRET` (the JWT signing key, bound to `jwt.secret`). Only `.env.example` is committed; it carries a **throwaway dev `JWT_SECRET`** for zero-config local runs (the same dev default as `application.properties`) — regenerate it for any real deployment. The real `.env` is gitignored.
 - All pages are lazy-loaded via `React.lazy()` for code splitting.
 - Frontend auth state uses React Context API (no Redux/Zustand).
 - Axios is configured with a JWT interceptor for all API calls.

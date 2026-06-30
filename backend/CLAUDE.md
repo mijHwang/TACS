@@ -74,11 +74,11 @@ public class NewEntityController {
 - Admin-only endpoints use `@PreAuthorize("hasRole('ADMIN')")`.
 - **Role assignment quirk:** in `AuthController.register()`, the username `"admin"` automatically gets `Role.ADMIN`. All other users get `Role.USER`.
 
-## Persistence (MongoDB Atlas)
+## Persistence (MongoDB)
 
-Data is persisted in MongoDB Atlas via Spring Data MongoDB. Repositories are interfaces extending `MongoRepository<Entity, String>`; models are annotated with `@Document(collection = "...")` and `@Id`. Cross-entity references use `@DocumentReference(lazy = true)`. Complex queries live in a `*RepositoryCustom` interface with a `*Impl` class backed by `MongoTemplate` (see `FiguritaRepositoryCustomImpl`, `NotificacionRepositoryImpl`, `SolicitudDeIntercambioRepositoryImpl`).
+Data is persisted in MongoDB via Spring Data MongoDB. Repositories are interfaces extending `MongoRepository<Entity, String>`; models are annotated with `@Document(collection = "...")` and `@Id`. Cross-entity references use `@DocumentReference(lazy = true)`. Complex queries live in a `*RepositoryCustom` interface with a `*Impl` class backed by `MongoTemplate` (see `FiguritaRepositoryCustomImpl`, `NotificacionRepositoryImpl`, `SolicitudDeIntercambioRepositoryImpl`).
 
-The connection string comes from `SPRING_MONGODB_URI` (set in the repo-root `.env`, injected by `docker-compose.yml`). The `docker` Spring profile (`application-docker.properties`) binds it via `spring.mongodb.uri`. Reaching Atlas requires the running machine's public IP in the cluster's Network Access list and valid Database Access credentials. Data **persists across restarts** (it's a real database, not in-memory).
+By default the database is the containerized `mongo` service in `docker-compose.yml` (MongoDB 7, named volume `mongo-data`): a fresh `docker compose up` is self-contained, no external DB needed. The connection string comes from `SPRING_MONGODB_URI` (defaults to `mongodb://mongo:27017/tacs`); set it in the repo-root `.env` to point at **MongoDB Atlas** instead (Atlas then requires the machine's public IP in the cluster's Network Access list and valid credentials). The `docker` Spring profile (`application-docker.properties`) binds it via `spring.mongodb.uri`. Data **persists across restarts** via the volume (it's a real database, not in-memory).
 
 ## Model Conventions
 

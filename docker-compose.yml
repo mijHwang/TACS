@@ -1,5 +1,23 @@
 services:
   # ─────────────────────────────────────────────
+  # MONGO — base de datos (local, persistente por volumen)
+  # ─────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: tacs-mongo
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - tacs-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand('ping').ok === 1 ? 0 : 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ─────────────────────────────────────────────
   # BACKEND — Spring Boot corriendo en JVM
   # ─────────────────────────────────────────────
   backend:
@@ -11,8 +29,12 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_MONGODB_URI=${SPRING_MONGODB_URI}
+      # Por defecto usa el Mongo del container; si se setea SPRING_MONGODB_URI (p. ej. Atlas) se respeta.
+      - SPRING_MONGODB_URI=${SPRING_MONGODB_URI:-mongodb://mongo:27017/tacs}
       - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      mongo:
+        condition: service_healthy
     networks:
       - tacs-net
     restart: unless-stopped
@@ -35,3 +57,7 @@ services:
 networks:
   tacs-net:
     driver: bridge
+
+# Volumen nombrado: los datos de Mongo sobreviven a `docker compose down`
+volumes:
+  mongo-data:

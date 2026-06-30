@@ -42,10 +42,17 @@ con otros usuarios, realicen propuestas de intercambio, completen operaciones de
 
 ## Cómo levantar la aplicación
 
+La app es **autocontenida**: `docker compose` levanta frontend, backend **y la base MongoDB**
+(con un volumen para que los datos persistan). No hace falta ninguna cuenta ni base externa.
+
 ```bash
 # Desde la raíz del repositorio
+cp .env.example .env       # primera vez: crea el .env con un JWT_SECRET de desarrollo
 docker compose up --build
 ```
+
+> Para usar **MongoDB Atlas** en lugar del Mongo local, descomentá y completá `SPRING_MONGODB_URI`
+> en el `.env` (ver `.env.example`).
 
 ### Online (AWS)
 La aplicación está alojada en una instancia AWS y accesible por HTTPS. URL principal (detrás de Cloudflare):
@@ -77,6 +84,15 @@ simple— no se ve afectado.
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 ```
 
+> **Base de datos en el server:** el override de prod hereda el servicio `mongo` del compose base,
+> así que el servidor usa **su propio MongoDB en Docker** (volumen `mongo-data` en el disco de la EC2).
+> Para que el backend lo use, el `.env` de la EC2 **no debe** setear `SPRING_MONGODB_URI` (o dejarlo
+> comentado); si apunta a Atlas, seguirá usando Atlas. La base del server arranca vacía la primera vez
+> (el seeder recarga el catálogo; el demo se carga con el botón de Admin).
+>
+> Además, generá un `JWT_SECRET` propio en el `.env` de la EC2 — **no** dejes el valor de desarrollo
+> de `.env.example`, que es público (firmar tokens con él permitiría falsificarlos).
+
 | Archivo | Rol |
 |---|---|
 | `frontend/nginx.prod.conf` | Server 443 con el Origin Certificate + `real_ip` de Cloudflare; redirect 80→443 |
@@ -99,7 +115,7 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 
 ### Usuarios de prueba
 
-> Los datos se persisten en **MongoDB Atlas**, por lo que **sobreviven** al reinicio de los contenedores.
+> Los datos se persisten en el **MongoDB del container** (volumen `mongo-data`), por lo que **sobreviven** al reinicio de los contenedores. Se borran solo con `docker compose down -v`.
 
 Se puede crear usuarios a través del formulario de registro en la UI. El usuario con username `admin` recibe rol ADMIN; el resto, rol USER.
 
@@ -112,7 +128,7 @@ Para poblar el sistema con un escenario realista y poder visualizar/probar todas
 3. En el modal, escribí **`RESET`** para habilitar la confirmación.
 4. Al terminar verás un resumen (usuarios, figuritas, propuestas, subastas, etc.). Logueate como **`juanca`** / `demo1234` para ver el dashboard completo.
 
-> ⚠️ **Acción destructiva.** El endpoint `POST /api/admin/seed-demo` (admin-only) hace `dropCollection` de **todas** las colecciones antes de sembrar. Como local y el deploy comparten cluster de Atlas, **no lo ejecutes contra la base de producción** salvo que realmente quieras resetearla. La única guarda es el rol ADMIN + la confirmación tipeada en la UI (decisión de diseño: sin flag de entorno).
+> ⚠️ **Acción destructiva.** El endpoint `POST /api/admin/seed-demo` (admin-only) hace `dropCollection` de **todas** las colecciones antes de sembrar. Afecta **solo a la base donde lo corras** (local y servidor ahora tienen cada uno su propio Mongo en Docker, ya no comparten cluster de Atlas). Aun así, **no lo ejecutes contra la base del servidor** salvo que realmente quieras resetearla. La única guarda es el rol ADMIN + la confirmación tipeada en la UI (decisión de diseño: sin flag de entorno).
 
 **Cohorte sembrada:** `admin` (ADMIN) + `juanca` (protagonista) + 10 contrapartes (`sofia`, `mateo`, `valen`, `cami`, `nico`, `lucas`, `martina`, `thiago`, `agus`, `flor`) — todas con password **`demo1234`**. Incluye catálogo de 48 figuritas, colecciones con repetidas/faltantes, propuestas en sus 3 estados, intercambios, subastas activas con ofertas, calificaciones y sugerencias. La lógica vive en `DemoSeedService` (backend) y `SeedDemoCard` (frontend).
 
@@ -140,7 +156,7 @@ docker compose down
 |---|---|---|
 | **frontend** | React 19 + Vite + TailwindCSS 4 → build estático servido por Nginx | 80 |
 | **backend** | Spring Boot 4 + Java 21 + Lombok | 8080 |
-|**persistencia**|Mongo Atlas Cloud|DB nombre: tacs |
+| **mongo** | MongoDB 7 (container, volumen `mongo-data`) | 27017 (solo dentro de `tacs-net`) |
 
 Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla directamente con el backend desde el browser** — todo pasa por el proxy de Nginx. Esto elimina problemas de CORS.
 
