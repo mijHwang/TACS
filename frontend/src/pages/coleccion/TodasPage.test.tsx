@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import TodasPage from './TodasPage';
 import type { FiltrosColeccion, FiguritaResponseDTO } from '../../hooks/useFiguritas';
 
@@ -25,7 +26,7 @@ describe('TodasPage', () => {
   beforeEach(() => { lastParams = undefined; hookMock.mockReset(); hookMock.mockReturnValue(pageData(0)); });
 
   it('renderiza la colección paginada con <Paginador>', () => {
-    render(<TodasPage />);
+    render(<MemoryRouter><TodasPage /></MemoryRouter>);
     expect(screen.getByText('Messi')).toBeInTheDocument();
     expect(screen.getByText('Dibu')).toBeInTheDocument();
     expect(screen.getByLabelText('Página siguiente')).toBeInTheDocument();
@@ -33,7 +34,7 @@ describe('TodasPage', () => {
   });
 
   it('cambiar de página re-pide con page:1', () => {
-    render(<TodasPage />);
+    render(<MemoryRouter><TodasPage /></MemoryRouter>);
     fireEvent.click(screen.getByLabelText('Página siguiente'));
     expect(lastParams?.page).toBe(1);
   });
