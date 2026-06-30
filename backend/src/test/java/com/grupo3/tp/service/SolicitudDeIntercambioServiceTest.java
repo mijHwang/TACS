@@ -32,6 +32,8 @@ public class SolicitudDeIntercambioServiceTest {
     private FiguritaService figuritaService;
     @Mock
     private IntercambioService intercambioService;
+    @Mock
+    private FiguritaPublicadaService figuritaPublicadaService;
 
     private SolicitudDeIntercambioService service;
 
@@ -43,7 +45,7 @@ public class SolicitudDeIntercambioServiceTest {
     @BeforeEach
     public void setUp() {
         // Construimos el servicio a mano porque el constructor recibe varias dependencias.
-        service = new SolicitudDeIntercambioService(repository, notificacionService, figuritaService, intercambioService);
+        service = new SolicitudDeIntercambioService(repository, notificacionService, figuritaService, intercambioService, figuritaPublicadaService);
 
         owner = Usuario.builder().id("user-owner").username("owner").build();
         generador = Usuario.builder().id("user-gen").username("gen").build();

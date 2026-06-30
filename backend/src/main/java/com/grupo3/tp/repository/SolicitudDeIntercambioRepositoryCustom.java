@@ -12,4 +12,6 @@ public interface SolicitudDeIntercambioRepositoryCustom {
 
     Page<SolicitudDeIntercambio> findByFiguritaOwnerId(String usuarioId, Pageable pageable);
     Page<SolicitudDeIntercambio> findByUsuarioId(String usuarioId, Pageable pageable);
+
+    List<SolicitudDeIntercambio> findByFiguritaIds(List<String> figuritaIds);
 }

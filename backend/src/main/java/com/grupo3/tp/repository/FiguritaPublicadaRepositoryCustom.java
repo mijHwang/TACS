@@ -15,4 +15,5 @@ public interface FiguritaPublicadaRepositoryCustom {
     Page<FiguritaPublicada> findDisponibles(String usuarioId, Pageable pageable);
     List<FiguritaPublicada> findByUsuarioId(String usuarioId);
     List<FiguritaPublicada> findByFiguritaBaseId(String figuritaBaseId);
+    List<FiguritaPublicada> findByFiguritaId(String figuritaId); // New method
 }

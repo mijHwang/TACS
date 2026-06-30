@@ -1,8 +1,12 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/useAuth';
-import { useRepetidasPaginadas } from '../../hooks/useFiguritas';
+import api from '../../services/api';
+import { useRepetidasPaginadas, type FiguritaResponseDTO } from '../../hooks/useFiguritas';
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import { useFiltrosServidor } from './components/useFiltrosServidor';
+import { askQuantity } from './components/askQuantity';
 import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
@@ -10,13 +14,42 @@ import Paginador from '../../components/Paginador';
 
 /**
  * Vista "Mis repetidas": sólo figuritas con count>1, paginadas y filtradas server-side.
- * Muestra total y excedente (`x{count} ({count-1} repetidas)`). Solo lectura.
+ * Muestra total y excedente (`x{count} ({count-1} repetidas)`). Cada tarjeta permite
+ * publicarlas para intercambio o subastarlas (happy path).
  */
 export default function RepetidasPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { filtros, page, setPage, params } = useFiltrosServidor();
   const { data, isLoading, isError, refetch } = useRepetidasPaginadas(user?.username, params);
   const repetidas = data?.content ?? [];
+  const [publishingId, setPublishingId] = useState<string | null>(null);
+
+  const handlePublishExchange = async (figurita: FiguritaResponseDTO) => {
+    if (!user) return;
+    const cantidad = askQuantity(figurita.count);
+    if (cantidad === null) return; // cancelado
+
+    setPublishingId(figurita.id);
+    try {
+      await api.post('/api/publicaciones', {
+        usuarioId: user.id,
+        figuritaBaseId: figurita.figuritaBaseId,
+        cantidad,
+      });
+      alert(`¡${figurita.jugadorNombre} (x${cantidad}) publicada para intercambio!`);
+      await refetch(); // refresca counts y saca las copias publicadas
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Error al publicar.';
+      alert(msg);
+    } finally {
+      setPublishingId(null);
+    }
+  };
+
+  const handleSubastaClick = (figuritaId: string) => {
+    navigate('/subastas/nueva', { state: { prefilledFiguritaId: figuritaId } });
+  };
 
   if (isError) return <ErrorState message="No se pudieron cargar tus repetidas." onRetry={() => refetch()} />;
 
@@ -36,6 +69,10 @@ export default function RepetidasPage() {
                 equipoNombre={f.equipoNombre}
                 categoriaNombre={f.categoriaNombre}
                 imagenUrl={f.imagenUrl}
+                onPublishExchange={() => handlePublishExchange(f)}
+                onAuction={() => handleSubastaClick(f.id)}
+                isPublishing={publishingId === f.id}
+                canAuction={f.count > 1}
                 footer={
                   <span className="inline-flex items-center gap-1.5">
                     <span className="inline-block px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded">

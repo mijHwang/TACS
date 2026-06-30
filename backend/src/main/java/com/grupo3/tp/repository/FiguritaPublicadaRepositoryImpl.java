@@ -51,4 +51,14 @@ public class FiguritaPublicadaRepositoryImpl implements FiguritaPublicadaReposit
         );
         return mongoTemplate.find(query, FiguritaPublicada.class);
     }
+    @Override
+    public List<FiguritaPublicada> findByFiguritaId(String figuritaId) {
+        Query query = Query.query(
+                Criteria.where("figuritas").is(new ObjectId(figuritaId))
+                        .and("estado").is(EstadoPublicacion.DISPONIBLE)
+        );
+        return mongoTemplate.find(query, FiguritaPublicada.class);
+    }
+
+    
 }
