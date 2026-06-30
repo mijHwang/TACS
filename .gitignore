@@ -51,3 +51,6 @@ docs/superpowers
 
 ### Cloudflare Origin Certificate (instalado a mano en la EC2, NUNCA se commitea) ###
 /cloudflare/
+
+### Override local de docker compose (puertos/ajustes por máquina, NO se commitea) ###
+/docker-compose.override.yml
