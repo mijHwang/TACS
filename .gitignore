@@ -44,7 +44,6 @@ node_modules/
 /scripts/
 
 .superpowers/
-docs/superpowers
 
 ### Certificados TLS de Let's Encrypt (generados en la EC2, NUNCA se commitean) ###
 /certbot/

@@ -21,15 +21,13 @@ con otros usuarios, realicen propuestas de intercambio, completen operaciones de
 
 **Pendientes principales** (detalle en [Cobertura de User Stories](#cobertura-de-user-stories)):
 
-- US11 — alertas proactivas (figurita faltante / subasta por finalizar)
-- US3 — búsqueda con filtros del lado del servidor
-- **Integración con Telegram** y **load test (Vegeta/wrk)** — requeridos para promoción
+- US11 — alertas proactivas por cierre de subasta
+- **Load test (Vegeta/wrk)**
 
 ## Equipo
 
 - Hwang, Min Jun
 - Sicher, Matias
-- Abascal, Nicolas
 
 ## Requisitos previos
 
@@ -223,20 +221,20 @@ Leyenda: ✅ completo · ⚠️ parcial · ❌ no implementado
 
 | US | Descripción | Backend | Frontend | Estado |
 |---|---|---|---|---|
-| US1 | Publicar figurita (nº, selección/equipo/categoría, jugador, **cantidad**, **modalidad** directo/subasta) | ⚠️ | ❌ sin alta | ⚠️ el modelo `Figurita` no guarda cantidad ni modalidad; no hay form de publicación |
+| US1 | Publicar figurita (nº, selección/equipo/categoría, jugador, modalidad directo/subasta) | ✅ | ✅ | ✅ `FiguritaPublicada` persiste publicaciones con estado y fecha; frontend permite publicar repetidas para intercambio o subasta |
 | US2 | Registrar figuritas faltantes | ✅ | ✅ | ✅ |
-| US3 | Buscar con filtros (nº, selección, jugador…) | ⚠️ | ✅ | ⚠️ no hay búsqueda con filtros server-side; el frontend filtra el `getAll` |
+| US3 | Buscar con filtros (nº, selección, equipo, categoría…) | ✅ | ✅ | ✅ `FiguritaController.getAll` acepta filtros server-side (`numero`, `search`, `seleccion`, `equipo`, `categoria`) con paginado |
 | US4 | Sugerencias automáticas de intercambio | ✅ | ✅ | ✅ matching bidireccional persistido (colección `sugerencias`), job diario 3 AM + endpoint admin `/api/sugerencias/regenerar`, página `/sugerencias` que prearma la propuesta |
 | US5 | Proponer intercambio (1+ figuritas ofrecidas) | ✅ | ✅ | ✅ |
 | US6 | Publicar subasta (duración + condiciones) | ✅ | ✅ | ✅ |
-| US7 | Ofertar en subasta | ✅ | ⚠️ | ⚠️ backend OK; la UI oferta con `MOCK_MY_STICKERS` |
-| US8 | Ver publicaciones/propuestas/subastas y estado | ✅ | ✅ | ✅ Dashboard con datos reales vía `dashboardService`: figuritas publicadas, propuestas enviadas/recibidas, subastas activas, alertas; bonus: progreso de colección (US2) y acciones rápidas |
+| US7 | Ofertar en subasta | ✅ | ✅ | ✅ |
+| US8 | Ver publicaciones/propuestas/subastas y estado | ✅ | ✅ | ✅ Dashboard con datos reales vía `dashboardService`: figuritas publicadas, propuestas enviadas/recibidas, subastas activas, alertas; progreso de colección y acciones rápidas |
 | US9 | Aceptar / rechazar propuestas | ✅ | ✅ | ✅ aceptar transfiere figuritas, crea `Intercambio` y notifica |
-| US10 | Calificar / reputación | ✅ | ✅ | ✅ reputación = promedio + histograma 1–5★ sobre la colección `Calificacion` (`calcularReputacion`, `GET /api/intercambios/usuario/{id}/reputacion`); `calificar` persiste la `Calificacion` validando participación y bloqueando recalificar; front califica con estrellas (`IntercambiosPage`) y muestra el widget real (`PerfilPage` vía `useReputacion`). Pendiente menor: `POST /api/calificaciones` genérico sin validación |
-| US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ⚠️ | ⚠️ | ⚠️ solo notificaciones in-app por evento; alertas proactivas son stubs |
-| US12 | Estadísticas de admin | ✅ | ✅ | ⚠️ stats limitadas a subastas/ofertas/usuarios |
+| US10 | Calificar / reputación | ✅ | ✅ | ✅ reputación = promedio + histograma 1–5★ sobre la colección `Calificacion`; front califica con estrellas (`IntercambiosPage`) y muestra el widget real (`PerfilPage` vía `useReputacion`) |
+| US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ✅ | ✅ | ⚠️ notificaciones in-app por evento (nueva propuesta, figurita faltante publicada, subasta creada); pendiente: alerta proactiva por cierre de subasta |
+| US12 | Estadísticas de admin | ✅ | ✅ | ✅ |
 
-**Requisitos de promoción aún ausentes:** integración con **Telegram** (cero código) y **load test** (Vegeta/wrk). **NFR pendiente:** Javadoc en métodos no triviales.
+**Requisito de promoción pendiente:** **load test** (Vegeta/wrk). **NFR pendiente:** Javadoc en métodos no triviales.
 
 ## Testing
 
@@ -304,8 +302,3 @@ TACS/
 │   └── Dockerfile
 └── docker-compose.yml
 ```
-
-
-Debemos levantarlo en nube, meterle un cloudflare para evitar constantes requests.
-
-Que arme escenarios reales para tests. 
