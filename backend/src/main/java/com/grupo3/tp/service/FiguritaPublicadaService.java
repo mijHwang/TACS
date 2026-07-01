@@ -7,6 +7,7 @@ import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaPublicada;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaPublicadaRepository;
+import com.grupo3.tp.repository.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,21 @@ public class FiguritaPublicadaService {
     private final FiguritaPublicadaRepository repository;
     private final FiguritaService figuritaService;
     private final UsuarioService usuarioService;
+    private final NotificacionService notificacionService;
+    private final UsuarioRepository usuarioRepository;
 
 
     public FiguritaPublicadaService(
             FiguritaPublicadaRepository repository,
             FiguritaService figuritaService,
-            UsuarioService usuarioService) {
+            UsuarioService usuarioService,
+            NotificacionService notificacionService,
+            UsuarioRepository usuarioRepository) {
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.usuarioService = usuarioService;
+        this.notificacionService = notificacionService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public FiguritaPublicadaResponseDTO publicar(FiguritaPublicadaRequestDTO dto) {
@@ -75,7 +82,24 @@ public class FiguritaPublicadaService {
                 .estado(EstadoPublicacion.DISPONIBLE)
                 .build();
 
-        return mapToDTO(repository.save(publicacion));
+        FiguritaPublicada saved = repository.save(publicacion);
+
+        // Notificar (en background) a los usuarios a los que les falta esta figurita.
+        // Aislado en try/catch para que un fallo notificando no rompa la publicación.
+        try {
+            Figurita primera = aPublicar.get(0);
+            List<Usuario> interesados = usuarioRepository.findUsuariosQueLesFaltaFigurita(dto.getFiguritaBaseId());
+
+            notificacionService.notificarUsuariosFaltantes(
+                    interesados,
+                    primera.getFiguritaBase().getJugador().getNombre(),
+                    dto.getUsuarioId()
+            );
+        } catch (Exception e) {
+            System.err.println("Error generando notificaciones de publicación de faltantes: " + e.getMessage());
+        }
+
+        return mapToDTO(saved);
     }
 
     public Page<FiguritaPublicadaResponseDTO> obtenerDisponibles(String usuarioId, Pageable pageable) {

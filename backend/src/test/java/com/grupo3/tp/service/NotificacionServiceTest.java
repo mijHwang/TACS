@@ -278,4 +278,56 @@ public class NotificacionServiceTest {
         assertFalse(result);
         verify(repo, never()).deleteById(any());
     }
+
+    // ============= NOTIFICAR USUARIOS FALTANTES - SUBASTA =============
+    @Test
+    public void testNotificarUsuariosFaltantesSubastaExcluyeCreadorYGuardaEnLote() {
+        // usuario1 (user-1) es el creador de la subasta: sólo usuario2 debe recibir la notificación.
+        service.notificarUsuariosFaltantesSubasta(
+                List.of(usuario1, usuario2), "Messi", "user-1", "sub-99");
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Notificacion>> captor = ArgumentCaptor.forClass(List.class);
+        verify(repo, times(1)).saveAll(captor.capture());
+        verify(repo, never()).save(any());
+
+        List<Notificacion> guardadas = captor.getValue();
+        assertEquals(1, guardadas.size());
+        Notificacion n = guardadas.get(0);
+        assertEquals("user-2", n.getUsuario().getId());
+        assertEquals("subasta", n.getTipo());
+        assertEquals("/subastas/sub-99", n.getEnlace());
+        assertFalse(n.getLeida());
+        assertTrue(n.getMensaje().contains("Messi"));
+    }
+
+    @Test
+    public void testNotificarUsuariosFaltantesSubastaSinInteresadosNoGuarda() {
+        // Sólo el creador está en la lista → no queda nadie a quién notificar.
+        service.notificarUsuariosFaltantesSubasta(
+                List.of(usuario1), "Messi", "user-1", "sub-99");
+
+        verify(repo, never()).saveAll(any());
+        verify(repo, never()).save(any());
+    }
+
+    // ============= NOTIFICAR USUARIOS FALTANTES - PUBLICACION =============
+    @Test
+    public void testNotificarUsuariosFaltantesPublicacionExcluyePublicador() {
+        // usuario1 (user-1) es el publicador: sólo usuario2 debe recibir la notificación.
+        service.notificarUsuariosFaltantes(
+                List.of(usuario1, usuario2), "Messi", "user-1");
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<List<Notificacion>> captor = ArgumentCaptor.forClass(List.class);
+        verify(repo, times(1)).saveAll(captor.capture());
+
+        List<Notificacion> guardadas = captor.getValue();
+        assertEquals(1, guardadas.size());
+        Notificacion n = guardadas.get(0);
+        assertEquals("user-2", n.getUsuario().getId());
+        assertEquals("publicacion", n.getTipo());
+        assertFalse(n.getLeida());
+        assertTrue(n.getMensaje().contains("Messi"));
+    }
 }

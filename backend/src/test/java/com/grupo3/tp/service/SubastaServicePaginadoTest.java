@@ -3,6 +3,7 @@ package com.grupo3.tp.service;
 import com.grupo3.tp.models.EstadoSubasta;
 import com.grupo3.tp.models.Subasta;
 import com.grupo3.tp.repository.SubastaRepository;
+import com.grupo3.tp.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +34,8 @@ public class SubastaServicePaginadoTest {
     private NotificacionService notificacionService;
     @Mock
     private UsuarioService usuarioService;
+    @Mock
+    private UsuarioRepository usuarioRepository;
 
     @InjectMocks
     private SubastaService service;

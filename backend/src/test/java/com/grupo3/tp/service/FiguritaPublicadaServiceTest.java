@@ -11,6 +11,7 @@ import com.grupo3.tp.models.Jugador;
 import com.grupo3.tp.models.Seleccion;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FiguritaPublicadaRepository;
+import com.grupo3.tp.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,13 +54,19 @@ public class FiguritaPublicadaServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private NotificacionService notificacionService;
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
     private FiguritaPublicadaService service;
 
     private FiguritaPublicada publicacion;
 
     @BeforeEach
     public void setUp() {
-        service = new FiguritaPublicadaService(repository, figuritaService, usuarioService);
+        service = new FiguritaPublicadaService(repository, figuritaService, usuarioService, notificacionService, usuarioRepository);
 
         Usuario owner = Usuario.builder()
                 .id("user-2")
