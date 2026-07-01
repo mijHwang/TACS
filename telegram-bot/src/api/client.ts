@@ -4,6 +4,8 @@ export interface ApiClient {
   getJson<T>(path: string, token: string): Promise<T>;
   postJson<T>(path: string, body: unknown, token: string): Promise<T>;
   postText(path: string, body: unknown): Promise<string>;
+  /** PUT sin body; resuelve en 2xx, lanza ApiError si no. No devuelve el cuerpo. */
+  put(path: string, token: string): Promise<void>;
 }
 
 export function createApiClient(baseUrl: string, fetchFn: typeof fetch = fetch): ApiClient {
@@ -41,6 +43,9 @@ export function createApiClient(baseUrl: string, fetchFn: typeof fetch = fetch):
         body: JSON.stringify(body),
       });
       return await res.text();
+    },
+    async put(path: string, token: string): Promise<void> {
+      await doFetch(path, { method: "PUT", headers: { Authorization: `Bearer ${token}` } });
     },
   };
 }

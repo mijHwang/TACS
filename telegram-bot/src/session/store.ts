@@ -8,6 +8,8 @@ export interface SessionStore {
   get(chatId: number): Session | undefined;
   set(chatId: number, session: Session): void;
   clear(chatId: number): void;
+  /** Todas las sesiones activas (para el poller de notificaciones). */
+  entries(): Array<[number, Session]>;
 }
 
 export function createSessionStore(): SessionStore {
@@ -20,5 +22,6 @@ export function createSessionStore(): SessionStore {
     clear: (chatId) => {
       map.delete(chatId);
     },
+    entries: () => [...map.entries()],
   };
 }
