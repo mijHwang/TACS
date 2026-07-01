@@ -12,6 +12,12 @@
 # abiertos en el Security Group de la EC2.
 ###############################################################################
 services:
+  backend:
+    # ⚠️ Prod usa el Mongo del contenedor y hereda el compose base: apagar el auto-seed
+    # explícitamente para no sembrar/pisar datos de producción.
+    environment:
+      - SEED_ON_STARTUP=false
+
   frontend:
     ports:
       - "80:80"

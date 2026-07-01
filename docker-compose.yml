@@ -32,6 +32,8 @@ services:
       # Por defecto usa el Mongo del container; si se setea SPRING_MONGODB_URI (p. ej. Atlas) se respeta.
       - SPRING_MONGODB_URI=${SPRING_MONGODB_URI:-mongodb://mongo:27017/tacs}
       - JWT_SECRET=${JWT_SECRET}
+      # Auto-seed idempotente al levantar local (solo si la base está vacía). Apagado en prod.
+      - SEED_ON_STARTUP=${SEED_ON_STARTUP:-true}
     depends_on:
       mongo:
         condition: service_healthy

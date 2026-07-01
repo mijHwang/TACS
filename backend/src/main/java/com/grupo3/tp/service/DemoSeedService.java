@@ -3,6 +3,9 @@ package com.grupo3.tp.service;
 import com.grupo3.tp.dtos.SubastaDTO;
 import com.grupo3.tp.dtos.OfertaDTO;
 import com.grupo3.tp.dtos.DemoSeedResultDTO;
+import com.grupo3.tp.dtos.FiguritaPublicadaRequestDTO;
+import com.grupo3.tp.dtos.FiguritaPublicadaResponseDTO;
+import com.grupo3.tp.dtos.ProtagonistaDTO;
 import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,37 +28,40 @@ import java.util.Map;
 @Service
 public class DemoSeedService {
 
-    /** Las 15 colecciones de la app, a vaciar en el reset. */
+    /** Las 16 colecciones de la app, a vaciar en el reset. */
     public static final String[] COLECCIONES = {
         "usuarios", "figuritas", "figuritas_base", "categorias_figurita", "condiciones",
         "equipos", "jugadores", "selecciones", "intercambios", "notificaciones",
-        "ofertas", "solicitudes_intercambio", "subastas", "sugerencias", "calificaciones"
+        "ofertas", "solicitudes_intercambio", "subastas", "sugerencias", "calificaciones",
+        "figuritas_publicadas"
     };
 
     static final String PASS_DEMO = "demo1234";
     static final String PASS_ADMIN = "adminpass123";
-    static final String PROTAGONISTA = "juanca";
-    static final List<String> CONTRAPARTES = List.of(
-            "sofia", "mateo", "valen", "cami", "nico",
-            "lucas", "martina", "thiago", "agus", "flor");
+    static final List<String> PROTAGONISTAS = List.of("juanca", "sofia", "mateo");
+    static final List<String> CAST = List.of(
+            "valen", "cami", "nico", "lucas", "martina", "thiago", "agus", "flor");
 
-    // Matriz: username -> filas [numeroBase, cantidad]. Diseñada para:
-    //  - juanca: posee bases 1..15 (≈31% de 48); repetidas (x2) en 1..6 → publicadas/excedentes.
-    //  - cada contraparte: tiene x2 de alguna base que a juanca le falta (16..48) y NO posee 1..6
-    //    → sugerencia bidireccional con juanca.
+    // username -> filas [numeroBase, cantidad]. Repes (x2) reservadas por actividad:
+    //  - juanca (Argentina 1..15): publica 1,2 · comercia/subasta/oferta 3,4,5,7,9
+    //  - sofia  (10..24):          publica 19,20 · comercia/subasta/oferta 16,17,18,21,22
+    //  - mateo  (22..36):          publica 28,29,30 · comercia/subasta/oferta 25,26,27,31
+    //  - reparto: una repe (x2) que a algún protagonista le falta (alimenta sugerencias US4).
     private static final Map<String, int[][]> MATRIZ = Map.ofEntries(
-        Map.entry("juanca", new int[][]{ {1,2},{2,2},{3,2},{4,2},{5,2},{6,2},
-                                         {7,1},{8,1},{9,1},{10,1},{11,1},{12,1},{13,1},{14,1},{15,1} }),
-        Map.entry("sofia",   new int[][]{ {16,2},{17,1},{18,1},{19,1},{20,1} }),
-        Map.entry("mateo",   new int[][]{ {21,2},{22,1},{23,1},{24,1},{7,1},{8,1} }),
-        Map.entry("valen",   new int[][]{ {25,2},{26,1},{27,1} }),
-        Map.entry("cami",    new int[][]{ {35,2},{36,1},{37,1},{16,1},{17,1} }),
-        Map.entry("nico",    new int[][]{ {28,2},{29,1},{30,1},{31,1} }),
-        Map.entry("lucas",   new int[][]{ {32,2},{33,1},{34,1} }),
-        Map.entry("martina", new int[][]{ {38,2},{39,1},{40,1} }),
-        Map.entry("thiago",  new int[][]{ {41,2},{42,1},{43,1} }),
-        Map.entry("agus",    new int[][]{ {44,2},{45,1},{46,1} }),
-        Map.entry("flor",    new int[][]{ {47,2},{48,1},{1,1} })
+        Map.entry("juanca", new int[][]{ {1,2},{2,2},{3,2},{4,2},{5,2},{6,1},{7,2},{8,1},{9,2},
+                                         {10,1},{11,1},{12,1},{13,1},{14,1},{15,1} }),
+        Map.entry("sofia",  new int[][]{ {10,1},{11,1},{12,1},{13,1},{14,1},{15,1},
+                                         {16,2},{17,2},{18,2},{19,2},{20,2},{21,1},{22,1},{23,1},{24,1} }),
+        Map.entry("mateo",  new int[][]{ {22,1},{23,1},{24,1},{25,2},{26,2},{27,2},{28,2},{29,2},{30,2},
+                                         {31,1},{32,1},{33,1},{34,1},{35,1},{36,1} }),
+        Map.entry("valen",   new int[][]{ {40,2},{58,1},{59,1} }),
+        Map.entry("cami",    new int[][]{ {37,2},{38,1},{39,1} }),
+        Map.entry("nico",    new int[][]{ {42,2},{43,1},{44,1} }),
+        Map.entry("lucas",   new int[][]{ {45,2},{46,1},{47,1} }),
+        Map.entry("martina", new int[][]{ {48,2},{49,1},{50,1} }),
+        Map.entry("thiago",  new int[][]{ {51,2},{52,1},{53,1} }),
+        Map.entry("agus",    new int[][]{ {54,2},{55,1},{56,1} }),
+        Map.entry("flor",    new int[][]{ {57,2},{60,1},{1,1} })
     );
 
     private final MongoTemplate mongoTemplate;
@@ -78,6 +84,8 @@ public class DemoSeedService {
     private final CalificacionRepository calificacionRepo;
     private final UsuarioRepository usuarioRepo;
     private final FiguritaRepository figuritaRepo;
+    private final FiguritaPublicadaService figuritaPublicadaService;
+    private final FiguritaPublicadaRepository figuritaPublicadaRepo;
 
     public DemoSeedService(MongoTemplate mongoTemplate,
                            PasswordEncoder passwordEncoder,
@@ -98,7 +106,9 @@ public class DemoSeedService {
                            NotificacionRepository notificacionRepo,
                            CalificacionRepository calificacionRepo,
                            UsuarioRepository usuarioRepo,
-                           FiguritaRepository figuritaRepo) {
+                           FiguritaRepository figuritaRepo,
+                           FiguritaPublicadaService figuritaPublicadaService,
+                           FiguritaPublicadaRepository figuritaPublicadaRepo) {
         this.mongoTemplate = mongoTemplate;
         this.passwordEncoder = passwordEncoder;
         this.catalogoService = catalogoService;
@@ -119,6 +129,8 @@ public class DemoSeedService {
         this.calificacionRepo = calificacionRepo;
         this.usuarioRepo = usuarioRepo;
         this.figuritaRepo = figuritaRepo;
+        this.figuritaPublicadaService = figuritaPublicadaService;
+        this.figuritaPublicadaRepo = figuritaPublicadaRepo;
     }
 
     /** Vacía todas las colecciones de la app (reset total). */
@@ -154,44 +166,40 @@ public class DemoSeedService {
     }
 
     /**
-     * Crea admin + protagonista + 10 contrapartes.
+     * Crea admin + 3 protagonistas + 8 de reparto.
      * @return mapa username -> Usuario persistido.
      */
     Map<String, Usuario> seedUsuarios() {
         Map<String, Usuario> users = new LinkedHashMap<>();
         users.put("admin", usuarioService.crear(buildUser("admin", PASS_ADMIN, Role.ADMIN)));
-        users.put(PROTAGONISTA, usuarioService.crear(buildUser(PROTAGONISTA, PASS_DEMO, Role.USER)));
-        for (String name : CONTRAPARTES) {
+        for (String name : PROTAGONISTAS) {
+            users.put(name, usuarioService.crear(buildUser(name, PASS_DEMO, Role.USER)));
+        }
+        for (String name : CAST) {
             users.put(name, usuarioService.crear(buildUser(name, PASS_DEMO, Role.USER)));
         }
         return users;
     }
 
     /**
-     * Crea las instancias de figurita de cada usuario según MATRIZ.
-     * @param users mapa username -> Usuario (debe contener todas las claves de MATRIZ).
-     * @param bases mapa numeroBase -> FiguritaBase (debe contener todas las bases referenciadas en MATRIZ).
-     * @return mapa username -> mapa numeroBase -> lista de instancias Figurita poseídas.
+     * Crea las instancias de figurita de cada usuario según MATRIZ y las carga en un
+     * InstancePool (para asignarlas a actividades sin doble uso).
      */
-    Map<String, Map<Integer, List<Figurita>>> seedColecciones(
-            Map<String, Usuario> users, Map<Integer, FiguritaBase> bases) {
-        Map<String, Map<Integer, List<Figurita>>> owned = new HashMap<>();
+    InstancePool seedColecciones(Map<String, Usuario> users, Map<Integer, FiguritaBase> bases) {
+        InstancePool pool = new InstancePool();
         for (Map.Entry<String, int[][]> e : MATRIZ.entrySet()) {
             Usuario u = users.get(e.getKey());
-            Map<Integer, List<Figurita>> porBase = new HashMap<>();
             for (int[] fila : e.getValue()) {
                 int numero = fila[0], cantidad = fila[1];
                 FiguritaBase base = bases.get(numero);
-                List<Figurita> instancias = new ArrayList<>();
                 for (int i = 0; i < cantidad; i++) {
-                    instancias.add(figuritaService.crear(
-                            Figurita.builder().figuritaBase(base).owner(u).build()));
+                    Figurita f = figuritaService.crear(
+                            Figurita.builder().figuritaBase(base).owner(u).build());
+                    pool.add(e.getKey(), numero, f);
                 }
-                porBase.put(numero, instancias);
             }
-            owned.put(e.getKey(), porBase);
         }
-        return owned;
+        return pool;
     }
 
     /**
@@ -211,51 +219,85 @@ public class DemoSeedService {
         return solicitudService.crear(s);
     }
 
-    /** Crea propuestas recibidas/enviadas por juanca y acepta/rechaza algunas. */
-    void seedPropuestas(Map<String, Usuario> users,
-                        Map<String, Map<Integer, List<Figurita>>> owned) {
-        Usuario juanca = users.get("juanca");
-
-        // --- RECIBIDAS por juanca: piden una figurita de juanca (base 2 y base 3, que tiene x2) ---
-        // sofia pide la base 2 de juanca, ofrece su base 16
-        SolicitudDeIntercambio rSofia = crearSolicitud(
-                users.get("sofia"), owned.get("juanca").get(2).get(0),
-                List.of(owned.get("sofia").get(16).get(0)));
-        // mateo pide la base 3 de juanca, ofrece su base 21
-        SolicitudDeIntercambio rMateo = crearSolicitud(
-                users.get("mateo"), owned.get("juanca").get(3).get(0),
-                List.of(owned.get("mateo").get(21).get(0)));
-        // valen pide la base 4 de juanca, ofrece su base 25 (queda PENDIENTE)
-        crearSolicitud(users.get("valen"), owned.get("juanca").get(4).get(0),
-                List.of(owned.get("valen").get(25).get(0)));
-
-        solicitudService.aceptar(rSofia.getId());   // transfiere + Intercambio + notif a sofia
-        solicitudService.rechazar(rMateo.getId());  // notif a mateo
-
-        // --- ENVIADAS por juanca: pide figuritas de nico y lucas, ofrece sus repetidas ---
-        // juanca pide la base 28 de nico, ofrece su base 5 (segunda instancia)
-        SolicitudDeIntercambio eNico = crearSolicitud(
-                juanca, owned.get("nico").get(28).get(0),
-                List.of(owned.get("juanca").get(5).get(1)));
-        // juanca pide la base 32 de lucas, ofrece su base 6 (segunda instancia) (queda PENDIENTE)
-        crearSolicitud(juanca, owned.get("lucas").get(32).get(0),
-                List.of(owned.get("juanca").get(6).get(1)));
-
-        solicitudService.aceptar(eNico.getId());    // Intercambio (generador=juanca) + notif a juanca
+    /** D-6: cada protagonista publica repetidas (US1). mateo publica una más el D-3. */
+    void seedPublicaciones(DemoTimeline timeline, Map<String, Usuario> users,
+                           Map<Integer, FiguritaBase> bases) {
+        LocalDateTime d6 = timeline.dia(-6, 10);
+        publicar(users.get("juanca"), bases.get(1), 1, d6);
+        publicar(users.get("juanca"), bases.get(2), 1, d6);
+        publicar(users.get("sofia"),  bases.get(19), 1, d6);
+        publicar(users.get("sofia"),  bases.get(20), 1, d6);
+        publicar(users.get("mateo"),  bases.get(28), 1, d6);
+        publicar(users.get("mateo"),  bases.get(29), 1, d6);
+        publicar(users.get("mateo"),  bases.get(30), 1, timeline.dia(-3, 15));
     }
 
-    /** Crea una subasta PENDIENTE y la pone EN_CURSO (replica el endpoint /iniciar). */
-    private Subasta crearSubastaEnCurso(Usuario dueno, Figurita figurita, int duracionHoras,
-                                        List<CondicionImpl> condiciones) {
+    /** Publica `cantidad` figuritas de `base` del usuario (reusa el service) y backdatea la fecha. */
+    private void publicar(Usuario u, FiguritaBase base, int cantidad, LocalDateTime cuando) {
+        FiguritaPublicadaRequestDTO dto = new FiguritaPublicadaRequestDTO();
+        dto.setUsuarioId(u.getId());
+        dto.setFiguritaBaseId(base.getId());
+        dto.setCantidad(cantidad);
+        FiguritaPublicadaResponseDTO res = figuritaPublicadaService.publicar(dto);
+        figuritaPublicadaRepo.findById(res.getId()).ifPresent(p -> {
+            p.setFechaPublicacion(cuando);
+            figuritaPublicadaRepo.save(p);
+        });
+    }
+
+    /** Propuestas repartidas: D-5 se crean, D-4 se acepta/rechaza, D-3 deja pendientes, D-1 acepta. */
+    void seedPropuestas(DemoTimeline timeline, Map<String, Usuario> users, InstancePool pool) {
+        Usuario juanca = users.get("juanca"), sofia = users.get("sofia"), mateo = users.get("mateo");
+        SolicitudDeIntercambio[] hold = new SolicitudDeIntercambio[2];
+
+        // D-5: se crean las propuestas (notifica al destinatario)
+        timeline.enDia(timeline.dia(-5, 11), () -> {
+            // mateo pide la base 3 de juanca, ofrece su 25
+            hold[0] = crearSolicitud(mateo, pool.tomar("juanca", 3),
+                    List.of(pool.tomar("mateo", 25)));
+            // valen pide la base 17 de sofia, ofrece su 40
+            hold[1] = crearSolicitud(users.get("valen"), pool.tomar("sofia", 17),
+                    List.of(pool.tomar("valen", 40)));
+            // sofia pide la base 31 de mateo, ofrece su 22 (queda PENDIENTE)
+            crearSolicitud(sofia, pool.tomar("mateo", 31), List.of(pool.tomar("sofia", 22)));
+        });
+
+        // D-4: juanca acepta a mateo (transfer + Intercambio + notif); sofia rechaza a valen
+        timeline.enDia(timeline.dia(-4, 9), () -> {
+            solicitudService.aceptar(hold[0].getId());
+            solicitudService.rechazar(hold[1].getId());
+        });
+
+        // D-3: llegan 2 propuestas que quedan PENDIENTES accionables al D0 (reparto->juanca y juanca->reparto).
+        // Se ubican en un día propio para que el feed de notificaciones abarque >=5 días distintos.
+        timeline.enDia(timeline.dia(-3, 16), () -> {
+            // cami pide la base 6 de juanca (RECIBIDA por juanca, pendiente)
+            crearSolicitud(users.get("cami"), pool.tomar("juanca", 6),
+                    List.of(pool.tomar("cami", 37)));
+            // juanca pide la base 48 de martina (ENVIADA por juanca, pendiente)
+            crearSolicitud(juanca, pool.tomar("martina", 48), List.of(pool.tomar("juanca", 9)));
+        });
+
+        // D-1: juanca propone a sofia y sofia acepta (intercambio cerrado + calificable)
+        timeline.enDia(timeline.dia(-1, 18), () -> {
+            SolicitudDeIntercambio juancaASofia = crearSolicitud(juanca, pool.tomar("sofia", 16),
+                    List.of(pool.tomar("juanca", 5)));
+            solicitudService.aceptar(juancaASofia.getId());
+        });
+    }
+
+    /** Crea una subasta con horaInicio/horaFin/estado explícitos (para poder ubicarla en la semana). */
+    private Subasta crearSubasta(Usuario dueno, Figurita figurita, List<CondicionImpl> condiciones,
+                                 LocalDateTime inicio, LocalDateTime fin, EstadoSubasta estado) {
         SubastaDTO dto = new SubastaDTO();
         dto.setUsuarioId(dueno.getId());
         dto.setFiguritaId(figurita.getId());
-        dto.setDuracion(duracionHoras);
+        dto.setDuracion((int) java.time.Duration.between(inicio, fin).toHours());
         dto.setCondiciones(condiciones);
         Subasta s = subastaService.crear(dto);
-        s.setEstado(EstadoSubasta.EN_CURSO);
-        s.setHoraInicio(LocalDateTime.now());
-        s.setHoraFin(s.getHoraInicio().plusHours(duracionHoras));
+        s.setEstado(estado);
+        s.setHoraInicio(inicio);
+        s.setHoraFin(fin);
         return subastaService.actualizar(s.getId(), s).orElse(s);
     }
 
@@ -271,28 +313,43 @@ public class DemoSeedService {
         subastaService.actualizar(subasta.getId(), subasta);
     }
 
-    /** Crea subastas activas (propias y de contrapartes) con ofertas, incluida una con condiciones. */
-    void seedSubastas(Map<String, Usuario> users,
-                      Map<String, Map<Integer, List<Figurita>>> owned) {
-        // Subasta de juanca sobre su base 6 (1ra instancia; la 2da fue ofrecida en una propuesta)
-        Subasta subJuanca = crearSubastaEnCurso(
-                users.get("juanca"), owned.get("juanca").get(6).get(0), 72, List.of());
-        // sofia oferta en la subasta de juanca con su base 17
-        ofertar(subJuanca, users.get("sofia"), List.of(owned.get("sofia").get(17).get(0)));
+    /** D-3: abren subastas (una con condición Argentina) + una FINALIZADA de variedad. D-2: ofertas. */
+    void seedSubastas(DemoTimeline timeline, Map<String, Usuario> users, InstancePool pool) {
+        Usuario juanca = users.get("juanca"), sofia = users.get("sofia"), mateo = users.get("mateo");
+        LocalDateTime abren = timeline.dia(-3, 12);
 
-        // Subasta de sofia (base 16, 2da instancia) CON condición: selección = Argentina
+        // Subasta de juanca (base 4), cierra D+1
+        Subasta subJuanca = crearSubasta(juanca, pool.tomar("juanca", 4), List.of(),
+                abren, timeline.dia(1, 12), EstadoSubasta.EN_CURSO);
+
+        // Subasta de sofia (base 18) CON condición "Solo Argentina", cierra D+2
         CondicionImpl condArg = CondicionImpl.builder()
                 .nombre("Solo Argentina")
                 .descripcion("La oferta debe incluir una figurita de Argentina")
                 .filtros(List.of(Filtro.builder().tipo("seleccion").valor("Argentina").build()))
                 .build();
-        Subasta subSofia = crearSubastaEnCurso(
-                users.get("sofia"), owned.get("sofia").get(16).get(1), 48, List.of(condArg));
-        // juanca oferta en la subasta de sofia con su base 7 (Argentina, cumple la condición)
-        ofertar(subSofia, users.get("juanca"), List.of(owned.get("juanca").get(7).get(0)));
+        Subasta subSofia = crearSubasta(sofia, pool.tomar("sofia", 18), List.of(condArg),
+                abren, timeline.dia(2, 12), EstadoSubasta.EN_CURSO);
 
-        // Subasta de nico (base 28, 2da instancia), sin ofertas (variedad)
-        crearSubastaEnCurso(users.get("nico"), owned.get("nico").get(28).get(1), 24, List.of());
+        // Subasta de mateo (base 27), cierra D+3
+        Subasta subMateo = crearSubasta(mateo, pool.tomar("mateo", 27), List.of(),
+                abren, timeline.dia(3, 12), EstadoSubasta.EN_CURSO);
+
+        // Subasta ya FINALIZADA (variedad en el historial): thiago, base 51, sin ofertas
+        crearSubasta(users.get("thiago"), pool.tomar("thiago", 51), List.of(),
+                timeline.dia(-6, 12), timeline.dia(-3, 12), EstadoSubasta.FINALIZADA);
+
+        // D-2: llegan las ofertas (fechaOferta backdated por enDia)
+        timeline.enDia(timeline.dia(-2, 16), () -> {
+            // juanca oferta en la de sofia con su base 7 (Argentina → cumple la condición)
+            ofertar(subSofia, juanca, List.of(pool.tomar("juanca", 7)));
+            // ofertas en la de juanca: mateo(26), sofia(21), nico(42)
+            ofertar(subJuanca, mateo, List.of(pool.tomar("mateo", 26)));
+            ofertar(subJuanca, sofia, List.of(pool.tomar("sofia", 21)));
+            ofertar(subJuanca, users.get("nico"), List.of(pool.tomar("nico", 42)));
+            // oferta en la de mateo: lucas(45)
+            ofertar(subMateo, users.get("lucas"), List.of(pool.tomar("lucas", 45)));
+        });
     }
 
     /** Crea calificaciones cruzadas (4–5) por cada Intercambio existente. */
@@ -314,25 +371,33 @@ public class DemoSeedService {
     }
 
     /**
-     * Reset total + siembra de la cohorte de demo. Orden importante: las transferencias de
-     * ownership (aceptar propuestas) ocurren antes de regenerar sugerencias.
-     * @return resumen con counts y credenciales para mostrar en la UI.
+     * Reset total + siembra de la cohorte de demo (3 protagonistas, 1 semana de uso).
+     * Orden importante: las transferencias de ownership (aceptar propuestas) ocurren antes de
+     * regenerar sugerencias.
      */
     public DemoSeedResultDTO seed() {
         reset();
         catalogoService.cargarDesdeJson();
-        Map<Integer, FiguritaBase> bases = primerasBasesPorNumero(48);
+        Map<Integer, FiguritaBase> bases = primerasBasesPorNumero(60);
         Map<String, Usuario> users = seedUsuarios();
-        Map<String, Map<Integer, List<Figurita>>> owned = seedColecciones(users, bases);
-        seedPropuestas(users, owned);
-        seedSubastas(users, owned);
+        InstancePool pool = seedColecciones(users, bases);
+        DemoTimeline timeline = new DemoTimeline(notificacionRepo, intercambioRepo, ofertaRepo);
+
+        seedPublicaciones(timeline, users, bases);
+        seedPropuestas(timeline, users, pool);
+        seedSubastas(timeline, users, pool);
         seedCalificaciones();
         sugerenciaService.regenerarTodas();
+
+        List<ProtagonistaDTO> protagonistas = PROTAGONISTAS.stream()
+                .map(u -> new ProtagonistaDTO(u, PASS_DEMO))
+                .toList();
 
         return DemoSeedResultDTO.builder()
                 .usuarios((int) usuarioRepo.count())
                 .figuritasBase((int) figuritaBaseRepo.count())
                 .figuritas((int) figuritaRepo.count())
+                .figuritasPublicadas((int) figuritaPublicadaRepo.count())
                 .solicitudes((int) solicitudRepo.count())
                 .intercambios((int) intercambioRepo.count())
                 .subastas((int) subastaRepo.count())
@@ -340,9 +405,11 @@ public class DemoSeedService {
                 .sugerencias((int) sugerenciaRepo.count())
                 .notificaciones((int) notificacionRepo.count())
                 .calificaciones((int) calificacionRepo.count())
-                .protagonistaUsername(PROTAGONISTA).protagonistaPassword(PASS_DEMO)
+                .protagonistas(protagonistas)
+                .protagonistaUsername("juanca").protagonistaPassword(PASS_DEMO)
                 .adminUsername("admin").adminPassword(PASS_ADMIN)
-                .mensaje("Base reseteada y datos de demo cargados. Logueate como '" + PROTAGONISTA + "'.")
+                .mensaje("Base reseteada. Cohorte de demo (1 semana de uso) lista. "
+                       + "Logueate como juanca, sofia o mateo (pass demo1234).")
                 .build();
     }
 }

@@ -51,6 +51,13 @@ cp .env.example .env       # primera vez: crea el .env con un JWT_SECRET de desa
 docker compose up --build
 ```
 
+> **Auto-seed al primer arranque:** con un volumen de Mongo vacío, el backend siembra automáticamente
+> el escenario de demo (3 protagonistas + admin + una semana de actividad simulada) al terminar de
+> levantar — no hace falta tocar nada. Es **idempotente**: en reinicios posteriores respeta los datos
+> (no re-siembra ni borra). Para volver a sembrar desde cero: `docker compose down -v` y volvé a
+> levantar, o usá el botón de Admin. Se controla con `SEED_ON_STARTUP` (prendido en el compose de dev,
+> **apagado en `docker-compose.prod.yml`** para no tocar la base de producción).
+
 > Para usar **MongoDB Atlas** en lugar del Mongo local, descomentá y completá `SPRING_MONGODB_URI`
 > en el `.env` (ver `.env.example`).
 
@@ -87,8 +94,9 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 > **Base de datos en el server:** el override de prod hereda el servicio `mongo` del compose base,
 > así que el servidor usa **su propio MongoDB en Docker** (volumen `mongo-data` en el disco de la EC2).
 > Para que el backend lo use, el `.env` de la EC2 **no debe** setear `SPRING_MONGODB_URI` (o dejarlo
-> comentado); si apunta a Atlas, seguirá usando Atlas. La base del server arranca vacía la primera vez
-> (el seeder recarga el catálogo; el demo se carga con el botón de Admin).
+> comentado); si apunta a Atlas, seguirá usando Atlas. La base del server arranca vacía la primera vez;
+> el **auto-seed de arranque está apagado en prod** (`SEED_ON_STARTUP=false` en `docker-compose.prod.yml`),
+> así que el demo se carga manualmente con el botón de Admin (el seeder recarga el catálogo).
 >
 > Además, generá un `JWT_SECRET` propio en el `.env` de la EC2 — **no** dejes el valor de desarrollo
 > de `.env.example`, que es público (firmar tokens con él permitiría falsificarlos).
@@ -126,11 +134,13 @@ Para poblar el sistema con un escenario realista y poder visualizar/probar todas
 1. Logueate como **`admin`** / `adminpass123` (si la base está vacía, registralo primero desde la UI; el username `admin` recibe rol ADMIN automáticamente).
 2. Andá a **`/admin`** → tarjeta **"Mantenimiento de datos"** → botón **"Resetear base y cargar datos de demo"**.
 3. En el modal, escribí **`RESET`** para habilitar la confirmación.
-4. Al terminar verás un resumen (usuarios, figuritas, propuestas, subastas, etc.). Logueate como **`juanca`** / `demo1234` para ver el dashboard completo.
+4. Al terminar verás un resumen (usuarios, figuritas, publicaciones, propuestas, subastas, etc.). Logueate como **`juanca`**, **`sofia`** o **`mateo`** / `demo1234` para ver el dashboard completo de cada protagonista.
+
+> El mismo escenario se siembra **automáticamente** al levantar el docker con un Mongo vacío (ver la nota de *auto-seed* en "Cómo levantar la aplicación"); el botón sirve para **re-sembrar** o para bases que ya tienen datos.
 
 > ⚠️ **Acción destructiva.** El endpoint `POST /api/admin/seed-demo` (admin-only) hace `dropCollection` de **todas** las colecciones antes de sembrar. Afecta **solo a la base donde lo corras** (local y servidor ahora tienen cada uno su propio Mongo en Docker, ya no comparten cluster de Atlas). Aun así, **no lo ejecutes contra la base del servidor** salvo que realmente quieras resetearla. La única guarda es el rol ADMIN + la confirmación tipeada en la UI (decisión de diseño: sin flag de entorno).
 
-**Cohorte sembrada:** `admin` (ADMIN) + `juanca` (protagonista) + 10 contrapartes (`sofia`, `mateo`, `valen`, `cami`, `nico`, `lucas`, `martina`, `thiago`, `agus`, `flor`) — todas con password **`demo1234`**. Incluye catálogo de 48 figuritas, colecciones con repetidas/faltantes, propuestas en sus 3 estados, intercambios, subastas activas con ofertas, calificaciones y sugerencias. La lógica vive en `DemoSeedService` (backend) y `SeedDemoCard` (frontend).
+**Cohorte sembrada:** `admin` (ADMIN, `adminpass123`) + **3 protagonistas** (`juanca`, `sofia`, `mateo`) + 8 de reparto (`valen`, `cami`, `nico`, `lucas`, `martina`, `thiago`, `agus`, `flor`) — todos con password **`demo1234`**. Cada protagonista ejercita el set completo de User Stories y la actividad está **repartida a lo largo de la última semana** (backdating de fechas sobre un catálogo real del Mundial): publicaciones (US1), colecciones con repetidas/faltantes (US2), propuestas enviadas/recibidas en sus 3 estados (US5/US9), subastas activas con ofertas + una finalizada (US6/US7), calificaciones/reputación (US10), sugerencias bidireccionales (US4) y notificaciones repartidas en varios días. La lógica vive en `DemoSeedService` (backend, con `DemoTimeline` para el backdating de fechas e `InstancePool` para no asignar la misma figurita a dos actividades), el auto-seed de arranque en `DemoSeedBootstrap`, y `SeedDemoCard` (frontend).
 
 ### Comandos útiles
 

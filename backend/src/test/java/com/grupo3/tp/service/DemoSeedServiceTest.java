@@ -28,12 +28,13 @@ public class DemoSeedServiceTest {
     @InjectMocks DemoSeedService service;
 
     @Test
-    void resetDropeaLas15Colecciones() {
+    void resetDropeaLas16ColeccionesIncluyendoPublicadas() {
         service.reset();
         for (String c : DemoSeedService.COLECCIONES) {
             verify(mongoTemplate).dropCollection(c);
         }
-        assertEquals(15, DemoSeedService.COLECCIONES.length);
+        assertEquals(16, DemoSeedService.COLECCIONES.length);
+        assertTrue(java.util.Arrays.asList(DemoSeedService.COLECCIONES).contains("figuritas_publicadas"));
     }
 
     @Test
