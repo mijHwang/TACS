@@ -53,6 +53,23 @@ services:
       - tacs-net
     restart: unless-stopped
 
+  # ─────────────────────────────────────────────
+  # TELEGRAM BOT — cliente REST del backend (grammY)
+  # ─────────────────────────────────────────────
+  telegram-bot:
+    build:
+      context: ./telegram-bot
+      dockerfile: Dockerfile
+    container_name: tacs-telegram-bot
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - BACKEND_URL=http://backend:8080
+    networks:
+      - tacs-net
+    restart: unless-stopped
+    depends_on:
+      - backend
+
 # Red interna bridge: los contenedores se comunican por nombre de servicio
 networks:
   tacs-net:

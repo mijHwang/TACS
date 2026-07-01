@@ -1,0 +1,21 @@
+{
+  "name": "tacs-telegram-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot de Telegram para TACS (cliente REST del backend)",
+  "scripts": {
+    "dev": "tsx --env-file=.env watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "grammy": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
