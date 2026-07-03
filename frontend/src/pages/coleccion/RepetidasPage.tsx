@@ -6,7 +6,6 @@ import { useRepetidasPaginadas, type FiguritaResponseDTO } from '../../hooks/use
 import Spinner from '../../components/Spinner';
 import ErrorState from '../../components/ErrorState';
 import { useFiltrosServidor } from './components/useFiltrosServidor';
-import { askQuantity } from './components/askQuantity';
 import FiltrosFigurita from './components/FiltrosFigurita';
 import TarjetaColeccion from './components/TarjetaColeccion';
 import GrillaFiguritas from './components/GrillaFiguritas';
@@ -14,6 +13,8 @@ import Paginador from '../../components/Paginador';
 import ListToolbar from '../../components/ListToolbar';
 import PageSizeSelector from '../../components/PageSizeSelector';
 import AgregarFiguritaModal from './components/AgregarFiguritaModal';
+import PublicarCantidadModal from './components/PublicarCantidadModal';
+import { useToast } from '../../components/toast/useToast';
 
 /**
  * Vista "Mis repetidas": sólo figuritas con count>1, paginadas y filtradas server-side.
@@ -23,17 +24,17 @@ import AgregarFiguritaModal from './components/AgregarFiguritaModal';
 export default function RepetidasPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const { filtros, page, setPage, params, pageSize, setPageSize, options } = useFiltrosServidor();
   const { data, isLoading, isError, refetch } = useRepetidasPaginadas(user?.username, params);
   const repetidas = data?.content ?? [];
   const [publishingId, setPublishingId] = useState<string | null>(null);
+  const [publishTarget, setPublishTarget] = useState<FiguritaResponseDTO | null>(null);
   const [showAdd, setShowAdd] = useState(false);
 
-  const handlePublishExchange = async (figurita: FiguritaResponseDTO) => {
-    if (!user) return;
-    const cantidad = askQuantity(figurita.count);
-    if (cantidad === null) return; // cancelado
-
+  const confirmPublish = async (cantidad: number) => {
+    if (!user || !publishTarget) return;
+    const figurita = publishTarget;
     setPublishingId(figurita.id);
     try {
       await api.post('/api/publicaciones', {
@@ -41,11 +42,12 @@ export default function RepetidasPage() {
         figuritaBaseId: figurita.figuritaBaseId,
         cantidad,
       });
-      alert(`¡${figurita.jugadorNombre} (x${cantidad}) publicada para intercambio!`);
+      toast.success(`¡${figurita.jugadorNombre} (x${cantidad}) publicada para intercambio!`);
+      setPublishTarget(null);
       await refetch(); // refresca counts y saca las copias publicadas
-    } catch (error: any) {
-      const msg = error.response?.data?.message || 'Error al publicar.';
-      alert(msg);
+    } catch (error: unknown) {
+      const msg = (error as { response?: { data?: { message?: string } } }).response?.data?.message;
+      toast.error(msg || 'Error al publicar.');
     } finally {
       setPublishingId(null);
     }
@@ -82,7 +84,7 @@ export default function RepetidasPage() {
                 equipoNombre={f.equipoNombre}
                 categoriaNombre={f.categoriaNombre}
                 imagenUrl={f.imagenUrl}
-                onPublishExchange={() => handlePublishExchange(f)}
+                onPublishExchange={() => setPublishTarget(f)}
                 onAuction={() => handleSubastaClick(f.id)}
                 isPublishing={publishingId === f.id}
                 canAuction={f.count > 1}
@@ -99,6 +101,15 @@ export default function RepetidasPage() {
           </GrillaFiguritas>
           <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
         </>
+      )}
+      {publishTarget && (
+        <PublicarCantidadModal
+          jugadorNombre={publishTarget.jugadorNombre}
+          max={publishTarget.count}
+          busy={publishingId === publishTarget.id}
+          onConfirm={confirmPublish}
+          onClose={() => setPublishTarget(null)}
+        />
       )}
       {showAdd && (
         <AgregarFiguritaModal

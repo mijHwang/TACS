@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import TodasPage from './TodasPage';
+import { ToastProvider } from '../../components/toast/ToastProvider';
 import type { FiltrosColeccion, FiguritaResponseDTO } from '../../hooks/useFiguritas';
 
 let lastParams: FiltrosColeccion | undefined;
@@ -26,7 +27,7 @@ describe('TodasPage', () => {
   beforeEach(() => { lastParams = undefined; hookMock.mockReset(); hookMock.mockReturnValue(pageData(0)); });
 
   it('renderiza la colección paginada con <Paginador>', () => {
-    render(<MemoryRouter><TodasPage /></MemoryRouter>);
+    render(<ToastProvider><MemoryRouter><TodasPage /></MemoryRouter></ToastProvider>);
     expect(screen.getByText('Messi')).toBeInTheDocument();
     expect(screen.getByText('Dibu')).toBeInTheDocument();
     expect(screen.getByLabelText('Página siguiente')).toBeInTheDocument();
@@ -34,7 +35,7 @@ describe('TodasPage', () => {
   });
 
   it('cambiar de página re-pide con page:1', () => {
-    render(<MemoryRouter><TodasPage /></MemoryRouter>);
+    render(<ToastProvider><MemoryRouter><TodasPage /></MemoryRouter></ToastProvider>);
     fireEvent.click(screen.getByLabelText('Página siguiente'));
     expect(lastParams?.page).toBe(1);
   });

@@ -12,11 +12,13 @@ import Paginador from '../../components/Paginador';
 import ListToolbar from '../../components/ListToolbar';
 import PageSizeSelector from '../../components/PageSizeSelector';
 import AgregarFiguritaModal from './components/AgregarFiguritaModal';
+import { useToast } from '../../components/toast/useToast';
 
 /** Vista "Mis faltantes": wishlist declarada por el usuario (las figuritas que marcó que le faltan). */
 export default function ColeccionFaltantesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const { page, setPage, params, pageSize, setPageSize, options } = useFiltrosServidor();
   const { data, isLoading, isError, refetch } = useFaltantesPaginadas(user?.username, params);
   const faltantes = data?.content ?? [];
@@ -28,7 +30,7 @@ export default function ColeccionFaltantesPage() {
       await api.delete(`/api/usuarios/${user.username}/faltantes/${baseId}`);
       await refetch();
     } catch {
-      alert('No se pudo quitar de faltantes.');
+      toast.error('No se pudo quitar de faltantes.');
     }
   };
 
