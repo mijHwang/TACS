@@ -54,8 +54,15 @@ export default function AgregarFiguritaModal({ mode, onClose, onDone }: Props) {
       }
       onDone();
     } catch (error: unknown) {
-      const resp = (error as { response?: { data?: { message?: string; error?: string } } }).response;
-      alert(resp?.data?.message || resp?.data?.error || 'No se pudo completar la acción.');
+      const resp = (error as { response?: { status?: number; data?: { message?: string } } }).response;
+      const st = resp?.status;
+      let detalle = resp?.data?.message;
+      if (!detalle) {
+        if (st === 409) detalle = mode === 'faltante' ? 'Ya tenés esta figurita.' : 'No se pudo actualizar la cantidad (conflicto).';
+        else if (st === 404) detalle = 'Figurita no encontrada.';
+        else if (st === 403) detalle = 'No tenés permiso para esta acción.';
+      }
+      alert(detalle || 'No se pudo completar la acción.');
     } finally {
       setBusyBaseId(null);
     }
