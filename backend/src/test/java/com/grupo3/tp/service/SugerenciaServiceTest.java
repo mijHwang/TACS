@@ -2,6 +2,7 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.dtos.SugerenciaResponseDTO;
 import com.grupo3.tp.models.*;
+import com.grupo3.tp.repository.FaltanteRepository;
 import com.grupo3.tp.repository.FiguritaRepository;
 import com.grupo3.tp.repository.SugerenciaRepository;
 import com.grupo3.tp.repository.UsuarioRepository;
@@ -28,6 +29,7 @@ public class SugerenciaServiceTest {
     @Mock private SugerenciaRepository sugerenciaRepository;
     @Mock private UsuarioRepository usuarioRepository;
     @Mock private FiguritaRepository figuritaRepository;
+    @Mock private FaltanteRepository faltanteRepository;
     @InjectMocks private SugerenciaService service;
 
     private Usuario juan;
@@ -63,6 +65,11 @@ public class SugerenciaServiceTest {
                 fig("f1", base1, juan), fig("f2", base1, juan),
                 fig("f3", base2, maria), fig("f4", base2, maria)
         ));
+        // wishlist declarada: juan quiere base-2, maria quiere base-1 (habilita el match bidireccional)
+        when(faltanteRepository.findAll()).thenReturn(List.of(
+                Faltante.builder().usuarioId("user-1").figuritaBaseId("base-2").build(),
+                Faltante.builder().usuarioId("user-2").figuritaBaseId("base-1").build()
+        ));
 
         service.regenerarTodas();
 
@@ -93,6 +100,7 @@ public class SugerenciaServiceTest {
                 fig("f1", base1, juan), fig("f2", base1, juan),
                 fig("f3", base1, maria)
         ));
+        when(faltanteRepository.findAll()).thenReturn(List.of());
 
         service.regenerarTodas();
 

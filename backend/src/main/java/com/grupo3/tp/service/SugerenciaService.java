@@ -2,9 +2,11 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.SugerenciaResponseDTO;
+import com.grupo3.tp.models.Faltante;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.Sugerencia;
 import com.grupo3.tp.models.Usuario;
+import com.grupo3.tp.repository.FaltanteRepository;
 import com.grupo3.tp.repository.FiguritaRepository;
 import com.grupo3.tp.repository.SugerenciaRepository;
 import com.grupo3.tp.repository.UsuarioRepository;
@@ -30,13 +32,16 @@ public class SugerenciaService {
     private final SugerenciaRepository sugerenciaRepository;
     private final UsuarioRepository usuarioRepository;
     private final FiguritaRepository figuritaRepository;
+    private final FaltanteRepository faltanteRepository;
 
     public SugerenciaService(SugerenciaRepository sugerenciaRepository,
                              UsuarioRepository usuarioRepository,
-                             FiguritaRepository figuritaRepository) {
+                             FiguritaRepository figuritaRepository,
+                             FaltanteRepository faltanteRepository) {
         this.sugerenciaRepository = sugerenciaRepository;
         this.usuarioRepository = usuarioRepository;
         this.figuritaRepository = figuritaRepository;
+        this.faltanteRepository = faltanteRepository;
     }
 
     /** Sugerencias persistidas del usuario, mapeadas a DTO. */
@@ -89,6 +94,14 @@ public class SugerenciaService {
             repetidas.put(e.getKey(), rep);
         }
 
+        // owner id -> set de baseIds que el usuario DECLARÓ que le faltan (wishlist)
+        Map<String, Set<String>> wishlist = new HashMap<>();
+        for (Faltante f : faltanteRepository.findAll()) {
+            if (f.getUsuarioId() != null && f.getFiguritaBaseId() != null) {
+                wishlist.computeIfAbsent(f.getUsuarioId(), k -> new HashSet<>()).add(f.getFiguritaBaseId());
+            }
+        }
+
         LocalDateTime ahora = LocalDateTime.now();
 
         for (Usuario u : usuarios) {
@@ -102,12 +115,16 @@ public class SugerenciaService {
                 }
                 Set<String> ownedV = basesPoseidas.getOrDefault(v.getId(), Set.of());
                 Map<String, FiguritaResponseDTO> repV = repetidas.getOrDefault(v.getId(), Map.of());
+                Set<String> wishU = wishlist.getOrDefault(u.getId(), Set.of());
+                Set<String> wishV = wishlist.getOrDefault(v.getId(), Set.of());
 
+                // U recibe repetidas de V que U declaró querer (y que U no posea, defensivo).
                 List<FiguritaResponseDTO> aRecibir = repV.entrySet().stream()
-                        .filter(en -> !ownedU.contains(en.getKey()))
+                        .filter(en -> wishU.contains(en.getKey()) && !ownedU.contains(en.getKey()))
                         .map(Map.Entry::getValue).toList();
+                // U ofrece sus repetidas que V declaró querer.
                 List<FiguritaResponseDTO> aOfrecer = repU.entrySet().stream()
-                        .filter(en -> !ownedV.contains(en.getKey()))
+                        .filter(en -> wishV.contains(en.getKey()) && !ownedV.contains(en.getKey()))
                         .map(Map.Entry::getValue).toList();
 
                 if (!aRecibir.isEmpty() && !aOfrecer.isEmpty()) {

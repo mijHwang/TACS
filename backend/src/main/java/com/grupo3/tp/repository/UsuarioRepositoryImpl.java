@@ -1,6 +1,6 @@
 package com.grupo3.tp.repository;
 
-import com.grupo3.tp.models.Figurita;
+import com.grupo3.tp.models.Faltante;
 import com.grupo3.tp.models.Usuario;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,18 +19,17 @@ public class UsuarioRepositoryImpl implements UsuarioRepositoryCustom {
 
     @Override
     public List<Usuario> findUsuariosQueLesFaltaFigurita(String figuritaBaseId) {
-        // Owners que YA tienen al menos una figurita de esa base (mismo patrón que
-        // FiguritaBaseRepositoryCustomImpl#findFaltantesPaged, pero invertido). En la
-        // colección "figuritas", tanto owner como figuritaBase se guardan como ObjectId.
-        List<ObjectId> ownersConLaBase = mongoTemplate.findDistinct(
-                Query.query(Criteria.where("figuritaBase").is(new ObjectId(figuritaBaseId))),
-                "owner", "figuritas", Figurita.class, ObjectId.class);
+        // Usuarios que DECLARARON esta base en su wishlist (colección "faltantes").
+        // Faltante guarda figuritaBaseId y usuarioId como String.
+        List<String> usuarioIds = mongoTemplate.findDistinct(
+                Query.query(Criteria.where("figuritaBaseId").is(figuritaBaseId)),
+                "usuarioId", "faltantes", Faltante.class, String.class);
 
-        // Usuarios cuyo _id NO está en ese set → les falta la figurita.
-        Query query = new Query();
-        if (!ownersConLaBase.isEmpty()) {
-            query.addCriteria(Criteria.where("_id").nin(ownersConLaBase));
+        if (usuarioIds.isEmpty()) {
+            return List.of();
         }
-        return mongoTemplate.find(query, Usuario.class);
+        List<ObjectId> objectIds = usuarioIds.stream().map(ObjectId::new).toList();
+        return mongoTemplate.find(
+                Query.query(Criteria.where("_id").in(objectIds)), Usuario.class);
     }
 }
