@@ -61,4 +61,19 @@ public class SubastaServiceCancelTest {
         verify(repository, never()).save(any());
         verify(notificacionService, never()).crear(any());
     }
+
+    @Test
+    public void mapToDTOToleraFiguritaBorrada() {
+        // Una subasta CANCELADA por la cascada queda con la figurita borrada (ref colgante):
+        // el mapeo NO debe tirar y debe rendir con placeholders para no romper el listado.
+        Usuario duenio = Usuario.builder().id("user-1").username("juan").build();
+        Subasta subasta = Subasta.builder().id("sub-1").usuario(duenio)
+                .figurita(null).estado(EstadoSubasta.CANCELADA).build();
+
+        com.grupo3.tp.dtos.SubastaResponseDTO dto = service.mapToDTO(subasta);
+
+        assertEquals(EstadoSubasta.CANCELADA, dto.getEstado());
+        assertEquals("juan", dto.getUsuarioUsername());
+        assertEquals("(figurita no disponible)", dto.getFiguritaJugadorNombre());
+    }
 }

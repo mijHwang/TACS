@@ -1,5 +1,6 @@
 package com.grupo3.tp.configs;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.http.HttpMethod;
 import com.grupo3.tp.utils.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,9 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // Permite el dispatch interno a /error (si no, un ResponseStatusException
+                        // 4xx queda enmascarado como 403 con body vacío). Fix estándar de Spring Security.
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
                         .anyRequest().authenticated()

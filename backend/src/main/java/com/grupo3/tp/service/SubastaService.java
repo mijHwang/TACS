@@ -388,31 +388,49 @@ public class SubastaService {
         if (s == null) {
             throw new RuntimeException("Subasta cannot be null");
         }
-        if (s.getFigurita() == null || s.getFigurita().getFiguritaBase() == null) {
-            throw new RuntimeException("Subasta must have valid Figurita and FiguritaBase");
-        }
         if (s.getUsuario() == null) {
             throw new RuntimeException("Subasta must have valid Usuario");
         }
 
-        // 1. Calculate dynamic business data on the fly
+        // La figurita puede haber sido borrada (p. ej. subasta CANCELADA por la cascada de
+        // colección): su @DocumentReference queda colgante. Resolvemos sus datos de forma
+        // defensiva para no romper la serialización ni el listado de subastas.
+        String figuritaId = null;
+        int figuritaNumero = 0;
+        String jugador = "(figurita no disponible)";
+        String seleccion = "";
+        String equipo = "";
+        String categoria = "";
+        try {
+            Figurita fig = s.getFigurita();
+            if (fig != null) {
+                figuritaId = fig.getId();
+                FiguritaBase base = fig.getFiguritaBase();
+                if (base != null) {
+                    figuritaNumero = base.getNumero() != null ? base.getNumero() : 0;
+                    if (base.getJugador() != null) jugador = base.getJugador().getNombre();
+                    if (base.getSeleccion() != null) seleccion = base.getSeleccion().getNombre();
+                    if (base.getEquipo() != null) equipo = base.getEquipo().getNombre();
+                    if (base.getCategoria() != null) categoria = base.getCategoria().getNombre();
+                }
+            }
+        } catch (Exception e) {
+            // referencia colgante (figurita borrada) — se dejan los placeholders
+        }
+
+        // Datos dinámicos (ofertas válidas / líder actual)
         List<Oferta> ofertasValidas = filtrarOfertasValidas(s);
         Oferta ganadoraActual = null;
-
         if (ofertasValidas != null && !ofertasValidas.isEmpty()) {
             ganadoraActual = ofertasValidas.stream()
                     .max(comparadorGanador(s.getCondiciones()))
                     .orElse(null);
         }
 
-        // 2. Extract processed presentation fields
         String liderId = (ganadoraActual != null && ganadoraActual.getUsuario() != null)
-                ? ganadoraActual.getUsuario().getId()
-                : null;
-
+                ? ganadoraActual.getUsuario().getId() : null;
         String liderUsername = (ganadoraActual != null && ganadoraActual.getUsuario() != null)
-                ? ganadoraActual.getUsuario().getUsername()
-                : "Nadie";
+                ? ganadoraActual.getUsuario().getUsername() : "Nadie";
 
         List<String> liderFiguritas = new ArrayList<>();
         if (ganadoraActual != null && ganadoraActual.getFiguritas() != null) {
@@ -424,31 +442,16 @@ public class SubastaService {
 
         int cantidadOfertasActivas = (ofertasValidas != null) ? ofertasValidas.size() : 0;
 
-        // 3. Delegate to the pure mapper to assemble the DTO object
-        return buildPureSubastaResponseDTO(s, cantidadOfertasActivas, liderId, liderUsername, liderFiguritas);
-    }
-
-    /**
-     * Pure Mapper: A completely "dumb" data copier.
-     * Zero logic, zero evaluations—just mapping variables straight to fields.
-     */
-    private SubastaResponseDTO buildPureSubastaResponseDTO(
-            Subasta s,
-            int cantidadOfertasActivas,
-            String liderId,
-            String liderUsername,
-            List<String> liderFiguritas) {
-
         return new SubastaResponseDTO(
                 s.getId(),
                 s.getUsuario().getId(),
                 s.getUsuario().getUsername(),
-                s.getFigurita().getId(),
-                s.getFigurita().getFiguritaBase().getNumero(),
-                s.getFigurita().getFiguritaBase().getJugador().getNombre(),
-                s.getFigurita().getFiguritaBase().getSeleccion().getNombre(),
-                s.getFigurita().getFiguritaBase().getEquipo().getNombre(),
-                s.getFigurita().getFiguritaBase().getCategoria().getNombre(),
+                figuritaId,
+                figuritaNumero,
+                jugador,
+                seleccion,
+                equipo,
+                categoria,
                 s.getEstado(),
                 s.getDuracion(),
                 s.getHoraInicio(),
