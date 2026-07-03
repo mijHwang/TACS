@@ -15,6 +15,9 @@ public interface SubastaRepositoryCustom {
     List<Subasta> findByParticipating(String usuarioId);
     public List<Subasta> findByEstadoAndHoraFinBefore(EstadoSubasta estado, LocalDateTime ahora);
 
+    /** Subastas activas (PENDIENTE/EN_CURSO) cuya figurita es la dada. Para la cascada de liberación. */
+    List<Subasta> findByFiguritaId(String figuritaId);
+
     // Paginated variants. `estado` is optional: when null no estado filter is applied.
     Page<Subasta> findAllPaged(EstadoSubasta estado, Pageable pageable);
     Page<Subasta> findByUsuarioIdPaged(String usuarioId, Pageable pageable);

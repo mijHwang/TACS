@@ -7,6 +7,9 @@ import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.FaltanteRepository;
+import com.grupo3.tp.repository.FiguritaPublicadaRepository;
+import com.grupo3.tp.repository.SolicitudDeIntercambioRepository;
+import com.grupo3.tp.repository.SubastaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,15 +32,33 @@ public class ColeccionService {
     private final FiguritaBaseService figuritaBaseService;
     private final UsuarioService usuarioService;
     private final FaltanteRepository faltanteRepository;
+    private final FiguritaPublicadaService publicadaService;
+    private final SubastaService subastaService;
+    private final SolicitudDeIntercambioService solicitudService;
+    private final FiguritaPublicadaRepository publicadaRepository;
+    private final SubastaRepository subastaRepository;
+    private final SolicitudDeIntercambioRepository solicitudRepository;
 
     public ColeccionService(FiguritaService figuritaService,
                             FiguritaBaseService figuritaBaseService,
                             UsuarioService usuarioService,
-                            FaltanteRepository faltanteRepository) {
+                            FaltanteRepository faltanteRepository,
+                            FiguritaPublicadaService publicadaService,
+                            SubastaService subastaService,
+                            SolicitudDeIntercambioService solicitudService,
+                            FiguritaPublicadaRepository publicadaRepository,
+                            SubastaRepository subastaRepository,
+                            SolicitudDeIntercambioRepository solicitudRepository) {
         this.figuritaService = figuritaService;
         this.figuritaBaseService = figuritaBaseService;
         this.usuarioService = usuarioService;
         this.faltanteRepository = faltanteRepository;
+        this.publicadaService = publicadaService;
+        this.subastaService = subastaService;
+        this.solicitudService = solicitudService;
+        this.publicadaRepository = publicadaRepository;
+        this.subastaRepository = subastaRepository;
+        this.solicitudRepository = solicitudRepository;
     }
 
     /** Copias de {@code baseId} que posee el usuario. */
@@ -64,9 +86,11 @@ public class ColeccionService {
                 figuritaService.crear(Figurita.builder().figuritaBase(base).owner(usuario).build());
             }
         } else if (cantidad < current) {
-            // FASE B reemplaza esto por la cascada de liberación.
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Reducir la cantidad todavía no está disponible");
+            int need = current - cantidad;
+            List<Figurita> ordenadas = ordenarPorMenorCompromiso(mias);
+            for (int i = 0; i < need; i++) {
+                liberarFigurita(ordenadas.get(i).getId());
+            }
         }
 
         String repId = mias.isEmpty() ? null : mias.get(0).getId();
@@ -118,5 +142,27 @@ public class ColeccionService {
                             b.getSeleccion().getNombre(), b.getEquipo().getNombre(),
                             b.getCategoria().getNombre(), b.getImagenUrl());
                 });
+    }
+
+    /** true si la copia está en alguna publicación, subasta activa o propuesta pendiente. */
+    private boolean estaComprometida(String figuritaId) {
+        return !publicadaRepository.findByFiguritaId(figuritaId).isEmpty()
+                || !subastaRepository.findByFiguritaId(figuritaId).isEmpty()
+                || !solicitudRepository.findPendientesByFiguritaId(figuritaId).isEmpty();
+    }
+
+    /** Ordena las copias dejando primero las no comprometidas (menor disrupción al liberar). */
+    private List<Figurita> ordenarPorMenorCompromiso(List<Figurita> copias) {
+        return copias.stream()
+                .sorted(Comparator.comparing(f -> estaComprometida(f.getId())))
+                .toList();
+    }
+
+    /** Desarma todos los compromisos de una copia (publicación/subasta/propuesta) y la borra. */
+    public void liberarFigurita(String figuritaId) {
+        publicadaService.removeFiguritaFromPublications(figuritaId);
+        subastaService.cancelarPorFigurita(figuritaId);
+        solicitudService.cancelarPorFigurita(figuritaId);
+        figuritaService.eliminar(figuritaId);
     }
 }

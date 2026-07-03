@@ -80,6 +80,19 @@ public class SolicitudDeIntercambioRepositoryImpl implements SolicitudDeIntercam
         return mongoTemplate.find(query, SolicitudDeIntercambio.class);
     }
 
+    @Override
+    public List<SolicitudDeIntercambio> findPendientesByFiguritaId(String figuritaId) {
+        ObjectId oid = new ObjectId(figuritaId);
+        Criteria criteria = new Criteria().andOperator(
+                Criteria.where("estado").is(SolicitudDeIntercambio.EstadoSolicitud.PENDIENTE),
+                new Criteria().orOperator(
+                        Criteria.where("figurita").is(oid),
+                        Criteria.where("figuritasOfrecidas").is(oid)
+                )
+        );
+        return mongoTemplate.find(Query.query(criteria), SolicitudDeIntercambio.class);
+    }
+
     /** Resuelve los _id (ObjectId) de las figuritas cuyo owner es usuarioId. */
     private List<ObjectId> figuritaIdsDeOwner(String usuarioId) {
         Query figuritasQuery = Query.query(Criteria.where("owner").is(new ObjectId(usuarioId)));

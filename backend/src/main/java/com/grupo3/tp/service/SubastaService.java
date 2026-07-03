@@ -224,6 +224,36 @@ public class SubastaService {
                 );
     }
 
+    /** Cancela (soft) las subastas activas cuya figurita es la dada y avisa a los ofertantes. */
+    public void cancelarPorFigurita(String figuritaId) {
+        for (Subasta subasta : repository.findByFiguritaId(figuritaId)) {
+            subasta.setEstado(EstadoSubasta.CANCELADA);
+            repository.save(subasta);
+
+            String jugador = subasta.getFigurita() != null
+                    && subasta.getFigurita().getFiguritaBase() != null
+                    && subasta.getFigurita().getFiguritaBase().getJugador() != null
+                    ? subasta.getFigurita().getFiguritaBase().getJugador().getNombre() : "la figurita";
+
+            if (subasta.getOfertas() != null) {
+                subasta.getOfertas().stream()
+                        .map(Oferta::getUsuario)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toMap(Usuario::getId, u -> u, (a, b) -> a))
+                        .values()
+                        .forEach(u -> notificacionService.crear(Notificacion.builder()
+                                .usuario(u)
+                                .tipo("subasta")
+                                .titulo("Subasta cancelada")
+                                .mensaje("La subasta de " + jugador + " fue cancelada porque la figurita ya no está disponible")
+                                .enlace("/subastas/" + subasta.getId())
+                                .leida(false)
+                                .fecha(LocalDateTime.now())
+                                .build()));
+            }
+        }
+    }
+
     public Optional<Subasta> actualizar(String id, Subasta subasta) {
         if (!repository.existsById(id)) {
             return Optional.empty();

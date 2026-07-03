@@ -193,6 +193,30 @@ public class SolicitudDeIntercambioService {
         return solicitud;
     }
 
+    /** Cancela (soft) las solicitudes PENDIENTES que referencian la figurita y avisa a la contraparte. */
+    public void cancelarPorFigurita(String figuritaId) {
+        for (SolicitudDeIntercambio sol : repository.findPendientesByFiguritaId(figuritaId)) {
+            sol.setEstado(SolicitudDeIntercambio.EstadoSolicitud.CANCELADO);
+            repository.save(sol);
 
+            boolean eraPedida = sol.getFigurita() != null && figuritaId.equals(sol.getFigurita().getId());
+            Usuario destinatario = eraPedida
+                    ? sol.getUsuario()
+                    : (sol.getFigurita() != null ? sol.getFigurita().getOwner() : null);
+            String enlace = eraPedida ? "/propuestas/enviadas" : "/propuestas/recibidas";
+
+            if (destinatario != null) {
+                notificacionService.crear(Notificacion.builder()
+                        .usuario(destinatario)
+                        .tipo("propuesta")
+                        .titulo("Propuesta cancelada")
+                        .mensaje("Una propuesta fue cancelada porque una figurita ya no está disponible")
+                        .enlace(enlace)
+                        .leida(false)
+                        .fecha(LocalDateTime.now())
+                        .build());
+            }
+        }
+    }
 
 }

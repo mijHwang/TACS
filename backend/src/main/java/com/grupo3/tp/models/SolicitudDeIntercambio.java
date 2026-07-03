@@ -20,7 +20,8 @@ public class SolicitudDeIntercambio {
     public enum EstadoSolicitud {
         PENDIENTE,
         ACEPTADO,
-        RECHAZADO
+        RECHAZADO,
+        CANCELADO
     }
 
     @Id

@@ -47,6 +47,15 @@ public class SubastaRepositoryImpl implements SubastaRepositoryCustom {
     }
 
     @Override
+    public List<Subasta> findByFiguritaId(String figuritaId) {
+        return mongoTemplate.find(
+                Query.query(Criteria.where("figurita").is(new ObjectId(figuritaId))
+                        .and("estado").in(EstadoSubasta.PENDIENTE, EstadoSubasta.EN_CURSO)),
+                Subasta.class
+        );
+    }
+
+    @Override
     public Page<Subasta> findAllPaged(EstadoSubasta estado, Pageable pageable) {
         Query query = new Query();
         if (estado != null) {

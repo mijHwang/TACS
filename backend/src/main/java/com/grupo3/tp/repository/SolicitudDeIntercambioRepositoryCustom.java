@@ -14,4 +14,7 @@ public interface SolicitudDeIntercambioRepositoryCustom {
     Page<SolicitudDeIntercambio> findByUsuarioId(String usuarioId, Pageable pageable);
 
     List<SolicitudDeIntercambio> findByFiguritaIds(List<String> figuritaIds);
+
+    /** Solicitudes PENDIENTES que referencian la figurita (como pedida o como ofrecida). Para la cascada. */
+    List<SolicitudDeIntercambio> findPendientesByFiguritaId(String figuritaId);
 }

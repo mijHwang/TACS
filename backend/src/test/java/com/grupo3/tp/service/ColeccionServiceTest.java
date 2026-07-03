@@ -28,6 +28,12 @@ public class ColeccionServiceTest {
     @Mock private FiguritaBaseService figuritaBaseService;
     @Mock private UsuarioService usuarioService;
     @Mock private FaltanteRepository faltanteRepository;
+    @Mock private FiguritaPublicadaService publicadaService;
+    @Mock private SubastaService subastaService;
+    @Mock private SolicitudDeIntercambioService solicitudService;
+    @Mock private com.grupo3.tp.repository.FiguritaPublicadaRepository publicadaRepository;
+    @Mock private com.grupo3.tp.repository.SubastaRepository subastaRepository;
+    @Mock private com.grupo3.tp.repository.SolicitudDeIntercambioRepository solicitudRepository;
 
     private ColeccionService service;
 
@@ -40,7 +46,9 @@ public class ColeccionServiceTest {
 
     @BeforeEach
     public void setUp() {
-        service = new ColeccionService(figuritaService, figuritaBaseService, usuarioService, faltanteRepository);
+        service = new ColeccionService(figuritaService, figuritaBaseService, usuarioService, faltanteRepository,
+                publicadaService, subastaService, solicitudService,
+                publicadaRepository, subastaRepository, solicitudRepository);
         juan = Usuario.builder().id("user-1").username("juan").build();
         base1 = FiguritaBase.builder().id("base-1").numero(1)
                 .seleccion(new Seleccion("sel-1", "Argentina", "ARG"))
@@ -82,14 +90,25 @@ public class ColeccionServiceTest {
     }
 
     @Test
-    public void setCantidadMenorLanza409EnFaseA() {
+    public void setCantidadMenorLiberaLasCopiasSobrantesNoComprometidasPrimero() {
+        Figurita comprometida = fig("f-comprometida", base1, juan);
+        Figurita libre = fig("f-libre", base1, juan);
         when(usuarioService.loadUserByUsername("juan")).thenReturn(juan);
         when(figuritaBaseService.obtenerPorId("base-1")).thenReturn(Optional.of(base1));
         when(figuritaService.obtenerTodasInternaPorUserId("user-1"))
-                .thenReturn(List.of(fig("f1", base1, juan), fig("f2", base1, juan)));
+                .thenReturn(List.of(comprometida, libre)); // current = 2
+        // "comprometida" está en una subasta; "libre" no está en ningún lado.
+        when(subastaRepository.findByFiguritaId("f-comprometida"))
+                .thenReturn(List.of(Subasta.builder().id("s").build()));
+        when(publicadaRepository.findByFiguritaId(any())).thenReturn(List.of());
+        when(subastaRepository.findByFiguritaId("f-libre")).thenReturn(List.of());
+        when(solicitudRepository.findPendientesByFiguritaId(any())).thenReturn(List.of());
 
-        assertThrows(ResponseStatusException.class,
-                () -> service.setCantidad("juan", "base-1", 1));
+        service.setCantidad("juan", "base-1", 1); // baja de 2 a 1 => libera 1
+
+        // Debe liberar primero la copia libre.
+        verify(figuritaService).eliminar("f-libre");
+        verify(figuritaService, never()).eliminar("f-comprometida");
     }
 
     @Test
