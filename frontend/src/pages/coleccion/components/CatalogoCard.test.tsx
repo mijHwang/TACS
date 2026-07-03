@@ -10,17 +10,18 @@ const base: FiguritaBaseDTO = {
 };
 
 describe('CatalogoCard', () => {
-  it('poseida: muestra "Tenés N" y selecciona al click', () => {
+  it('poseida: muestra el chip "×N" y selecciona al click', () => {
     const onSelect = vi.fn();
     render(<CatalogoCard base={base} mode="poseida" owned={2} onSelect={onSelect} />);
-    expect(screen.getByText('Tenés 2')).toBeInTheDocument();
+    expect(screen.getByText('×2')).toBeInTheDocument();
+    expect(screen.getByLabelText('Tenés 2')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('catalogo-card'));
     expect(onSelect).toHaveBeenCalledOnce();
   });
 
-  it('poseida: muestra "No la tenés" cuando owned=0', () => {
+  it('poseida: muestra "Nueva" cuando owned=0', () => {
     render(<CatalogoCard base={base} mode="poseida" owned={0} onSelect={() => {}} />);
-    expect(screen.getByText('No la tenés')).toBeInTheDocument();
+    expect(screen.getByText('Nueva')).toBeInTheDocument();
   });
 
   it('faltante: agregable dispara onAdd', () => {

@@ -53,7 +53,7 @@ describe('AgregarFiguritaModal', () => {
     putMock.mockResolvedValueOnce({ data: {} });
     ui(<AgregarFiguritaModal mode="poseida" onClose={() => {}} onDone={() => {}} />);
 
-    await waitFor(() => expect(screen.getByText('Tenés 2')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('×2')).toBeInTheDocument());
     fireEvent.click(screen.getByTestId('catalogo-card'));
     fireEvent.click(screen.getByLabelText('Sumar una copia'));
     fireEvent.click(screen.getByRole('button', { name: 'Guardar' }));
