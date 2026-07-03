@@ -1,7 +1,6 @@
 package com.grupo3.tp.controller;
 
 import com.grupo3.tp.dtos.CatalogoFiltro;
-import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.PagedResponse;
 import com.grupo3.tp.dtos.SugerenciaResponseDTO;
@@ -96,23 +95,6 @@ public class UsuarioController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
-    }
-
-    /** Faltantes del usuario (bases que no tiene), paginadas y filtradas server-side. */
-    @GetMapping("/{userName}/figuritas/faltantes")
-    public ResponseEntity<PagedResponse<FiguritaBaseDTO>> getFaltantes(
-            @PathVariable String userName,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String seleccion,
-            @RequestParam(required = false) String equipo,
-            @RequestParam(required = false) String categoria,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Usuario usuario = service.loadUserByUsername(userName);
-        CatalogoFiltro filtro = new CatalogoFiltro(usuario.getId(), null, null, search, seleccion, equipo, categoria);
-        // Tope 2000 (como /figuritas) para que el dashboard pueda traer el álbum completo y contar exacto.
-        PageRequest pageable = PageRequest.of(page, Math.min(size, 2000));
-        return ResponseEntity.ok(PagedResponse.from(figuritaService.obtenerFaltantesPaginado(filtro, pageable)));
     }
 
     /** Repetidas del usuario (count &gt; 1), paginadas y filtradas server-side. */
