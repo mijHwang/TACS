@@ -11,6 +11,7 @@ import GrillaFiguritas from './components/GrillaFiguritas';
 import Paginador from '../../components/Paginador';
 import ListToolbar from '../../components/ListToolbar';
 import PageSizeSelector from '../../components/PageSizeSelector';
+import AgregarFiguritaModal from './components/AgregarFiguritaModal';
 
 /**
  * Vista "Todas": la colección del usuario, agrupada, paginada y filtrada server-side.
@@ -23,6 +24,7 @@ export default function TodasPage() {
   const { data, isLoading, refetch } = useFiguritasPaginadas(user?.username, params);
   const figuritas = data?.content ?? [];
   const [publishingId, setPublishingId] = useState<string | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
 
   const handlePublishExchange = async (figurita: FiguritaResponseDTO) => {
     if (!user) return;
@@ -58,6 +60,12 @@ export default function TodasPage() {
       ) : (
         <>
           <ListToolbar total={data?.totalElements ?? 0}>
+            <button
+              onClick={() => setShowAdd(true)}
+              className="px-3 py-1.5 rounded-md text-sm font-semibold bg-primary/15 text-primary border border-primary/40 hover:bg-primary/25 transition-colors"
+            >
+              + Agregar Figurita
+            </button>
             <PageSizeSelector value={pageSize} options={options} onChange={(n) => setPageSize(n)} />
           </ListToolbar>
           <GrillaFiguritas isEmpty={figuritas.length === 0} emptyMessage="No tienes figuritas aún">
@@ -83,6 +91,13 @@ export default function TodasPage() {
           </GrillaFiguritas>
           <Paginador page={page} totalPages={data?.totalPages ?? 1} onChange={setPage} />
         </>
+      )}
+      {showAdd && (
+        <AgregarFiguritaModal
+          mode="poseida"
+          onClose={() => setShowAdd(false)}
+          onDone={() => refetch()}
+        />
       )}
     </>
   );

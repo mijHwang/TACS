@@ -11,6 +11,8 @@ interface TarjetaColeccionProps {
   footer?: ReactNode;
   /** Si se provee (y no hay acciones), la tarjeta es clickeable y dispara este handler. */
   onClick?: () => void;
+  /** Si se provee, muestra un botón "Quitar" (para faltantes/wishlist). */
+  onRemove?: () => void;
   // Acciones (happy path): si se proveen, el click expande los botones en vez de disparar onClick.
   onPublishExchange?: () => void;
   onAuction?: () => void;
@@ -26,7 +28,7 @@ interface TarjetaColeccionProps {
  *  - `onPublishExchange`/`onAuction`: el click expande los botones de acción (happy path).
  */
 export default function TarjetaColeccion({
-  seleccionNombre, jugadorNombre, equipoNombre, categoriaNombre, imagenUrl, footer, onClick,
+  seleccionNombre, jugadorNombre, equipoNombre, categoriaNombre, imagenUrl, footer, onClick, onRemove,
   onPublishExchange, onAuction, canAuction, isPublishing,
 }: TarjetaColeccionProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -67,7 +69,19 @@ export default function TarjetaColeccion({
       <p className="text-xs text-text mb-2">{equipoNombre}</p>
       <p className="text-xs text-muted mb-3">{categoriaNombre}</p>
 
-      {footer && <div className="mt-auto mb-3">{footer}</div>}
+      {(footer || onRemove) && (
+        <div className="mt-auto mb-3 flex items-center justify-between gap-2">
+          <span>{footer}</span>
+          {onRemove && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onRemove(); }}
+              className="text-xs px-2 py-1 rounded border border-border text-muted hover:text-red-500 hover:border-red-500 transition-colors"
+            >
+              Quitar
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Botones de acción (visibles al expandir) */}
       {isExpanded && hasActions && (

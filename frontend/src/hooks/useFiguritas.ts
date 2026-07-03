@@ -73,7 +73,7 @@ export function useRepetidasPaginadas(username: string | undefined, p: FiltrosCo
   });
 }
 
-/** Figuritas que el usuario no tiene, paginadas y filtradas server-side. */
+/** Wishlist declarada del usuario (faltantes que marcó), paginada. */
 export function useFaltantesPaginadas(username: string | undefined, p: FiltrosColeccion) {
   return useQuery({
     queryKey: ['figuritas', 'faltantes', 'pag', username, p],
