@@ -189,4 +189,18 @@ public class FiguritaService {
     public Page<FiguritaBaseDTO> buscarBasesPaginado(String search, Pageable pageable) {
         return figuritaBaseRepository.searchPaged(search, pageable);
     }
+
+    /**
+     * Maestro paginado para el modal de "agregar figurita".
+     * Sin {@code excludeOwnedBy}: maestro completo (todas las bases). Con {@code excludeOwnedBy}:
+     * maestro MENOS las bases que ese usuario ya posee (reusa {@code findFaltantesPaged}).
+     * En ambos casos la búsqueda matchea jugador/selección/número.
+     */
+    public Page<FiguritaBaseDTO> buscarMaestroPaginado(String search, String excludeOwnedBy, Pageable pageable) {
+        if (excludeOwnedBy == null || excludeOwnedBy.isBlank()) {
+            return figuritaBaseRepository.searchPaged(search, pageable);
+        }
+        CatalogoFiltro filtro = new CatalogoFiltro(excludeOwnedBy, null, null, search, null, null, null);
+        return figuritaBaseRepository.findFaltantesPaged(filtro, pageable);
+    }
 }

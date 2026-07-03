@@ -44,24 +44,36 @@ public class FiguritaBaseRepositoryCustomImpl implements FiguritaBaseRepositoryC
         if (!owned.isEmpty()) {
             filtros.add(Criteria.where("_id").nin(owned));
         }
-        addNombreFilters(filtros, filtro);
+        Criteria or = searchOrCriteria(filtro.search());
+        if (or != null) {
+            filtros.add(or);
+        }
         return aggregate(filtros, pageable);
     }
 
     @Override
     public Page<FiguritaBaseDTO> searchPaged(String search, Pageable pageable) {
         List<Criteria> filtros = new ArrayList<>();
-        if (StringUtils.hasText(search)) {
-            List<Criteria> or = new ArrayList<>();
-            or.add(Criteria.where("jug.nombre").regex(containsIgnoreCase(search)));
-            or.add(Criteria.where("sel.nombre").regex(containsIgnoreCase(search)));
-            Integer numero = tryParseInt(search);
-            if (numero != null) {
-                or.add(Criteria.where("numero").is(numero));
-            }
-            filtros.add(new Criteria().orOperator(or.toArray(new Criteria[0])));
+        Criteria or = searchOrCriteria(search);
+        if (or != null) {
+            filtros.add(or);
         }
         return aggregate(filtros, pageable);
+    }
+
+    /** OR de búsqueda por jugador / selección / número (compartido por maestro y maestro-menos-poseídas). */
+    private static Criteria searchOrCriteria(String search) {
+        if (!StringUtils.hasText(search)) {
+            return null;
+        }
+        List<Criteria> or = new ArrayList<>();
+        or.add(Criteria.where("jug.nombre").regex(containsIgnoreCase(search)));
+        or.add(Criteria.where("sel.nombre").regex(containsIgnoreCase(search)));
+        Integer numero = tryParseInt(search);
+        if (numero != null) {
+            or.add(Criteria.where("numero").is(numero));
+        }
+        return new Criteria().orOperator(or.toArray(new Criteria[0]));
     }
 
     /**
@@ -105,24 +117,6 @@ public class FiguritaBaseRepositoryCustomImpl implements FiguritaBaseRepositoryC
         long total = totalFrom(countRes);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
-    }
-
-    private void addNombreFilters(List<Criteria> filtros, CatalogoFiltro filtro) {
-        if (filtro.numero() != null) {
-            filtros.add(Criteria.where("numero").is(filtro.numero()));
-        }
-        if (StringUtils.hasText(filtro.search())) {
-            filtros.add(Criteria.where("jug.nombre").regex(containsIgnoreCase(filtro.search())));
-        }
-        if (StringUtils.hasText(filtro.seleccion())) {
-            filtros.add(Criteria.where("sel.nombre").regex(containsIgnoreCase(filtro.seleccion())));
-        }
-        if (StringUtils.hasText(filtro.equipo())) {
-            filtros.add(Criteria.where("eq.nombre").regex(containsIgnoreCase(filtro.equipo())));
-        }
-        if (StringUtils.hasText(filtro.categoria())) {
-            filtros.add(Criteria.where("cat.nombre").regex(containsIgnoreCase(filtro.categoria())));
-        }
     }
 
     private static Integer tryParseInt(String s) {

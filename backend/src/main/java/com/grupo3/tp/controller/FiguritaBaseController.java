@@ -49,10 +49,12 @@ public class FiguritaBaseController {
     @GetMapping("/search")
     public ResponseEntity<PagedResponse<FiguritaBaseDTO>> search(
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) String excludeOwnedBy,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         PageRequest pageable = PageRequest.of(page, Math.min(size, 100));
-        return ResponseEntity.ok(PagedResponse.from(figuritaService.buscarBasesPaginado(search, pageable)));
+        return ResponseEntity.ok(PagedResponse.from(
+                figuritaService.buscarMaestroPaginado(search, excludeOwnedBy, pageable)));
     }
 
     @GetMapping("/{id}")

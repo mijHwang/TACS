@@ -127,4 +127,33 @@ public class FiguritaServicePaginadoTest {
         verify(figuritaBaseRepository).searchPaged(sc.capture(), eq(pageable));
         assertEquals("messi", sc.getValue());
     }
+
+    @Test
+    public void maestroSinExcludeUsaSearchPaged() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(figuritaBaseRepository.searchPaged(any(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(sampleBase()), pageable, 1));
+
+        Page<FiguritaBaseDTO> res = service.buscarMaestroPaginado("messi", null, pageable);
+
+        assertEquals(1, res.getTotalElements());
+        ArgumentCaptor<String> sc = ArgumentCaptor.forClass(String.class);
+        verify(figuritaBaseRepository).searchPaged(sc.capture(), eq(pageable));
+        assertEquals("messi", sc.getValue());
+    }
+
+    @Test
+    public void maestroConExcludeUsaFaltantesPagedConSearch() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(figuritaBaseRepository.findFaltantesPaged(any(CatalogoFiltro.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(sampleBase()), pageable, 1));
+
+        Page<FiguritaBaseDTO> res = service.buscarMaestroPaginado("mes", "owner-1", pageable);
+
+        assertEquals(1, res.getTotalElements());
+        ArgumentCaptor<CatalogoFiltro> fc = ArgumentCaptor.forClass(CatalogoFiltro.class);
+        verify(figuritaBaseRepository).findFaltantesPaged(fc.capture(), eq(pageable));
+        assertEquals("owner-1", fc.getValue().usuarioId());
+        assertEquals("mes", fc.getValue().search());
+    }
 }
