@@ -11,7 +11,7 @@ interface SubastaResponseDTO {
   figuritaSeleccionNombre: string;
   figuritaEquipoNombre: string;
   figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
+  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA' | 'CANCELADA';
   duracion: number;
   horaInicio: string;
   horaFin: string;
@@ -35,6 +35,7 @@ const statusStyle: Record<string, { border: string; bg: string }> = {
   'EN_CURSO': { border: `${RED}30`, bg: 'white' },
   'PENDIENTE': { border: `${RED}30`, bg: 'white' },
   'FINALIZADA': { border: '#e5e7eb', bg: '#f9fafb' },
+  'CANCELADA': { border: '#e5e7eb', bg: '#f9fafb' },
 };
 
 export default function AuctionCard({ auction, onViewDetail }: AuctionCardProps) {

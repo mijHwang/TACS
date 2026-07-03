@@ -11,7 +11,7 @@ export interface SubastaResponseDTO {
   figuritaSeleccionNombre: string;
   figuritaEquipoNombre: string;
   figuritaCategoriaNombre: string;
-  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA';
+  estado: 'PENDIENTE' | 'EN_CURSO' | 'FINALIZADA' | 'CANCELADA';
   duracion: number;
   horaInicio: string;
   horaFin: string;

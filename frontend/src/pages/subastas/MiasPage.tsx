@@ -30,6 +30,7 @@ export default function SubastasMiasPage() {
   const pending = auctions.filter(a => a.estado === 'PENDIENTE');
   const active = auctions.filter(a => a.estado === 'EN_CURSO');
   const finished = auctions.filter(a => a.estado === 'FINALIZADA');
+  const cancelled = auctions.filter(a => a.estado === 'CANCELADA');
 
   return (
     <div className="page-enter flex flex-col gap-6">
@@ -68,6 +69,14 @@ export default function SubastasMiasPage() {
             style={{ background: '#9ca3af15', color: '#9ca3af' }}
           >
             Finalizada · {finished.length}
+          </span>
+        )}
+        {cancelled.length > 0 && (
+          <span
+            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold"
+            style={{ background: '#9ca3af15', color: '#9ca3af' }}
+          >
+            Cancelada · {cancelled.length}
           </span>
         )}
       </div>

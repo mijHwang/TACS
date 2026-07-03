@@ -21,6 +21,8 @@ export default function PropuestasEnviadasPage() {
         return "text-green-500";
       case "RECHAZADO":
         return "text-red-500";
+      case "CANCELADO":
+        return "text-muted";
       default:
         return "text-muted";
     }
@@ -34,6 +36,8 @@ export default function PropuestasEnviadasPage() {
         return "✅ Aceptado";
       case "RECHAZADO":
         return "❌ Rechazado";
+      case "CANCELADO":
+        return "🚫 Cancelado";
       default:
         return estado;
     }
