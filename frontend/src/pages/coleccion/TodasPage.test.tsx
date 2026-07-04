@@ -32,6 +32,8 @@ describe('TodasPage', () => {
     expect(screen.getByText('Dibu')).toBeInTheDocument();
     expect(screen.getByLabelText('Página siguiente')).toBeInTheDocument();
     expect(lastParams?.page).toBe(0);
+    // Solo-lectura: no hay acciones de mutación en Todas
+    expect(screen.queryByRole('button', { name: /agregar figurita/i })).not.toBeInTheDocument();
   });
 
   it('cambiar de página re-pide con page:1', () => {
