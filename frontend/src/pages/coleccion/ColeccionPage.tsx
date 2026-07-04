@@ -2,9 +2,8 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { Suspense } from 'react';
 
 const tabs = [
-  { to: '', label: 'Todas', end: true },
-  { to: 'repetidas', label: 'Mis repetidas', end: false },
-  { to: 'faltantes', label: 'Mis faltantes', end: false },
+  { to: 'repetidas', label: 'Mis repetidas' },
+  { to: 'faltantes', label: 'Mis faltantes' },
 ];
 
 /** Layout de "Mi Colección": título + tabs (Todas / Mis repetidas / Mis faltantes) + <Outlet/>. */
@@ -15,11 +14,10 @@ export default function ColeccionPage() {
       <p className="text-sm text-muted mb-6">Administrá tus figuritas</p>
 
       <nav className="flex gap-2 mb-8 flex-wrap">
-        {tabs.map(({ to, label, end }) => (
+        {tabs.map(({ to, label }) => (
           <NavLink
-            key={to || 'todas'}
+            key={to}
             to={to}
-            end={end}
             className={({ isActive }) =>
               'px-4 py-1.5 rounded-md text-sm font-medium border transition-all duration-150 no-underline ' +
               (isActive

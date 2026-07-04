@@ -15,7 +15,7 @@ const SubPaginaQueNuncaCarga = lazy(
 
 const casos = [
   { nombre: 'Subastas',  Layout: SubastasPage,  path: '/subastas',  entry: '/subastas',           child: { index: true },          conserva: ['Subastas', 'Activas'] },
-  { nombre: 'Colección', Layout: ColeccionPage, path: '/coleccion', entry: '/coleccion',          child: { index: true },          conserva: ['Mi Colección', 'Todas'] },
+  { nombre: 'Colección', Layout: ColeccionPage, path: '/coleccion', entry: '/coleccion',          child: { index: true },          conserva: ['Mi Colección', 'Mis repetidas'] },
   { nombre: 'Propuestas', Layout: PropuestasPage, path: '/propuestas', entry: '/propuestas/enviadas', child: { path: 'enviadas' }, conserva: ['Propuestas', 'Enviadas'] },
 ] as const;
 
