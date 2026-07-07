@@ -23,12 +23,13 @@ public class SubastaServiceCancelTest {
     @Mock private NotificacionService notificacionService;
     @Mock private UsuarioService usuarioService;
     @Mock private UsuarioRepository usuarioRepository;
+    @Mock private IntercambioService intercambioService;
 
     private SubastaService service;
 
     @BeforeEach
     public void setUp() {
-        service = new SubastaService(repository, figuritaService, notificacionService, usuarioService, usuarioRepository);
+        service = new SubastaService(repository, figuritaService, notificacionService, usuarioService, usuarioRepository, intercambioService);
     }
 
     @Test

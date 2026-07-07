@@ -25,6 +25,7 @@ public class SubastaService {
     private final NotificacionService notificacionService;
     private final UsuarioService usuarioService;
     private final UsuarioRepository usuarioRepository;
+    private final IntercambioService  intercambioService;
 
 
 
@@ -32,12 +33,14 @@ public class SubastaService {
                           FiguritaService figuritaService,
                           NotificacionService notificacionService,
                           UsuarioService usuarioService,
-                          UsuarioRepository usuarioRepository) {
+                          UsuarioRepository usuarioRepository,
+                          IntercambioService intercambioService) {
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.notificacionService = notificacionService;
         this.usuarioService = usuarioService;
         this.usuarioRepository = usuarioRepository;
+        this.intercambioService = intercambioService;
     }
 
     public Subasta crear(SubastaDTO dto) {
@@ -179,9 +182,21 @@ public class SubastaService {
                 figuritaService.transferir(fig.getId(), subasta.getUsuario())
         );
 
-        // Update status
+        // UPDATE status
         subasta.setEstado(EstadoSubasta.FINALIZADA);
         repository.save(subasta);
+
+        // *** NEW: CREATE Intercambio record ***
+        Intercambio intercambio = Intercambio.builder()
+                .usuarioGenerador(subasta.getUsuario())
+                .usuarioIntercambiador(ganadora.getUsuario())
+                .figurita(subasta.getFigurita())
+                .figuritaIntercambiada(ganadora.getFiguritas())
+                .fecha(LocalDateTime.now())
+                .solicitud(null)
+                .build();
+        intercambioService.crear(intercambio);
+        // *** END NEW ***
 
         // NOTIFICATIONS
         // To winner
