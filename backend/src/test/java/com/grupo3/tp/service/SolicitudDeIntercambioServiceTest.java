@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;  // NEW
 
 import java.util.List;
 
@@ -24,16 +25,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SolicitudDeIntercambioServiceTest {
 
-    @Mock
-    private SolicitudDeIntercambioRepository repository;
-    @Mock
-    private NotificacionService notificacionService;
-    @Mock
-    private FiguritaService figuritaService;
-    @Mock
-    private IntercambioService intercambioService;
-    @Mock
-    private FiguritaPublicadaService figuritaPublicadaService;
+    @Mock private SolicitudDeIntercambioRepository repository;
+    @Mock private NotificacionService notificacionService;
+    @Mock private FiguritaService figuritaService;
+    @Mock private IntercambioService intercambioService;
+    @Mock private FiguritaPublicadaService figuritaPublicadaService;
+    @Mock private MongoTemplate mongoTemplate;  // NEW
 
     private SolicitudDeIntercambioService service;
 
@@ -44,8 +41,7 @@ public class SolicitudDeIntercambioServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // Construimos el servicio a mano porque el constructor recibe varias dependencias.
-        service = new SolicitudDeIntercambioService(repository, notificacionService, figuritaService, intercambioService, figuritaPublicadaService);
+        service = new SolicitudDeIntercambioService(repository, notificacionService, figuritaService, intercambioService, figuritaPublicadaService, mongoTemplate);  // NEW: added mongoTemplate
 
         owner = Usuario.builder().id("user-owner").username("owner").build();
         generador = Usuario.builder().id("user-gen").username("gen").build();

@@ -1,9 +1,12 @@
 package com.grupo3.tp.service;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.transaction.annotation.Transactional;
 import com.grupo3.tp.models.*;
-import com.grupo3.tp.repository.FiguritaRepository;
-import com.grupo3.tp.repository.IntercambioRepository;
 import com.grupo3.tp.repository.SolicitudDeIntercambioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,18 +25,20 @@ public class SolicitudDeIntercambioService {
     private final FiguritaService figuritaService;
     private final IntercambioService intercambioService;
     private final FiguritaPublicadaService publicadaService;
+    private final MongoTemplate mongoTemplate;
 
     public SolicitudDeIntercambioService(SolicitudDeIntercambioRepository repository,
                                          NotificacionService notificacion,
                                          FiguritaService figuritaService,
                                          IntercambioService intercambioService,
-                                         FiguritaPublicadaService publicadaService) {
+                                         FiguritaPublicadaService publicadaService,
+                                         MongoTemplate mongoTemplate) {
         this.notificacionService = notificacion;
         this.repository = repository;
         this.figuritaService = figuritaService;
         this.intercambioService = intercambioService;
         this.publicadaService = publicadaService;
-
+        this.mongoTemplate = mongoTemplate;
     }
 
     public SolicitudDeIntercambio crear(SolicitudDeIntercambio solicitud) {
@@ -104,70 +109,69 @@ public class SolicitudDeIntercambioService {
         return repository.findByUsuarioId(usuarioId, pageable);
     }
 
+    @Transactional
     public Optional<SolicitudDeIntercambio> aceptar(String id) {
-        Optional<SolicitudDeIntercambio> solicitud = repository.findById(id);
+        // findAndModify: atomic find + update, only if estado = PENDIENTE
+        Query q = new Query(Criteria.where("_id").is(id)
+                .and("estado").is(SolicitudDeIntercambio.EstadoSolicitud.PENDIENTE));
+        Update u = new Update().set("estado", SolicitudDeIntercambio.EstadoSolicitud.ACEPTADO);
+        SolicitudDeIntercambio aux = mongoTemplate.findAndModify(
+                q, u, FindAndModifyOptions.options().returnNew(true),
+                SolicitudDeIntercambio.class
+        );
 
-
-
-        if (solicitud.isPresent()) {
-
-            SolicitudDeIntercambio aux = solicitud.get();
-            aux.setEstado(SolicitudDeIntercambio.EstadoSolicitud.ACEPTADO);
-            repository.save(aux);
-
-
-            Usuario owner = aux.getFigurita().getOwner();
-
-            //petitioner to owner
-            for(Figurita b: aux.getFiguritasOfrecidas()){
-                Optional<Figurita> result = figuritaService.transferir(b.getId(), owner);
-                if (result.isEmpty()) {
-                    throw new RuntimeException("Failed to transfer figurita: " + b.getId());
-                }
-            }
-            //owner to petitioner
-            Optional<Figurita> result = figuritaService.transferir(
-                    aux.getFigurita().getId(),
-                    aux.getUsuario());
-
-            if (result.isEmpty()) {
-                throw new RuntimeException("Failed to transfer figurita: " + aux.getFigurita().getId());
-            }
-
-
-            Intercambio intAux = Intercambio.builder()
-                            .usuarioGenerador(aux.getUsuario())
-                            .figurita(aux.getFigurita())
-                            .figuritaIntercambiada(aux.getFiguritasOfrecidas())
-                            .usuarioIntercambiador(owner)
-                            .fecha(LocalDateTime.now())
-                            .solicitud(aux).
-                            build();
-
-            intercambioService.crear(intAux);
-
-            publicadaService.removeFiguritaFromPublications(aux.getFigurita().getId());
-            for (Figurita f : aux.getFiguritasOfrecidas()) {
-                publicadaService.removeFiguritaFromPublications(f.getId());
-            }
-
-            Notificacion notif = Notificacion.builder()
-                    .usuario(solicitud.get().getUsuario())
-                    .tipo("propuesta")
-                    .titulo("propuesta aceptada")
-                    .mensaje(owner.getUsername() + " acepto tu propuesta")
-                    .enlace("/propuestas/enviadas")
-                    .leida(false)
-                    .fecha(LocalDateTime.now())
-                    .build();
-
-            notificacionService.crear(notif);
-
-
+        if (aux == null) {
+            // Already accepted, rejected or doesn't exist — reject silently
+            return Optional.empty();
         }
 
+        Usuario owner = aux.getFigurita().getOwner();
 
-        return solicitud;
+        // petitioner to owner
+        for (Figurita b : aux.getFiguritasOfrecidas()) {
+            Optional<Figurita> result = figuritaService.transferir(b.getId(), owner);
+            if (result.isEmpty()) {
+                throw new RuntimeException("Failed to transfer figurita: " + b.getId());
+            }
+        }
+
+        // owner to petitioner
+        Optional<Figurita> result = figuritaService.transferir(
+                aux.getFigurita().getId(),
+                aux.getUsuario());
+        if (result.isEmpty()) {
+            throw new RuntimeException("Failed to transfer figurita: " + aux.getFigurita().getId());
+        }
+
+        Intercambio intAux = Intercambio.builder()
+                .usuarioGenerador(aux.getUsuario())
+                .figurita(aux.getFigurita())
+                .figuritaIntercambiada(aux.getFiguritasOfrecidas())
+                .usuarioIntercambiador(owner)
+                .fecha(LocalDateTime.now())
+                .solicitud(aux)
+                .build();
+
+        intercambioService.crear(intAux);
+
+        publicadaService.removeFiguritaFromPublications(aux.getFigurita().getId());
+        for (Figurita f : aux.getFiguritasOfrecidas()) {
+            publicadaService.removeFiguritaFromPublications(f.getId());
+        }
+
+        Notificacion notif = Notificacion.builder()
+                .usuario(aux.getUsuario())
+                .tipo("propuesta")
+                .titulo("propuesta aceptada")
+                .mensaje(owner.getUsername() + " acepto tu propuesta")
+                .enlace("/propuestas/enviadas")
+                .leida(false)
+                .fecha(LocalDateTime.now())
+                .build();
+
+        notificacionService.crear(notif);
+
+        return Optional.of(aux);
     }
 
     public Optional<SolicitudDeIntercambio> rechazar(String id) {

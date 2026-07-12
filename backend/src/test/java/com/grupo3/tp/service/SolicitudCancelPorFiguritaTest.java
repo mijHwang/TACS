@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.mongodb.core.MongoTemplate;  // NEW
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class SolicitudCancelPorFiguritaTest {
     @Mock private FiguritaService figuritaService;
     @Mock private IntercambioService intercambioService;
     @Mock private FiguritaPublicadaService publicadaService;
+    @Mock private MongoTemplate mongoTemplate;  // NEW
 
     private SolicitudDeIntercambioService service;
 
@@ -30,7 +32,7 @@ public class SolicitudCancelPorFiguritaTest {
 
     @BeforeEach
     public void setUp() {
-        service = new SolicitudDeIntercambioService(repository, notificacionService, figuritaService, intercambioService, publicadaService);
+        service = new SolicitudDeIntercambioService(repository, notificacionService, figuritaService, intercambioService, publicadaService, mongoTemplate);  // NEW: added mongoTemplate
         proponente = Usuario.builder().id("user-prop").username("proponente").build();
         duenio = Usuario.builder().id("user-owner").username("duenio").build();
     }

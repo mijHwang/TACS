@@ -46,7 +46,7 @@ public class AuthController {
                 .username(usuariodto.getUsername())
                 .password(passwordEncoder.encode(usuariodto.getPassword()))
                 .email(usuariodto.getEmail())
-                .role(usuariodto.getUsername().equals("admin") ? Role.ADMIN : Role.USER)
+                .role(Role.USER)
                 .build();
         usuarioService.crear(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).build();
