@@ -91,11 +91,14 @@ public class SolicitudDeIntercambioService {
 
     public List<SolicitudDeIntercambio> obtenerRecibidas(String usuarioId) {
         List<Figurita> misFiguritas = figuritaService.obtenerTodasInternaPorUserId(usuarioId);
+        if (misFiguritas.isEmpty()) return List.of();
         List<String> misFiguritaIds = misFiguritas.stream()
                 .map(Figurita::getId)
                 .toList();
         return repository.findByFiguritaIds(misFiguritaIds);
     }
+
+
 
     public List<SolicitudDeIntercambio> obtenerEnviadas(String usuarioId) {
         return repository.findByUsuarioId(usuarioId);

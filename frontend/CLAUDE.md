@@ -70,6 +70,6 @@ Opacity backgrounds: append hex digits — `${RED}15` ≈ 8%, `${RED}30` ≈ 19%
 
 ## Key Gotchas
 
-- **Mock data still wired** (replace with real API calls): `PerfilPage`/`HistorialPage` use `MOCK_TRANSACTIONS` + reputation mocks; `UserProfileModal` uses `MOCK_USERS`; and auction bidding (`ActivasPage`/`ParticipandoPage`/`MiasPage`) sends `MOCK_MY_STICKERS` instead of the user's real stickers. Everything else (Buscar, Colección, Faltantes, Propuestas, Intercambios, Notificaciones, Admin, listado de subastas, **Dashboard**) hits the real API. `DashboardPage` now uses real data via `dashboardService` (US8 + US2): figuritas publicadas, propuestas enviadas/recibidas, subastas activas, alertas, progreso de colección y acciones rápidas.
+**Mock data completely removed:** All flows (Profile, History, User Modal, and Auction Bidding) now hit the real API.
 - Nested routes (Subastas, Colección, Propuestas) use `<Outlet />` in the parent page and `NavLink` tabs for sub-navigation.
 - `VITE_API_URL` env var sets the backend base URL (defaults to `http://localhost:8080`).

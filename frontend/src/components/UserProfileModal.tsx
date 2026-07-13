@@ -1,28 +1,21 @@
+import { useQuery } from '@tanstack/react-query';
 import StarRating from './StarRating';
+import api from '../services/api';
 
 const BLUE  = '#03BAE9';
 const RED   = '#D82D31';
 const GREEN = '#05B15A';
 
-export interface UserPreview {
+interface UsuarioPreview {
+  id: string;
   username: string;
   avatar?: string;
-  score: number;
-  totalReviews: number;
 }
 
-// Mock: en producción esto vendría de una API por username
-const MOCK_USERS: Record<string, UserPreview> = {
-  carlitos99:   { username: 'carlitos99',   score: 4.8, totalReviews: 32 },
-  'lauti_fútbol': { username: 'lauti_fútbol', score: 3.5, totalReviews: 12 },
-  manu_col:     { username: 'manu_col',     score: 5.0, totalReviews: 7  },
-  sofi_fig:     { username: 'sofi_fig',     score: 4.2, totalReviews: 21 },
-  pepe_crack:   { username: 'pepe_crack',   score: 2.8, totalReviews: 5  },
-  nico_world:   { username: 'nico_world',   score: 4.6, totalReviews: 44 },
-  vale_sticker: { username: 'vale_sticker', score: 3.9, totalReviews: 18 },
-  juanma_f:     { username: 'juanma_f',     score: 4.1, totalReviews: 9  },
-};
-
+interface Reputacion {
+  score: number;
+  total: number;
+}
 
 interface Props {
   username: string;
@@ -30,7 +23,29 @@ interface Props {
 }
 
 export default function UserProfileModal({ username, onClose }: Props) {
-  const userData = MOCK_USERS[username] ?? { username, score: 0, totalReviews: 0 };
+
+  // CHANGED:
+  // Before:
+  // const userData = MOCK_USERS[username] ?? { username, score: 0, totalReviews: 0 };
+  //
+  // Now:
+  const { data: userData } = useQuery({
+    queryKey: ['usuario', username],
+    queryFn: async () =>
+      (await api.get<UsuarioPreview>(`/api/usuarios/by-username/${username}`)).data,
+  });
+
+  // NEW:
+  // Uses the same reputation endpoint that PerfilPage already uses
+  const { data: reputacion } = useQuery({
+    queryKey: ['reputacion', userData?.id],
+    queryFn: async () =>
+      (await api.get<Reputacion>(
+        `/api/intercambios/usuario/${userData!.id}/reputacion`
+      )).data,
+    enabled: !!userData?.id,
+  });
+
   const initials = username[0]?.toUpperCase() ?? '?';
 
   return (
@@ -60,7 +75,7 @@ export default function UserProfileModal({ username, onClose }: Props) {
             </svg>
           </button>
 
-          {userData.avatar ? (
+          {userData?.avatar ? (
             <img
               src={userData.avatar}
               alt={username}
@@ -74,7 +89,7 @@ export default function UserProfileModal({ username, onClose }: Props) {
               {initials}
             </div>
           )}
-          <p className="text-white font-bold text-lg mt-3 leading-tight">{userData.username}</p>
+          <p className="text-white font-bold text-lg mt-3 leading-tight">{userData?.username ?? username}</p>
         </div>
 
         {/* Valoración */}
@@ -85,11 +100,13 @@ export default function UserProfileModal({ username, onClose }: Props) {
           >
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Valoración</span>
             <span className="text-4xl font-black leading-none" style={{ color: GREEN }}>
-              {userData.score.toFixed(1)}
+              {reputacion ? reputacion.score.toFixed(1) : '—'}
             </span>
-            <StarRating score={userData.score} size={20} />
+            {reputacion && (
+                <StarRating score={reputacion.score} size={20} />
+              )}
             <span className="text-xs text-gray-400">
-              {userData.totalReviews} {userData.totalReviews === 1 ? 'reseña' : 'reseñas'}
+              {reputacion?.total ?? 0} {reputacion?.total === 1 ? 'reseña' : 'reseñas'}
             </span>
           </div>
         </div>

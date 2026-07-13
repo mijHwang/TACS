@@ -165,24 +165,20 @@ public class UsuarioServiceTest {
                 .password("newpassword")
                 .build();
 
-        when(repo.existsById("user-1")).thenReturn(true);
+        when(repo.findById("user-1")).thenReturn(Optional.of(usuario1));
         when(repo.save(any(Usuario.class))).thenAnswer(i -> i.getArgument(0));
 
         Optional<Usuario> result = service.actualizar("user-1", usuarioActualizado);
 
         assertTrue(result.isPresent());
         assertEquals("user-1", result.get().getId());
-
-        ArgumentCaptor<Usuario> captor = ArgumentCaptor.forClass(Usuario.class);
-        verify(repo).save(captor.capture());
-        assertEquals("user-1", captor.getValue().getId());
-        assertEquals("juan_updated", captor.getValue().getUsername());
-        assertEquals("juan_new@example.com", captor.getValue().getEmail());
+        assertEquals("juan_updated", result.get().getUsername());
+        assertEquals("juan_new@example.com", result.get().getEmail());
     }
 
     @Test
     public void testActualizarUsuarioNoExistente() {
-        when(repo.existsById("user-999")).thenReturn(false);
+        when(repo.findById("user-999")).thenReturn(Optional.empty());
 
         Optional<Usuario> result = service.actualizar("user-999", usuario1);
 

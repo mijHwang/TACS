@@ -9,9 +9,10 @@ import { useTransactions } from './components/useTransactions';
 import StarRating from '../../components/StarRating';
 import ErrorState from '../../components/ErrorState';
 import { useReputacion } from '../../hooks/useReputacion';
+import api from '../../services/api';
 
-const BLUE  = '#03BAE9';
-const RED   = '#D82D31';
+const BLUE = '#03BAE9';
+const RED = '#D82D31';
 const GREEN = '#05B15A';
 
 const PREVIEW_COUNT = 5;
@@ -20,10 +21,10 @@ export default function PerfilPage() {
   const { user, updateUser } = useAuth();
   const navigate = useNavigate();
 
-  const [editing, setEditing]     = useState(false);
-  const [username, setUsername]   = useState(user?.username ?? '');
-  const [email, setEmail]         = useState(user?.email ?? '');
-  const [saved, setSaved]         = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [username, setUsername] = useState(user?.username ?? '');
+  const [email, setEmail] = useState(user?.email ?? '');
+  const [saved, setSaved] = useState(false);
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
 
   const { transactions, loading, error: transactionsError } = useTransactions(user?.id, user?.username);
@@ -39,11 +40,17 @@ export default function PerfilPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSave = () => {
-    updateUser({ username, email });
-    setEditing(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  const handleSave = async () => {
+    try {
+      await api.put(`/api/usuarios/${user!.id}`, { username, email });
+      updateUser({ username, email });
+      setEditing(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('No se pudo guardar el perfil. Intentá de nuevo.');
+    }
   };
 
   const handleCancel = () => {
