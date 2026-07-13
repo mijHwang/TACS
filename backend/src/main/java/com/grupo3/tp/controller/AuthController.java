@@ -6,6 +6,7 @@ import com.grupo3.tp.models.Role;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.service.UsuarioService;
 import com.grupo3.tp.utils.JwtService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
@@ -41,7 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody UsuarioDTO usuariodto) {
+    public ResponseEntity<Void> register(@Valid @RequestBody UsuarioDTO usuariodto) {
         Usuario usuario = Usuario.builder()
                 .username(usuariodto.getUsername())
                 .password(passwordEncoder.encode(usuariodto.getPassword()))

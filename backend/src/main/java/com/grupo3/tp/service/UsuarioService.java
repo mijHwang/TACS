@@ -42,11 +42,11 @@ public class UsuarioService {
     }
 
     public Optional<Usuario> actualizar(String id, Usuario usuario) {
-        if (!repository.existsById(id)) {
-            return Optional.empty();
-        }
-        usuario.setId(id);
-        return Optional.of(repository.save(usuario));
+        return repository.findById(id).map(existing -> {
+            if (usuario.getUsername() != null) existing.setUsername(usuario.getUsername());
+            if (usuario.getEmail() != null) existing.setEmail(usuario.getEmail());
+            return repository.save(existing);
+        });
     }
 
     public boolean eliminar(String id) {
