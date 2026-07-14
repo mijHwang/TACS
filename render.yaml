@@ -1,0 +1,35 @@
+services:
+  # 1. BACKEND (Spring Boot)
+  - type: web
+    name: tacs-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_MONGODB_URI
+        value: <REEMPLAZAR_CON_TU_URI_DE_ATLAS_DESPUES>
+      - key: JWT_SECRET
+        generateValue: true # Render genera un string seguro al azar automáticamente
+      - key: SEED_ON_STARTUP
+        value: "true"
+
+  # 2. FRONTEND (React)
+  - type: web
+    name: tacs-frontend
+    env: docker
+    dockerfilePath: ./frontend/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    plan: free
+
+  # 3. BOT DE TELEGRAM
+  - type: web
+    name: tacs-telegram-bot
+    env: docker
+    dockerfilePath: ./telegram-bot/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    plan: free
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        value: <REEMPLAZAR_CON_TU_BOT_TOKEN_DESPUES>
+      - key: BACKEND_URL
+        value: https://tacs-backend.onrender.com # Apunta dinámicamente al backend en Render
