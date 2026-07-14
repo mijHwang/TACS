@@ -4,6 +4,7 @@ services:
     name: tacs-backend
     env: docker
     dockerfilePath: ./backend/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    dockerContext: ./backend
     plan: free
     envVars:
       - key: SPRING_PROFILES_ACTIVE
@@ -20,6 +21,7 @@ services:
     name: tacs-frontend
     env: docker
     dockerfilePath: ./frontend/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    dockerContext: ./frontend
     plan: free
 
   # 3. BOT DE TELEGRAM
@@ -27,6 +29,7 @@ services:
     name: tacs-telegram-bot
     env: docker
     dockerfilePath: ./telegram-bot/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    dockerContext: ./telegram-bot
     plan: free
     envVars:
       - key: TELEGRAM_BOT_TOKEN
