@@ -8,7 +8,7 @@ services:
     plan: free
     envVars:
       - key: SPRING_PROFILES_ACTIVE
-        value: prod
+        value: docker # Coincide con application-docker.properties (NO 'prod', ese archivo no existe)
       - key: SPRING_MONGODB_URI
         sync: false # Set manually in Render Dashboard -> Environment
       - key: JWT_SECRET
