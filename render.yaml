@@ -3,16 +3,16 @@ services:
   - type: web
     name: tacs-backend
     env: docker
-    dockerfilePath: ./backend/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     plan: free
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: SPRING_MONGODB_URI
-        value: <REEMPLAZAR_CON_TU_URI_DE_ATLAS_DESPUES>
+        sync: false # Set manually in Render Dashboard -> Environment
       - key: JWT_SECRET
-        generateValue: true # Render genera un string seguro al azar automáticamente
+        generateValue: true
       - key: SEED_ON_STARTUP
         value: "true"
 
@@ -20,7 +20,7 @@ services:
   - type: web
     name: tacs-frontend
     env: docker
-    dockerfilePath: ./frontend/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     plan: free
 
@@ -28,11 +28,11 @@ services:
   - type: web
     name: tacs-telegram-bot
     env: docker
-    dockerfilePath: ./telegram-bot/Dockerfile # Ajustá esta ruta si tu carpeta se llama distinto
+    dockerfilePath: ./telegram-bot/Dockerfile
     dockerContext: ./telegram-bot
     plan: free
     envVars:
       - key: TELEGRAM_BOT_TOKEN
-        value: <REEMPLAZAR_CON_TU_BOT_TOKEN_DESPUES>
+        sync: false # Set manually in Render Dashboard -> Environment
       - key: BACKEND_URL
-        value: https://tacs-backend.onrender.com # Apunta dinámicamente al backend en Render
+        value: https://tacs-backend.onrender.com
