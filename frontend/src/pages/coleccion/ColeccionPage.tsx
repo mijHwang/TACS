@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { Suspense } from 'react';
 
 const tabs = [
+  { to: 'todas', label: 'Todas' },
   { to: 'repetidas', label: 'Mis repetidas' },
   { to: 'faltantes', label: 'Mis faltantes' },
 ];

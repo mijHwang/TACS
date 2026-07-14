@@ -73,7 +73,7 @@ const router = createBrowserRouter([
             path: 'coleccion',
             element: <ColeccionPage />,
             children: [
-              { index: true, element: <Navigate to="repetidas" replace /> },
+              { index: true, element: <Navigate to="todas" replace /> },
               { path: 'repetidas', element: <RepetidasPage /> },
               { path: 'faltantes', element: <FaltantesPage /> },
               { path: 'todas', element: <TodasPage /> },
