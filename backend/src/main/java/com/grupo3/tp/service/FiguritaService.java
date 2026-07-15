@@ -3,6 +3,7 @@ package com.grupo3.tp.service;
 import com.grupo3.tp.dtos.CatalogoFiltro;
 import com.grupo3.tp.dtos.FiguritaBaseDTO;
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
+import com.grupo3.tp.models.EstadoFigurita;
 import com.grupo3.tp.models.Figurita;
 import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
@@ -11,6 +12,8 @@ import com.grupo3.tp.repository.FiguritaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.dao.OptimisticLockingFailureException;
+import java.util.ConcurrentModificationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -154,9 +157,44 @@ public class FiguritaService {
         Figurita figurita = repository.findById(figuritaId).orElseThrow();
       
         figurita.setOwner(newOwner);
+        figurita.setEstado(EstadoFigurita.LIBRE);
 
         Figurita updated = repository.save(figurita);
         return Optional.of(updated);
+
+
+    }
+
+
+    public void reclamar(String figuritaId, EstadoFigurita nuevoEstado) {
+        Figurita fig = repository.findById(figuritaId)
+                .orElseThrow(() -> new RuntimeException("Figurita no encontrada: " + figuritaId));
+
+        if (fig.getEstado() != null && fig.getEstado() != EstadoFigurita.LIBRE) {
+            throw new IllegalStateException("La figurita ya está en uso (" + fig.getEstado() + ").");
+        }
+
+        fig.setEstado(nuevoEstado);
+
+        try {
+            repository.save(fig);
+        } catch (OptimisticLockingFailureException e) {
+            throw new ConcurrentModificationException(
+                    "La figurita cambió de estado justo ahora, intentá de nuevo.");
+        }
+    }
+
+    /**
+     * Libera una figurita, devolviéndola a estado LIBRE. Se llama cuando una operación
+     * que la tenía reservada termina, se cancela o se rechaza.
+     *
+     * @param figuritaId id de la figurita a liberar
+     */
+    public void liberar(String figuritaId) {
+        repository.findById(figuritaId).ifPresent(fig -> {
+            fig.setEstado(EstadoFigurita.LIBRE);
+            repository.save(fig);
+        });
     }
 
     public List<FiguritaResponseDTO> obtenerRepetidas(String usuarioId) {

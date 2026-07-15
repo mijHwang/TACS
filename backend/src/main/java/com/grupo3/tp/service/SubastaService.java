@@ -51,7 +51,7 @@ public class SubastaService {
         Figurita figurita = figuritaService.obtenerPorId(dto.getFiguritaId())
                 .orElseThrow(() -> new RuntimeException("Figurita no encontrada"));
 
-
+        figuritaService.reclamar(figurita.getId(), EstadoFigurita.EN_SUBASTA);
 
         Subasta subasta = Subasta.builder()
                 .usuario(usuario)
@@ -160,6 +160,10 @@ public class SubastaService {
         List<Oferta> ofertasValidas = filtrarOfertasValidas(subasta);
 
         if (ofertasValidas.isEmpty()) {
+            // Nadie calificó: liberar todo lo ofertado
+            subasta.getOfertas().forEach(o ->
+                    o.getFiguritas().forEach(fig -> figuritaService.liberar(fig.getId()))
+            );
             subasta.setEstado(EstadoSubasta.FINALIZADA);
             repository.save(subasta);
             return;
@@ -181,6 +185,11 @@ public class SubastaService {
         ganadora.getFiguritas().forEach(fig ->
                 figuritaService.transferir(fig.getId(), subasta.getUsuario())
         );
+
+        // Liberar las figuritas de todas las ofertas perdedoras
+        subasta.getOfertas().stream()
+                .filter(o -> !o.getId().equals(ganadora.getId()))
+                .forEach(o -> o.getFiguritas().forEach(fig -> figuritaService.liberar(fig.getId())));
 
         // UPDATE status
         subasta.setEstado(EstadoSubasta.FINALIZADA);
@@ -244,6 +253,8 @@ public class SubastaService {
         for (Subasta subasta : repository.findByFiguritaId(figuritaId)) {
             subasta.setEstado(EstadoSubasta.CANCELADA);
             repository.save(subasta);
+
+            figuritaService.liberar(figuritaId);
 
             String jugador = subasta.getFigurita() != null
                     && subasta.getFigurita().getFiguritaBase() != null

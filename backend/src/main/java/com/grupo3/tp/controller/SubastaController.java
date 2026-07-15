@@ -7,6 +7,7 @@ import com.grupo3.tp.dtos.SubastaResponseDTO;
 import com.grupo3.tp.models.EstadoSubasta;
 import com.grupo3.tp.models.Oferta;
 import com.grupo3.tp.models.Subasta;
+import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.OfertaService;
 import com.grupo3.tp.service.SubastaService;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.grupo3.tp.models.EstadoFigurita;
+import java.util.ConcurrentModificationException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,10 +29,12 @@ public class SubastaController {
 
     private final SubastaService service;
     private final OfertaService ofertaService;
+    private final FiguritaService figuritaService;
 
-    public SubastaController(SubastaService service, OfertaService ofertaService) {
+    public SubastaController(SubastaService service, OfertaService ofertaService,  FiguritaService figuritaService) {
         this.service = service;
         this.ofertaService = ofertaService;
+        this.figuritaService = figuritaService;
     }
 
     // FIXED: Changed return type from List<Subasta> to List<SubastaResponseDTO>
@@ -162,6 +167,21 @@ public class SubastaController {
                     HttpStatus.BAD_REQUEST, "No podés incluir la misma figurita repetida en la misma oferta.");
         }
 
+        // 3. Reclamar cada figurita ofrecida ANTES de crear la oferta.
+        // Si alguna ya está comprometida en otra operación, se aborta y se liberan las
+        // que ya se hayan reclamado en esta misma llamada.
+        List<String> reclamadas = new ArrayList<>();
+        try {
+            for (String figuritaId : incomingStickerIds) {
+                figuritaService.reclamar(figuritaId, EstadoFigurita.OFERTADA);
+                reclamadas.add(figuritaId);
+            }
+        } catch (IllegalStateException | ConcurrentModificationException e) {
+            reclamadas.forEach(figuritaService::liberar);
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.CONFLICT, "Una o más figuritas ya están comprometidas en otra operación: " + e.getMessage());
+        }
+
         try {
 
             // Set the subastaId in the DTO
@@ -182,6 +202,8 @@ public class SubastaController {
 
             return ResponseEntity.ok(service.mapToDTO(subasta));
         } catch (Exception e) {
+            // Si algo falla después de reclamar, liberar lo reclamado para no dejarlo colgado
+            reclamadas.forEach(figuritaService::liberar);
             throw new org.springframework.web.server.ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Error al procesar la oferta: " + e.getMessage());
         }
