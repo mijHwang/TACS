@@ -1,6 +1,7 @@
 package com.grupo3.tp.repository;
 
 import com.grupo3.tp.models.EstadoSubasta;
+import com.grupo3.tp.models.Oferta;
 import com.grupo3.tp.models.Subasta;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -28,14 +29,7 @@ public class SubastaRepositoryImpl implements SubastaRepositoryCustom {
                 Subasta.class
         );
     }
-
-    @Override
-    public List<Subasta> findByParticipating(String usuarioId) {
-        return mongoTemplate.find(
-                Query.query(Criteria.where("ofertas.usuario").is(new ObjectId(usuarioId))),
-                Subasta.class
-        );
-    }
+    
 
     @Override
     public List<Subasta> findByEstadoAndHoraFinBefore(EstadoSubasta estado, LocalDateTime ahora) {
@@ -71,8 +65,46 @@ public class SubastaRepositoryImpl implements SubastaRepositoryCustom {
     }
 
     @Override
+    public List<Subasta> findByParticipating(String usuarioId) {
+        // 1. Encontrar todas las ofertas del usuario
+        Query ofertaQuery = Query.query(Criteria.where("usuario").is(new ObjectId(usuarioId)));
+        List<Oferta> ofertasDelUsuario = mongoTemplate.find(ofertaQuery, Oferta.class);
+
+        // 2. Salida rápida si no hay ofertas
+        if (ofertasDelUsuario.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+
+        // 3. Extraer los IDs de esas ofertas
+        List<ObjectId> ofertaIds = ofertasDelUsuario.stream()
+                .map(oferta -> new ObjectId(oferta.getId()))
+                .toList();
+
+        // 4. Buscar las subastas que contengan esos IDs de oferta
+        return mongoTemplate.find(
+                Query.query(Criteria.where("ofertas").in(ofertaIds)),
+                Subasta.class
+        );
+    }
+
+    @Override
     public Page<Subasta> findByParticipatingPaged(String usuarioId, Pageable pageable) {
-        Query query = Query.query(Criteria.where("ofertas.usuario").is(new ObjectId(usuarioId)));
+        // 1. Encontrar todas las ofertas del usuario
+        Query ofertaQuery = Query.query(Criteria.where("usuario").is(new ObjectId(usuarioId)));
+        List<Oferta> ofertasDelUsuario = mongoTemplate.find(ofertaQuery, Oferta.class);
+
+        // 2. Salida rápida si no hay ofertas devolviendo una página vacía
+        if (ofertasDelUsuario.isEmpty()) {
+            return org.springframework.data.domain.Page.empty(pageable);
+        }
+
+        // 3. Extraer los IDs
+        List<ObjectId> ofertaIds = ofertasDelUsuario.stream()
+                .map(oferta -> new ObjectId(oferta.getId()))
+                .toList();
+
+        // 4. Armar la query y usar tu método `paginate` existente
+        Query query = Query.query(Criteria.where("ofertas").in(ofertaIds));
         return paginate(query, pageable);
     }
 
