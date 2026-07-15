@@ -23,4 +23,7 @@ public class Figurita {
     private FiguritaBase figuritaBase;
     @DocumentReference(lazy = true)
     private Usuario owner;
+
+    @Builder.Default
+    private EstadoFigurita estado = EstadoFigurita.LIBRE;
 }

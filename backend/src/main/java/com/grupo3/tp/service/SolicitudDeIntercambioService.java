@@ -11,6 +11,8 @@ import com.grupo3.tp.repository.SolicitudDeIntercambioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,9 +45,29 @@ public class SolicitudDeIntercambioService {
 
     public SolicitudDeIntercambio crear(SolicitudDeIntercambio solicitud) {
 
+        // Reclamar cada figurita ofrecida ANTES de guardar la solicitud. Si alguna ya
+        // está comprometida en otra operación, se aborta y se libera lo reclamado.
+        List<String> reclamadas = new ArrayList<>();
+        try {
+            for (Figurita f : solicitud.getFiguritasOfrecidas()) {
+                figuritaService.reclamar(f.getId(), EstadoFigurita.OFERTADA);
+                reclamadas.add(f.getId());
+            }
+        } catch (IllegalStateException | ConcurrentModificationException e) {
+            reclamadas.forEach(figuritaService::liberar);
+            throw new IllegalStateException(
+                    "Una o más figuritas ya están comprometidas en otra operación: " + e.getMessage());
+        }
+
         solicitud.setEstado(SolicitudDeIntercambio.EstadoSolicitud.PENDIENTE);
 
-        SolicitudDeIntercambio saved = repository.save(solicitud);
+        SolicitudDeIntercambio saved;
+        try {
+            saved = repository.save(solicitud);
+        } catch (Exception e) {
+            reclamadas.forEach(figuritaService::liberar);
+            throw e;
+        }
 
 
         Notificacion notif = Notificacion.builder()
@@ -183,6 +205,8 @@ public class SolicitudDeIntercambioService {
             solicitud.get().setEstado(SolicitudDeIntercambio.EstadoSolicitud.RECHAZADO);
             repository.save(solicitud.get());
 
+            solicitud.get().getFiguritasOfrecidas()
+                    .forEach(f -> figuritaService.liberar(f.getId()));
 
 
             Notificacion notif = Notificacion.builder()
@@ -205,6 +229,10 @@ public class SolicitudDeIntercambioService {
         for (SolicitudDeIntercambio sol : repository.findPendientesByFiguritaId(figuritaId)) {
             sol.setEstado(SolicitudDeIntercambio.EstadoSolicitud.CANCELADO);
             repository.save(sol);
+
+            // Liberar todas las figuritas ofrecidas en esta solicitud (no solo figuritaId,
+            // ya que la solicitud entera queda cancelada).
+            sol.getFiguritasOfrecidas().forEach(f -> figuritaService.liberar(f.getId()));
 
             boolean eraPedida = sol.getFigurita() != null && figuritaId.equals(sol.getFigurita().getId());
             Usuario destinatario = eraPedida

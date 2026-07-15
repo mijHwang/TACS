@@ -2,10 +2,7 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.dtos.FiguritaPublicadaRequestDTO;
 import com.grupo3.tp.dtos.FiguritaPublicadaResponseDTO;
-import com.grupo3.tp.models.EstadoPublicacion;
-import com.grupo3.tp.models.Figurita;
-import com.grupo3.tp.models.FiguritaPublicada;
-import com.grupo3.tp.models.Usuario;
+import com.grupo3.tp.models.*;
 import com.grupo3.tp.repository.FiguritaPublicadaRepository;
 import com.grupo3.tp.repository.UsuarioRepository;
 import org.springframework.data.domain.Page;
@@ -13,9 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,8 +66,23 @@ public class FiguritaPublicadaService {
         // 4. Take only the requested amount
         List<Figurita> aPublicar = disponibles.subList(0, dto.getCantidad());
 
+        // 5. Reclamar cada figurita ANTES de crear la publicación. Si alguna ya está
+        // comprometida en otra operación (subasta, oferta), se aborta y se libera lo reclamado.
+        List<String> reclamadas = new ArrayList<>();
+        try {
+            for (Figurita f : aPublicar) {
+                figuritaService.reclamar(f.getId(), EstadoFigurita.PUBLICADA);
+                reclamadas.add(f.getId());
+            }
+        } catch (IllegalStateException | ConcurrentModificationException e) {
+            reclamadas.forEach(figuritaService::liberar);
+            throw new IllegalStateException(
+                    "Una o más figuritas ya están comprometidas en otra operación: " + e.getMessage());
+        }
+
         Usuario usuario = usuarioService.obtenerPorId(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
 
         FiguritaPublicada publicacion = FiguritaPublicada.builder()
                 .figuritas(aPublicar)
@@ -82,7 +92,13 @@ public class FiguritaPublicadaService {
                 .estado(EstadoPublicacion.DISPONIBLE)
                 .build();
 
-        FiguritaPublicada saved = repository.save(publicacion);
+        FiguritaPublicada saved;
+        try {
+            saved = repository.save(publicacion);
+        } catch (Exception e) {
+            reclamadas.forEach(figuritaService::liberar);
+            throw e;
+        }
 
         // Notificar (en background) a los usuarios a los que les falta esta figurita.
         // Aislado en try/catch para que un fallo notificando no rompa la publicación.
@@ -123,6 +139,10 @@ public class FiguritaPublicadaService {
         FiguritaPublicada publicacion = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Publicacion no encontrada"));
         publicacion.setEstado(EstadoPublicacion.RETIRADA);
+
+        publicacion.getFiguritas().forEach(f -> figuritaService.liberar(f.getId()));
+
+        
         return mapToDTO(repository.save(publicacion));
     }
 
