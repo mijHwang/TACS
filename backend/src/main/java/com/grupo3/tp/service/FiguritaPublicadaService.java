@@ -147,24 +147,51 @@ public class FiguritaPublicadaService {
     }
 
     public FiguritaPublicadaResponseDTO mapToDTO(FiguritaPublicada p) {
+        // 1. Si la publicación no tiene figuritas, devolvemos un DTO "seguro" para no romper la paginación
+        if (p.getFiguritas() == null || p.getFiguritas().isEmpty()) {
+            System.err.println("🔥 ALERTA: La publicación ID " + p.getId() + " está corrupta (no tiene figuritas).");
+            return new FiguritaPublicadaResponseDTO(
+                    p.getId(),
+                    p.getFiguritaBaseId() != null ? p.getFiguritaBaseId() : "ERROR",
+                    0, "Dato Corrupto", "Dato Corrupto", "Dato Corrupto", "Dato Corrupto",
+                    List.of(), 0,
+                    p.getUsuario() != null ? p.getUsuario().getId() : "Desconocido",
+                    p.getUsuario() != null ? p.getUsuario().getUsername() : "Desconocido",
+                    p.getFechaPublicacion(),
+                    p.getEstado() != null ? p.getEstado().name() : "DESCONOCIDO"
+            );
+        }
+
         List<String> figuritaIds = p.getFiguritas().stream()
                 .map(Figurita::getId)
                 .toList();
 
         Figurita primera = p.getFiguritas().get(0);
+        FiguritaBase base = primera.getFiguritaBase();
+
+        // 2. Extracción segura con operadores ternarios por si hay referencias nulas
+        String jugadorNombre = (base != null && base.getJugador() != null) ? base.getJugador().getNombre() : "Desconocido";
+        String seleccionNombre = (base != null && base.getSeleccion() != null) ? base.getSeleccion().getNombre() : "Desconocida";
+        String equipoNombre = (base != null && base.getEquipo() != null) ? base.getEquipo().getNombre() : "Desconocido";
+        String categoriaNombre = (base != null && base.getCategoria() != null) ? base.getCategoria().getNombre() : "Desconocida";
+        int numeroBase = base != null ? base.getNumero() : 0;
+
+        Usuario user = p.getUsuario();
+        String userId = user != null ? user.getId() : "Usuario_Borrado";
+        String username = user != null ? user.getUsername() : "Usuario Desconocido";
 
         return new FiguritaPublicadaResponseDTO(
                 p.getId(),
                 p.getFiguritaBaseId(),
-                primera.getFiguritaBase().getNumero(),
-                primera.getFiguritaBase().getJugador().getNombre(),
-                primera.getFiguritaBase().getSeleccion().getNombre(),
-                primera.getFiguritaBase().getEquipo().getNombre(),
-                primera.getFiguritaBase().getCategoria().getNombre(),
+                numeroBase,
+                jugadorNombre,
+                seleccionNombre,
+                equipoNombre,
+                categoriaNombre,
                 figuritaIds,
                 figuritaIds.size(),
-                p.getUsuario().getId(),
-                p.getUsuario().getUsername(),
+                userId,
+                username,
                 p.getFechaPublicacion(),
                 p.getEstado().name()
         );
