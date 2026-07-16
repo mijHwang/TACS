@@ -9,6 +9,7 @@ import com.grupo3.tp.models.FiguritaBase;
 import com.grupo3.tp.models.Usuario;
 import com.grupo3.tp.repository.SubastaRepository;
 import com.grupo3.tp.service.FiguritaBaseService;
+import com.grupo3.tp.service.FiguritaPublicadaService;
 import com.grupo3.tp.service.FiguritaService;
 import com.grupo3.tp.service.UsuarioService;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +28,16 @@ public class FiguritaController {
     private final FiguritaService service;
     private final FiguritaBaseService  baseService;
     private final UsuarioService usuarioService;
+    private final FiguritaPublicadaService publicadaService; // add
 
-    public FiguritaController(FiguritaService service, FiguritaBaseService baseService, UsuarioService usuarioService) {
+    public FiguritaController(FiguritaService service,
+                              FiguritaBaseService baseService,
+                              UsuarioService usuarioService,
+                              FiguritaPublicadaService publicadaService) {
         this.service = service;
         this.baseService = baseService;
         this.usuarioService = usuarioService;
+        this.publicadaService = publicadaService;
     }
 
     /**
@@ -96,6 +102,7 @@ public class FiguritaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
+        publicadaService.removeFiguritaFromPublications(id); // clean references first
         if (service.eliminar(id)) {
             return ResponseEntity.noContent().build();
         }
