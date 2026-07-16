@@ -2,56 +2,47 @@ package com.grupo3.tp.service;
 
 import com.grupo3.tp.dtos.FiguritaResponseDTO;
 import com.grupo3.tp.dtos.SugerenciaResponseDTO;
-import com.grupo3.tp.models.Faltante;
-import com.grupo3.tp.models.Figurita;
-import com.grupo3.tp.models.Sugerencia;
-import com.grupo3.tp.models.Usuario;
-import com.grupo3.tp.repository.FaltanteRepository;
-import com.grupo3.tp.repository.FiguritaRepository;
-import com.grupo3.tp.repository.SugerenciaRepository;
-import com.grupo3.tp.repository.UsuarioRepository;
+import com.grupo3.tp.models.*;
+import com.grupo3.tp.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Calcula y persiste las sugerencias de intercambio bidireccional (US4).
+ * Ahora basado en Publicaciones Activas en lugar de inventario plano.
  */
 @Service
 public class SugerenciaService {
 
     private final SugerenciaRepository sugerenciaRepository;
     private final UsuarioRepository usuarioRepository;
-    private final FiguritaRepository figuritaRepository;
     private final FaltanteRepository faltanteRepository;
+    private final FiguritaPublicadaRepository figuritaPublicadaRepository;
+    private final FiguritaRepository figuritaRepository; // Reintroducido para el chequeo defensivo de propiedad
 
     public SugerenciaService(SugerenciaRepository sugerenciaRepository,
                              UsuarioRepository usuarioRepository,
-                             FiguritaRepository figuritaRepository,
-                             FaltanteRepository faltanteRepository) {
+                             FaltanteRepository faltanteRepository,
+                             FiguritaPublicadaRepository figuritaPublicadaRepository,
+                             FiguritaRepository figuritaRepository) {
         this.sugerenciaRepository = sugerenciaRepository;
         this.usuarioRepository = usuarioRepository;
-        this.figuritaRepository = figuritaRepository;
         this.faltanteRepository = faltanteRepository;
+        this.figuritaPublicadaRepository = figuritaPublicadaRepository;
+        this.figuritaRepository = figuritaRepository;
     }
 
-    /** Sugerencias persistidas del usuario, mapeadas a DTO. */
     public List<SugerenciaResponseDTO> obtenerPorUsuario(String usuarioId) {
         return sugerenciaRepository.findByUsuarioId(usuarioId).stream()
                 .map(this::toResponseDTO)
                 .toList();
     }
 
-    /** Sugerencias persistidas del usuario, paginadas y mapeadas a DTO. */
     public Page<SugerenciaResponseDTO> obtenerPorUsuario(String usuarioId, Pageable pageable) {
         return sugerenciaRepository.findByUsuarioId(usuarioId, pageable)
                 .map(this::toResponseDTO);
@@ -64,69 +55,98 @@ public class SugerenciaService {
     }
 
     /**
-     * Recalcula y reemplaza las sugerencias de todos los usuarios. Para cada par (U, V) con U != V,
-     * crea una sugerencia si V tiene repetidas que a U le faltan Y U tiene repetidas que a V le faltan
-     * (intercambio bidireccional viable). El reemplazo es por usuario para evitar ventanas vacías.
+     * Recalcula y reemplaza las sugerencias de todos los usuarios basándose en:
+     * 1. Publicaciones ACTIVAS y DISPONIBLES de los usuarios (Oferta).
+     * 2. Sus wishlists (Faltantes).
+     * 3. Chequeo defensivo contra su colección actual de figuritas (para no sugerir lo que ya tienen).
      */
     public void regenerarTodas() {
         List<Usuario> usuarios = usuarioRepository.findAll();
-        List<Figurita> todas = figuritaRepository.findAll();
+        List<Figurita> todasLasFiguritas = figuritaRepository.findAll();
+        List<Faltante> todosLosFaltantes = faltanteRepository.findAll();
+        List<FiguritaPublicada> todasLasPublicadas = figuritaPublicadaRepository.findAll();
 
-        Map<String, List<Figurita>> porOwner = todas.stream()
-                .filter(f -> f.getOwner() != null && f.getFiguritaBase() != null)
-                .collect(Collectors.groupingBy(f -> f.getOwner().getId()));
-
-        // owner id -> bases que posee
+        // 1. Mapear qué bases posee ya cada usuario (Para el chequeo defensivo de propiedad)
+        // usuarioId -> Set de figuritaBaseId que el usuario ya tiene en su poder
         Map<String, Set<String>> basesPoseidas = new HashMap<>();
-        // owner id -> (baseId -> instancia representativa como DTO) de las repetidas (count > 1)
-        Map<String, Map<String, FiguritaResponseDTO>> repetidas = new HashMap<>();
-
-        for (Map.Entry<String, List<Figurita>> e : porOwner.entrySet()) {
-            Map<String, List<Figurita>> porBase = e.getValue().stream()
-                    .collect(Collectors.groupingBy(f -> f.getFiguritaBase().getId()));
-            basesPoseidas.put(e.getKey(), new HashSet<>(porBase.keySet()));
-            Map<String, FiguritaResponseDTO> rep = new HashMap<>();
-            for (Map.Entry<String, List<Figurita>> be : porBase.entrySet()) {
-                if (be.getValue().size() > 1) {
-                    rep.put(be.getKey(), toDTO(be.getValue().get(0)));
-                }
+        for (Figurita f : todasLasFiguritas) {
+            if (f.getOwner() != null && f.getFiguritaBase() != null) {
+                basesPoseidas.computeIfAbsent(f.getOwner().getId(), k -> new HashSet<>())
+                        .add(f.getFiguritaBase().getId());
             }
-            repetidas.put(e.getKey(), rep);
         }
 
-        // owner id -> set de baseIds que el usuario DECLARÓ que le faltan (wishlist)
+        // 2. Mapear las wishlists (usuarioId -> Set de figuritaBaseId deseadas)
         Map<String, Set<String>> wishlist = new HashMap<>();
-        for (Faltante f : faltanteRepository.findAll()) {
+        for (Faltante f : todosLosFaltantes) {
             if (f.getUsuarioId() != null && f.getFiguritaBaseId() != null) {
                 wishlist.computeIfAbsent(f.getUsuarioId(), k -> new HashSet<>()).add(f.getFiguritaBaseId());
             }
         }
 
+        // 3. Filtrar y agrupar publicaciones válidas por Ofertante (usuarioId -> List de Publicaciones)
+        // GUARD: Filtramos publicaciones nulas, sin dueño, inactivas, o que NO tengan figuritas asociadas
+        List<FiguritaPublicada> publicadasValidas = todasLasPublicadas.stream()
+                .filter(p -> p.getEstado() == EstadoPublicacion.DISPONIBLE
+                        && p.getUsuario() != null
+                        && p.getFiguritas() != null
+                        && !p.getFiguritas().isEmpty())
+                .toList();
+
+        Map<String, List<FiguritaPublicada>> publicacionesPorUsuario = publicadasValidas.stream()
+                .collect(Collectors.groupingBy(p -> p.getUsuario().getId()));
+
         LocalDateTime ahora = LocalDateTime.now();
 
         for (Usuario u : usuarios) {
+            Set<String> wishU = wishlist.getOrDefault(u.getId(), Set.of());
             Set<String> ownedU = basesPoseidas.getOrDefault(u.getId(), Set.of());
-            Map<String, FiguritaResponseDTO> repU = repetidas.getOrDefault(u.getId(), Map.of());
+
+            // Agrupamos la oferta de U por baseId para poder fusionar en caso de duplicados
+            List<FiguritaPublicada> pubU = publicacionesPorUsuario.getOrDefault(u.getId(), List.of());
+            Map<String, List<FiguritaPublicada>> pubUByBase = pubU.stream()
+                    .collect(Collectors.groupingBy(FiguritaPublicada::getFiguritaBaseId));
 
             List<Sugerencia> candidatos = new ArrayList<>();
+
             for (Usuario v : usuarios) {
                 if (v.getId().equals(u.getId())) {
-                    continue;
+                    continue; // No nos sugerimos a nosotros mismos
                 }
-                Set<String> ownedV = basesPoseidas.getOrDefault(v.getId(), Set.of());
-                Map<String, FiguritaResponseDTO> repV = repetidas.getOrDefault(v.getId(), Map.of());
-                Set<String> wishU = wishlist.getOrDefault(u.getId(), Set.of());
+
                 Set<String> wishV = wishlist.getOrDefault(v.getId(), Set.of());
+                Set<String> ownedV = basesPoseidas.getOrDefault(v.getId(), Set.of());
 
-                // U recibe repetidas de V que U declaró querer (y que U no posea, defensivo).
-                List<FiguritaResponseDTO> aRecibir = repV.entrySet().stream()
-                        .filter(en -> wishU.contains(en.getKey()) && !ownedU.contains(en.getKey()))
-                        .map(Map.Entry::getValue).toList();
-                // U ofrece sus repetidas que V declaró querer.
-                List<FiguritaResponseDTO> aOfrecer = repU.entrySet().stream()
-                        .filter(en -> wishV.contains(en.getKey()) && !ownedV.contains(en.getKey()))
-                        .map(Map.Entry::getValue).toList();
+                // Agrupamos la oferta de V por baseId
+                List<FiguritaPublicada> pubV = publicacionesPorUsuario.getOrDefault(v.getId(), List.of());
+                Map<String, List<FiguritaPublicada>> pubVByBase = pubV.stream()
+                        .collect(Collectors.groupingBy(FiguritaPublicada::getFiguritaBaseId));
 
+                // -- U RECIBE lo que V ofrece --
+                // Filtramos las bases de V que:
+                // 1. Están en la wishlist de U
+                // 2. NO las tiene físicamente U (Defensa)
+                List<FiguritaResponseDTO> aRecibir = new ArrayList<>();
+                for (Map.Entry<String, List<FiguritaPublicada>> entry : pubVByBase.entrySet()) {
+                    String baseId = entry.getKey();
+                    if (wishU.contains(baseId) && !ownedU.contains(baseId)) {
+                        aRecibir.add(mergeAndMapToDTO(entry.getValue(), baseId, v));
+                    }
+                }
+
+                // -- U OFRECE lo que U tiene publicado --
+                // Filtramos las bases de U que:
+                // 1. Están en la wishlist de V
+                // 2. NO las tiene físicamente V (Defensa)
+                List<FiguritaResponseDTO> aOfrecer = new ArrayList<>();
+                for (Map.Entry<String, List<FiguritaPublicada>> entry : pubUByBase.entrySet()) {
+                    String baseId = entry.getKey();
+                    if (wishV.contains(baseId) && !ownedV.contains(baseId)) {
+                        aOfrecer.add(mergeAndMapToDTO(entry.getValue(), baseId, u));
+                    }
+                }
+
+                // Generar la sugerencia únicamente si es un WIN-WIN bidireccional viable
                 if (!aRecibir.isEmpty() && !aOfrecer.isEmpty()) {
                     candidatos.add(Sugerencia.builder()
                             .usuarioId(u.getId())
@@ -138,6 +158,8 @@ public class SugerenciaService {
                             .build());
                 }
             }
+
+            // Guardamos las sugerencias de manera transaccional por usuario
             sugerenciaRepository.deleteByUsuarioId(u.getId());
             if (!candidatos.isEmpty()) {
                 sugerenciaRepository.saveAll(candidatos);
@@ -145,19 +167,33 @@ public class SugerenciaService {
         }
     }
 
-    private FiguritaResponseDTO toDTO(Figurita f) {
+    /**
+     * Fusiona múltiples publicaciones del mismo sticker base de un usuario
+     * en un único DTO legible, sumando sus existencias de forma segura.
+     */
+    private FiguritaResponseDTO mergeAndMapToDTO(List<FiguritaPublicada> publicaciones, String baseId, Usuario owner) {
+        // Obtenemos la primera publicación para extraer los datos de la metadata base
+        // (Ya validamos previamente que la lista no esté vacía y tenga al menos una figurita física)
+        FiguritaPublicada primeraPublicada = publicaciones.get(0);
+        Figurita primeraFigurita = primeraPublicada.getFiguritas().get(0);
+
+        // Sumamos las cantidades de todas las publicaciones agrupadas del mismo sticker
+        int cantidadTotal = publicaciones.stream()
+                .mapToInt(p -> p.getFiguritas().size())
+                .sum();
+
         return new FiguritaResponseDTO(
-                f.getId(),
-                f.getFiguritaBase().getNumero(),
-                f.getFiguritaBase().getId(),
-                1,
-                f.getFiguritaBase().getJugador().getNombre(),
-                f.getFiguritaBase().getSeleccion().getNombre(),
-                f.getFiguritaBase().getEquipo().getNombre(),
-                f.getFiguritaBase().getCategoria().getNombre(),
-                f.getOwner().getId(),
-                f.getOwner().getUsername(),
-                f.getFiguritaBase().getImagenUrl()
+                primeraFigurita.getId(),
+                primeraFigurita.getFiguritaBase().getNumero(),
+                baseId,
+                cantidadTotal, // Suma total acumulada
+                primeraFigurita.getFiguritaBase().getJugador().getNombre(),
+                primeraFigurita.getFiguritaBase().getSeleccion().getNombre(),
+                primeraFigurita.getFiguritaBase().getEquipo().getNombre(),
+                primeraFigurita.getFiguritaBase().getCategoria().getNombre(),
+                owner.getId(),
+                owner.getUsername(),
+                primeraFigurita.getFiguritaBase().getImagenUrl()
         );
     }
 }

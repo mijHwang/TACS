@@ -17,7 +17,8 @@ public class SugerenciaScheduler {
         this.sugerenciaService = sugerenciaService;
     }
 
-    @Scheduled(cron = "${sugerencias.cron:0 0 3 * * *}", zone = "${sugerencias.zone:America/Argentina/Buenos_Aires}")
+    // "0 0 * * * *" significa: Segundo 0, Minuto 0, Cada Hora, Todos los días
+    @Scheduled(cron = "${sugerencias.cron:0 0 * * * *}", zone = "${sugerencias.zone:America/Argentina/Buenos_Aires}")
     public void regenerarDiariamente() {
         sugerenciaService.regenerarTodas();
     }

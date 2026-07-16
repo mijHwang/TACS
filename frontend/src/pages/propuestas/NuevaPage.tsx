@@ -12,21 +12,34 @@ export default function PropuestasNuevaPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // 1. Datos recibidos por el router (pueden venir de la búsqueda tradicional o de una sugerencia)
   const figuritaDelLink = location.state?.figuritaSeleccionada as { id: string; figuritaBaseId: string; jugadorNombre: string; ownerId: string } | undefined;
+  
+  // Retrocompatibilidad: IDs de bases de figuritas (el flujo anterior)
   const offeredBaseIds = location.state?.figuritasOfrecidasBaseIds as string[] | undefined;
+  
+  // NUEVA CARACTERÍSTICA: IDs físicos exactos y preseleccionados desde la Sugerencia (Evita duplicados)
+  const directOfferedIds = location.state?.figuritasOfrecidasIds as string[] | undefined;
 
   const { data: misFiguritas = [] } = useFiguritas(user?.username);
   const crearPropuesta = useCrearPropuesta();
+  
   const [figuritaSeleccionada] = useState<string>(figuritaDelLink?.id || '');
-  const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>([]);
-  const [expandedMias, setExpandedMias] = useState<boolean>(false);
+  
+  // Mantenemos la característica actual, pero si ya tenemos IDs directos, los cargamos síncronamente al instante
+  const [figuritasOfrecidas, setFiguritasOfrecidas] = useState<string[]>(directOfferedIds || []);
+  
+  // Si venimos con una sugerencia directa, expandimos tus figuritas por defecto para que las veas
+  const [expandedMias, setExpandedMias] = useState<boolean>(
+    (directOfferedIds && directOfferedIds.length > 0) || (offeredBaseIds && offeredBaseIds.length > 0) ? true : false
+  );
+  
   const [busqueda, setBusqueda] = useState('');
   const [paginaSel, setPaginaSel] = useState(0);
   const [formError, setFormError] = useState<string | null>(null);
   const prefillApplied = useRef(false);
 
-  // Filtrado + paginado client-side de la lista de selección (la colección puede tener 100+).
-  // La selección (figuritasOfrecidas) es independiente de la página, así que persiste al navegar.
+  // Filtrado + paginado client-side de la lista de selección (se mantienen intactas tus características)
   const q = busqueda.trim().toLowerCase();
   const filtradas = q === ''
     ? misFiguritas
@@ -35,7 +48,7 @@ export default function PropuestasNuevaPage() {
   const totalPagesSel = Math.ceil(filtradas.length / SEL_PAGE_SIZE);
   const visibles = filtradas.slice(paginaSel * SEL_PAGE_SIZE, paginaSel * SEL_PAGE_SIZE + SEL_PAGE_SIZE);
 
-  // Handle checkbox for figuritas to offer
+  // Manejo de la selección manual (característica actual intacta)
   const handleToggleFigurita = (id: string) => {
     if (figuritasOfrecidas.includes(id)) {
       setFiguritasOfrecidas(figuritasOfrecidas.filter(fid => fid !== id));
@@ -44,22 +57,30 @@ export default function PropuestasNuevaPage() {
     }
   };
 
-  // Prefill desde sugerencia: pre-tildar figuritas a ofrecer por base id.
-  // One-shot initialization once async data arrives — intentional setState in effect.
+  // Prefill asíncrono (Retrocompatibilidad): Si se navega de la forma vieja usando base IDs,
+  // resolvemos las figuritas físicas correspondientes cuando lleguen los datos.
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (prefillApplied.current) return;
+    
+    // Si ya cargamos de forma síncrona los IDs directos, no hacemos nada más
+    if (directOfferedIds && directOfferedIds.length > 0) {
+      prefillApplied.current = true;
+      return;
+    }
+    
     if (!offeredBaseIds || offeredBaseIds.length === 0 || misFiguritas.length === 0) return;
+    
     prefillApplied.current = true;
     const ids = misFiguritas.filter((f) => offeredBaseIds.includes(f.figuritaBaseId)).map((f) => f.id);
     if (ids.length > 0) {
       setFiguritasOfrecidas(ids);
       setExpandedMias(true);
     }
-  }, [misFiguritas, offeredBaseIds]);
+  }, [misFiguritas, offeredBaseIds, directOfferedIds]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  // Handle submit
+  // Envío del formulario con validaciones existentes intactas
   const handleSubmit = () => {
     setFormError(null);
     if (figuritaDelLink?.ownerId === user?.id) {
@@ -89,7 +110,7 @@ export default function PropuestasNuevaPage() {
     <div className="page-enter">
       <h2 className="text-xl font-semibold text-text mb-4">Propuestas · Nueva</h2>
 
-      {/* Section 1: Figurita que quieres */}
+      {/* Section 1: Figurita que quieres (Mismo UI/UX que ya tenías) */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold text-text mb-4">¿Qué figurita quieres?</h3>
         <button
@@ -108,7 +129,7 @@ export default function PropuestasNuevaPage() {
         )}
       </div>
 
-      {/* Section 2: Figuritas que ofreces */}
+      {/* Section 2: Figuritas que ofreces (Mismo UI/UX con acordeón, paginado y filtros) */}
       <div className="mb-8">
         <button
           onClick={() => setExpandedMias(!expandedMias)}

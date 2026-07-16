@@ -23,14 +23,25 @@ export default function SugerenciasPage() {
   const { data, isLoading, isError, refetch } = useSugerencias(user?.username, page, pageSize);
   const sugerencias = data?.content ?? [];
 
-  const proponer = (s: SugerenciaResponseDTO, f: FiguritaResponseDTO) => {
-    navigate('/propuestas/nueva', {
-      state: {
-        figuritaSeleccionada: f,
-        figuritasOfrecidasBaseIds: s.figuritasAOfrecer.map((x) => x.figuritaBaseId),
-      },
-    });
-  };
+  // Dentro de tu componente SugerenciasPage, localiza tu función 'proponer' 
+// y reemplázala por esta versión optimizada:
+
+const proponer = (sugerencia: SugerenciaResponseDTO, figuritaDeseada: FiguritaResponseDTO) => {
+  navigate('/propuestas/nueva', {
+    state: {
+      // 1. La figurita que queremos (la que está en la sugerencia)
+      figuritaSeleccionada: figuritaDeseada,
+      
+      // 2. LA MEJORA: Pasamos los IDs físicos exactos (mapeados desde el DTO)
+      // Esto hace que el formulario destino cargue instantáneamente y sin duplicados.
+      figuritasOfrecidasIds: sugerencia.figuritasAOfrecer.map((x) => x.id),
+      
+      // Mantenemos esta línea solo si todavía tienes otros componentes 
+      // usando el flujo viejo, si no, puedes borrarla.
+      figuritasOfrecidasBaseIds: sugerencia.figuritasAOfrecer.map((x) => x.figuritaBaseId),
+    },
+  });
+};
 
   if (isLoading) {
     return <div className="page-enter"><Spinner label="Cargando sugerencias…" /></div>;
