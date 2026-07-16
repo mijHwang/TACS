@@ -1,146 +1,107 @@
 # TACS — TP Grupo 3
 
-
 ## Descripción del Proyecto
 
-**TACS** es una plataforma para el intercambio de figuritas del Mundial de Fútbol 2026.
+TACS es una plataforma para el intercambio de figuritas del Mundial de Fútbol 2026.
 
-**Propósito:** Facilitar que los usuarios publiquen figuritas repetidas, busquen coincidencias 
-con otros usuarios, realicen propuestas de intercambio, completen operaciones dentro de la plataforma y publiquen subastas de figuritas repetidas
-
-**Funcionalidades principales:**
-
-- Autenticación y gestión de cuentas
-- Búsqueda y filtrado de figuritas disponibles
-- Propuestas de intercambio entre usuarios
-- Gestión de propuestas (aceptar/rechazar)
-- Colección personal y tracking de figuritas
-- Notificaciones de actividad
-- Historial de intercambios completados
-- Subastas de figuritas (crear, listar, participar, pujar)
-
-**Pendientes principales** (detalle en [Cobertura de User Stories](#cobertura-de-user-stories)):
-
-- US11 — alertas proactivas por cierre de subasta
-- **Load test (Vegeta/wrk)**
+* **Propósito:** Facilitar que los usuarios publiquen figuritas repetidas, busquen coincidencias con otros usuarios, realicen propuestas de intercambio, completen operaciones dentro de la plataforma y publiquen subastas de figuritas repetidas.
+* **Funcionalidades principales:**
+    * Autenticación y gestión de cuentas
+    * Búsqueda y filtrado de figuritas disponibles
+    * Propuestas de intercambio entre usuarios
+    * Gestión de propuestas (aceptar/rechazar)
+    * Colección personal y tracking de figuritas
+    * Notificaciones de actividad
+    * Historial de intercambios completados
+    * Subastas de figuritas (crear, listar, participar, pujar)
+* **Pendientes principales** (detalle en Cobertura de User Stories):
+    * US11 — alertas proactivas por cierre de subasta
+    * Load test (Vegeta/wrk)
 
 ## Equipo
 
-- Hwang, Min Jun
-- Sicher, Matias
+* Hwang, Min Jun
+* Sicher, Matias
 
 ## Requisitos previos
 
 | Herramienta | Versión mínima |
-|---|---|
+| :--- | :--- |
 | Docker | 24+ |
 | Docker Compose | v2 (incluido en Docker Desktop) |
 
 ---
 
-## Cómo levantar la aplicación
+## Cómo levantar la aplicación (Local)
 
-La app es **autocontenida**: `docker compose` levanta frontend, backend **y la base MongoDB**
-(con un volumen para que los datos persistan). No hace falta ninguna cuenta ni base externa.
+La app es autocontenida: docker compose levanta frontend, backend y la base MongoDB (con un volumen para que los datos persistan). No hace falta ninguna cuenta ni base externa.
 
 ```bash
 # Desde la raíz del repositorio
 cp .env.example .env       # primera vez: crea el .env con un JWT_SECRET de desarrollo
 docker compose up --build
+
 ```
 
-> **Auto-seed al primer arranque:** con un volumen de Mongo vacío, el backend siembra automáticamente
-> el escenario de demo (3 protagonistas + admin + una semana de actividad simulada) al terminar de
-> levantar — no hace falta tocar nada. Es **idempotente**: en reinicios posteriores respeta los datos
-> (no re-siembra ni borra). Para volver a sembrar desde cero: `docker compose down -v` y volvé a
-> levantar, o usá el botón de Admin. Se controla con `SEED_ON_STARTUP` (prendido en el compose de dev,
-> **apagado en `docker-compose.prod.yml`** para no tocar la base de producción).
+> **Auto-seed al primer arranque**
+>
+> Con un volumen de Mongo vacío, el backend siembra automáticamente el escenario de demo (3 protagonistas + admin + una semana de actividad simulada) al terminar de levantar — no hace falta tocar nada. Es idempotente: en reinicios posteriores respeta los datos (no re-siembra ni borra). Para volver a sembrar desde cero: `docker compose down -v` y volvé a levantar, o usá el botón de Admin. Se controla con `SEED_ON_STARTUP` (prendido en el compose de dev).
 
-> Para usar **MongoDB Atlas** en lugar del Mongo local, descomentá y completá `SPRING_MONGODB_URI`
-> en el `.env` (ver `.env.example`).
-
-### Online (AWS)
-La aplicación está alojada en una instancia AWS y accesible por HTTPS. URL principal (detrás de Cloudflare):
-```
-https://tacs-g3-figuritas.dev/
-```
-
-El dominio es **`tacs-g3-figuritas.dev`** (registrado en **Name.com**, gratis vía GitHub Student Pack), delegado a **Cloudflare** (proxy/CDN/DDoS) y apuntando a la IP elástica `34.195.221.240`. Cloudflare termina el TLS público con su Universal SSL y reconecta al origen en **Full (strict)** validando un Cloudflare Origin Certificate instalado en Nginx.
-
-> **DuckDNS quedó deprecado.** El dominio que se usa es el de Name.com (`.dev`). El viejo `tacs-g3-figuritas.duckdns.org` (con su cert de Let's Encrypt) puede seguir resolviendo a la EC2 como remanente, pero **ya no se usa** y queda pendiente de limpieza del server.
+Para usar MongoDB Atlas en lugar del Mongo local, descomentá y completá `SPRING_MONGODB_URI` en el `.env` (ver `.env.example`).
 
 | URL | Descripción |
-|---|---|
+| --- | --- |
 | `http://localhost` | Aplicación web (frontend) |
 | `http://localhost:8080/api/health` | Health check del backend |
 
-#### Deploy con HTTPS (Cloudflare)
+---
 
-El TLS público lo termina **Cloudflare** (Universal SSL), que reconecta al origen en modo
-**Full (strict)** validando un **Cloudflare Origin Certificate** (15 años) instalado en el Nginx
-del frontend. Toda la config de prod vive en el repo y se activa con un **override de producción**
-(`docker-compose.prod.yml`), así el `docker compose up` de desarrollo —que usa el `nginx.conf` HTTP
-simple— no se ve afectado.
+## Despliegue Online (Render)
 
-**Requisitos previos en la EC2:** el dominio resuelve vía Cloudflare a la IP pública + puertos
-**80 y 443** abiertos en el Security Group + el Origin Certificate presente en `./cloudflare/`.
+La aplicación está alojada y desplegada utilizando múltiples servicios en [Render](https://render.com/). El despliegue se configura mediante un Blueprint (archivo `render.yaml`) que divide la aplicación en tres microservicios utilizando entornos de Docker.
 
-```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-```
+### Servicios Desplegados:
 
-> **Base de datos en el server:** el override de prod hereda el servicio `mongo` del compose base,
-> así que el servidor usa **su propio MongoDB en Docker** (volumen `mongo-data` en el disco de la EC2).
-> Para que el backend lo use, el `.env` de la EC2 **no debe** setear `SPRING_MONGODB_URI` (o dejarlo
-> comentado); si apunta a Atlas, seguirá usando Atlas. La base del server arranca vacía la primera vez;
-> el **auto-seed de arranque está apagado en prod** (`SEED_ON_STARTUP=false` en `docker-compose.prod.yml`),
-> así que el demo se carga manualmente con el botón de Admin (el seeder recarga el catálogo).
->
-> Además, generá un `JWT_SECRET` propio en el `.env` de la EC2 — **no** dejes el valor de desarrollo
-> de `.env.example`, que es público (firmar tokens con él permitiría falsificarlos).
+1. **Frontend (React/Nginx):** `https://tacs-frontend.onrender.com`
+2. **Backend (Spring Boot):** `https://tacs-backend-25gc.onrender.com`
+3. **Telegram Bot:** `https://tacs-telegram-bot.onrender.com`
 
-| Archivo | Rol |
-|---|---|
-| `frontend/nginx.prod.conf` | Server 443 con el Origin Certificate + `real_ip` de Cloudflare; redirect 80→443 |
-| `docker-compose.prod.yml` | Expone 443 y monta `./cloudflare` (el cert de origen) |
+### Configuración del Entorno de Producción:
 
-**Cómo está armado Cloudflare:**
+* **Variables de Entorno (Dashboard de Render):** Las variables sensibles no se versionan. Se inyectan manualmente en la plataforma:
+* `SPRING_MONGODB_URI`: Apunta a la instancia de base de datos en producción (ej. Atlas).
+* `TELEGRAM_BOT_TOKEN`: Token provisto por BotFather para el microservicio del bot.
+* `JWT_SECRET`: Se utiliza la opción `generateValue: true` de Render para crear una firma criptográfica segura autogenerada.
 
-- **DNS (Cloudflare):** `A @ → 34.195.221.240` (Proxied) + `A www → 34.195.221.240` (Proxied).
-- **Edge ↔ navegador:** Universal SSL (cert gratis de Cloudflare para el dominio).
-- **Cloudflare ↔ origen:** el Origin Certificate (SAN `tacs-g3-figuritas.dev` + `*.`) se selecciona
-  por SNI en `frontend/nginx.prod.conf` y es el `default_server` 443.
-- **IP real:** Nginx usa `real_ip` con los rangos de Cloudflare (`CF-Connecting-IP`), así el backend
-  ve la IP del visitante y no la de Cloudflare.
-- El cert/key de origen viven en `./cloudflare/origin.{pem,key}` en la EC2 (**gitignored**, nunca se
-  commitean). **Rotación:** regenerar el Origin Certificate en Cloudflare, reemplazar esos 2 archivos
-  y recrear el contenedor `frontend`.
 
-> El setup anterior con DuckDNS + Let's Encrypt (`certbot`, `init-letsencrypt.sh`) fue **removido**:
-> el dominio en uso es el de Name.com vía Cloudflare.
+* **Perfiles de Spring:** El backend se ejecuta con la variable `SPRING_PROFILES_ACTIVE=docker`, mapeando directamente contra la configuración de `application-docker.properties`.
+* **Comunicación Interna:** El servicio del bot de Telegram se comunica con la API mediante la variable de entorno `BACKEND_URL` configurada con la URL pública del backend de Render.
+* **TLS / HTTPS:** La terminación SSL/TLS es administrada automáticamente por Render en el edge para todos los servicios, por lo que no se requiere configuración manual de certificados o proxies inversos en los contenedores.
 
-### Usuarios de prueba
+---
 
-> Los datos se persisten en el **MongoDB del container** (volumen `mongo-data`), por lo que **sobreviven** al reinicio de los contenedores. Se borran solo con `docker compose down -v`.
+## Usuarios de prueba
 
-Se puede crear usuarios a través del formulario de registro en la UI. El usuario con username `admin` recibe rol ADMIN; el resto, rol USER.
+Los datos se persisten en la base de datos de producción o en el volumen local (`mongo-data`), por lo que sobreviven al reinicio de los contenedores.
+Se pueden crear usuarios a través del formulario de registro en la UI. **Por seguridad, todos los registros públicos se asignan forzosamente con rol `USER`.**
 
-#### Cargar datos de demo (reset + seed)
+### Cargar datos de demo (reset + seed)
 
-Para poblar el sistema con un escenario realista y poder visualizar/probar todas las pantallas, hay un botón en la pantalla de **Admin**:
+Para poblar el sistema con un escenario realista y poder visualizar/probar todas las pantallas, hay un botón en la pantalla de Admin:
 
-1. Logueate como **`admin`** / `adminpass123` (si la base está vacía, registralo primero desde la UI; el username `admin` recibe rol ADMIN automáticamente).
-2. Andá a **`/admin`** → tarjeta **"Mantenimiento de datos"** → botón **"Resetear base y cargar datos de demo"**.
-3. En el modal, escribí **`RESET`** para habilitar la confirmación.
-4. Al terminar verás un resumen (usuarios, figuritas, publicaciones, propuestas, subastas, etc.). Logueate como **`juanca`**, **`sofia`** o **`mateo`** / `demo1234` para ver el dashboard completo de cada protagonista.
+1. Logueate como admin / `adminpass123` (si la base está vacía y no sembró automático, registralo primero desde la UI o usa el auto-seeder).
+2. Andá a `/admin` → tarjeta "Mantenimiento de datos" → botón "Resetear base y cargar datos de demo".
+3. En el modal, escribí `RESET` para habilitar la confirmación.
 
-> El mismo escenario se siembra **automáticamente** al levantar el docker con un Mongo vacío (ver la nota de *auto-seed* en "Cómo levantar la aplicación"); el botón sirve para **re-sembrar** o para bases que ya tienen datos.
+Al terminar verás un resumen. Logueate como `juanca`, `sofia` o `mateo` (password `demo1234`) para ver el dashboard completo de cada protagonista.
 
-> ⚠️ **Acción destructiva.** El endpoint `POST /api/admin/seed-demo` (admin-only) hace `dropCollection` de **todas** las colecciones antes de sembrar. Afecta **solo a la base donde lo corras** (local y servidor ahora tienen cada uno su propio Mongo en Docker, ya no comparten cluster de Atlas). Aun así, **no lo ejecutes contra la base del servidor** salvo que realmente quieras resetearla. La única guarda es el rol ADMIN + la confirmación tipeada en la UI (decisión de diseño: sin flag de entorno).
+> ⚠️ **Acción destructiva:** El endpoint POST `/api/admin/seed-demo` (admin-only) hace `dropCollection` de todas las colecciones antes de sembrar. La única guarda es el rol ADMIN + la confirmación tipeada en la UI.
 
-**Cohorte sembrada:** `admin` (ADMIN, `adminpass123`) + **3 protagonistas** (`juanca`, `sofia`, `mateo`) + 8 de reparto (`valen`, `cami`, `nico`, `lucas`, `martina`, `thiago`, `agus`, `flor`) — todos con password **`demo1234`**. Cada protagonista ejercita el set completo de User Stories y la actividad está **repartida a lo largo de la última semana** (backdating de fechas sobre un catálogo real del Mundial): publicaciones (US1), colecciones con repetidas/faltantes (US2), propuestas enviadas/recibidas en sus 3 estados (US5/US9), subastas activas con ofertas + una finalizada (US6/US7), calificaciones/reputación (US10), sugerencias bidireccionales (US4) y notificaciones repartidas en varios días. La lógica vive en `DemoSeedService` (backend, con `DemoTimeline` para el backdating de fechas e `InstancePool` para no asignar la misma figurita a dos actividades), el auto-seed de arranque en `DemoSeedBootstrap`, y `SeedDemoCard` (frontend).
+**Cohorte sembrada:** admin (ADMIN, `adminpass123`) + 3 protagonistas (`juanca`, `sofia`, `mateo`) + 8 de reparto (`valen`, `cami`, `nico`, `lucas`, `martina`, `thiago`, `agus`, `flor`) — todos con password `demo1234`. Cada protagonista ejercita el set completo de User Stories y la actividad está repartida a lo largo de la última semana.
 
-### Comandos útiles
+---
+
+## Comandos útiles (Desarrollo Local)
 
 ```bash
 # Levantar en background
@@ -154,19 +115,21 @@ docker compose logs -f backend
 
 # Bajar todo y eliminar contenedores
 docker compose down
+
 ```
 
 ---
 
-### Componentes
+## Componentes
 
 | Servicio | Tecnología | Puerto |
-|---|---|---|
-| **frontend** | React 19 + Vite + TailwindCSS 4 → build estático servido por Nginx | 80 |
-| **backend** | Spring Boot 4 + Java 21 + Lombok | 8080 |
-| **mongo** | MongoDB 7 (container, volumen `mongo-data`) | 27017 (solo dentro de `tacs-net`) |
+| --- | --- | --- |
+| **frontend** | React 19 + Vite + TailwindCSS 4 → build estático servido por Nginx | `80` |
+| **backend** | Spring Boot 4 + Java 21 + Lombok | `8080` |
+| **mongo** | MongoDB 7 (container, volumen `mongo-data`) | `27017` (solo dentro de `tacs-net`) |
+| **telegram-bot** | Microservicio independiente | N/A |
 
-Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla directamente con el backend desde el browser** — todo pasa por el proxy de Nginx. Esto elimina problemas de CORS.
+Ambos (front/back) corren en una red Docker interna (`tacs-net`). El frontend nunca habla directamente con el backend desde el browser en desarrollo local — todo pasa por el proxy de Nginx. Esto elimina problemas de CORS.
 
 ---
 
@@ -174,114 +137,89 @@ Ambos corren en una red Docker interna (`tacs-net`). El frontend **nunca habla d
 
 ### Backend
 
-- **Arquitectura en capas**: `Controller → Service → Repository`, separando responsabilidades y facilitando el testing unitario de cada capa y posterior migrado a microservicios.
-- **Spring Boot 4 / Java 21**: se eligió la versión más reciente estable.
-- DTOs para respuestas serializadas [NEW: Document pattern used in Subastas]
-  Ejemplo: FiguritaResponseDTO para evitar serializar IDs sin resolver en la respuesta de /figuritas/repetidas
-  Patrón: Repository devuelve DTO mapeado en lugar de entidades con referencias lazy
-- Custom Repository Queries [NEW: Document pattern used]
-  Ejemplo: FiguritaRepository.findRepetidas(usuarioId) con lógica de grouping y filtering en el repositorio
+* **Arquitectura en capas:** Controller → Service → Repository, separando responsabilidades y facilitando el testing unitario de cada capa y posterior migrado a microservicios.
+* **Spring Boot 4 / Java 21:** se eligió la versión más reciente estable.
+* **DTOs para respuestas serializadas:** Ejemplo: `FiguritaResponseDTO` para evitar serializar IDs sin resolver. Patrón: Repository devuelve DTO mapeado en lugar de entidades con referencias lazy.
+* **Custom Repository Queries:** Ejemplo: `FiguritaRepository.findRepetidas(usuarioId)` con lógica de grouping y filtering en el repositorio.
+* **Excepciones y Validación (RFC 7807):** Uso de un `GlobalExceptionHandler` (`@RestControllerAdvice`) que estandariza las respuestas `400 Bad Request`, `404 Not Found` y `409 Conflict` usando el formato de Problem Details de Spring. Todas las peticiones entrantes son validadas con Jakarta (`@Valid`, `@NotBlank`, etc.).
+
+### Persistencia y Concurrencia
+
+* **MongoDB:** base NoSQL orientada a documentos (formato tipo JSON), escalable. Database: `tacs`.
+* **Concurrencia Optimista:** Se agregó la anotación `@Version` a las colecciones principales (`SolicitudDeIntercambio`, `Figurita`, `Subasta`) para delegar al motor el control del problema de *Lost Update*.
+* **Transacciones Multidocumento:** Habilitado el bean `MongoTransactionManager` para permitir el uso de `@Transactional`, garantizando operaciones atómicas seguras.
+* **Actualizaciones Atómicas:** Reemplazo de flujos de lectura-modificación por el uso directo de `findAndModify` atómico (ej. para el método `aceptar()` de un intercambio).
+
+### Colecciones principales en MongoDB:
+
+* `usuarios`, `figuritas`, `figuritas_base`, `solicitudes_intercambio`, `intercambios`, `notificaciones`, `subastas`, `ofertas`, `sugerencias`.
 
 ### Frontend
 
-- **React 19 + Vite**: stack moderno, rápido en el desarrollo y buen rendimiento en builds.
-- **TailwindCSS 4**: Nos permite iterar en la UI sin escribir CSS custom.
-- **Lazy loading de páginas**: todas las páginas se importan con `React.lazy()` para que solo se descarguen cuando el usuario las visita.
-- **Roles de usuario**: `PrivateRoute` soporta un `requiredRole` opcional. La ruta `/admin` solo es accesible para usuarios con rol `admin`.
+* **React 19 + Vite + TailwindCSS 4:** Stack moderno, rápido en el desarrollo y buen rendimiento en builds.
+* **Sin mocks de integración:** Toda la funcionalidad, incluyendo la edición del perfil de usuario y el cálculo del componente dinámico de reputación encadenado, se conecta a la API productiva mediante `fetch` o `React Query`.
+* **Lazy loading de páginas:** importación con `React.lazy()`.
+* **Roles de usuario:** `PrivateRoute` soporta un `requiredRole` opcional.
 
-### Persistencia
-
-- **MongoDB**: base NoSQL orientada a documentos (formato tipo JSON), escalable.
-- **Database**: `tacs`
-- **Connection string**: se inyecta por la variable de entorno `SPRING_MONGODB_URI` (ver `.env.example`). **Nunca** se versiona la cadena real ni credenciales en el repo:
-
-  ```
-  SPRING_MONGODB_URI=mongodb+srv://<usuario>:<password_url_encoded>@<cluster>.mongodb.net/<database>?appName=<app>
-  ```
-
-**Colecciones**
-El sistema actualmente utiliza las siguientes colecciones en MongoDB:
-
-- `usuarios` — Cuentas de usuario
-- `figuritas` — Instancias de figuritas (con propietario)
-- `figuritas_base` — Definición base de figuritas
-- `solicitudes_intercambio` — Propuestas de intercambio
-- `intercambios` — Intercambios completados
-- `notificaciones` — Notificaciones para usuarios
-- `subastas` — Subastas de figuritas (WIP) 
-- `ofertas` — Ofertas/pujas en subastas (WIP) 
-- `sugerencias` — Sugerencias de intercambio bidireccional (US4), regeneradas a diario
-- Datos de referencia: `selecciones`, `equipos`, `jugadores`, `categorias_figurita`
-
-
+---
 
 ## Cobertura de User Stories
 
 Leyenda: ✅ completo · ⚠️ parcial · ❌ no implementado
 
 | US | Descripción | Backend | Frontend | Estado |
-|---|---|---|---|---|
-| US1 | Publicar figurita (nº, selección/equipo/categoría, jugador, modalidad directo/subasta) | ✅ | ✅ | ✅ `FiguritaPublicada` persiste publicaciones con estado y fecha; frontend permite publicar repetidas para intercambio o subasta |
-| US2 | Registrar figuritas faltantes | ✅ | ✅ | ✅ |
-| US3 | Buscar con filtros (nº, selección, equipo, categoría…) | ✅ | ✅ | ✅ `FiguritaController.getAll` acepta filtros server-side (`numero`, `search`, `seleccion`, `equipo`, `categoria`) con paginado |
-| US4 | Sugerencias automáticas de intercambio | ✅ | ✅ | ✅ matching bidireccional persistido (colección `sugerencias`), job diario 3 AM + endpoint admin `/api/sugerencias/regenerar`, página `/sugerencias` que prearma la propuesta |
-| US5 | Proponer intercambio (1+ figuritas ofrecidas) | ✅ | ✅ | ✅ |
-| US6 | Publicar subasta (duración + condiciones) | ✅ | ✅ | ✅ |
-| US7 | Ofertar en subasta | ✅ | ✅ | ✅ |
-| US8 | Ver publicaciones/propuestas/subastas y estado | ✅ | ✅ | ✅ Dashboard con datos reales vía `dashboardService`: figuritas publicadas, propuestas enviadas/recibidas, subastas activas, alertas; progreso de colección y acciones rápidas |
-| US9 | Aceptar / rechazar propuestas | ✅ | ✅ | ✅ aceptar transfiere figuritas, crea `Intercambio` y notifica |
-| US10 | Calificar / reputación | ✅ | ✅ | ✅ reputación = promedio + histograma 1–5★ sobre la colección `Calificacion`; front califica con estrellas (`IntercambiosPage`) y muestra el widget real (`PerfilPage` vía `useReputacion`) |
-| US11 | Alertas (figurita faltante / subasta por finalizar / nueva propuesta) | ✅ | ✅ | ⚠️ notificaciones in-app por evento (nueva propuesta, figurita faltante publicada, subasta creada); pendiente: alerta proactiva por cierre de subasta |
-| US12 | Estadísticas de admin | ✅ | ✅ | ✅ |
+| --- | --- | --- | --- | --- |
+| **US1** | Publicar figurita (nº, selección/equipo/categoría, jugador, modalidad directo/subasta) | ✅ | ✅ | **Completo** - `FiguritaPublicada` persiste publicaciones con estado y fecha. |
+| **US2** | Registrar figuritas faltantes | ✅ | ✅ | **Completo** |
+| **US3** | Buscar con filtros (nº, selección, equipo, categoría…) | ✅ | ✅ | **Completo** - `FiguritaController.getAll` acepta filtros server-side con paginado. |
+| **US4** | Sugerencias automáticas de intercambio | ✅ | ✅ | **Completo** - Matching persistido, job diario 3 AM + endpoint admin de regeneración. |
+| **US5** | Proponer intercambio (1+ figuritas ofrecidas) | ✅ | ✅ | **Completo** |
+| **US6** | Publicar subasta (duración + condiciones) | ✅ | ✅ | **Completo** |
+| **US7** | Ofertar en subasta | ✅ | ✅ | **Completo** |
+| **US8** | Ver publicaciones/propuestas/subastas y estado | ✅ | ✅ | **Completo** - Dashboard con datos reales y progreso de colección. |
+| **US9** | Aceptar / rechazar propuestas | ✅ | ✅ | **Completo** - Transfiere figuritas atómicamente, crea Intercambio y notifica. |
+| **US10** | Calificar / reputación | ✅ | ✅ | **Completo** - Histograma 1–5★ y widget real vía `useReputacion`. |
+| **US11** | Alertas (faltante / subasta / nueva propuesta) | ✅ | ✅ | ⚠️ **Parcial** - Pendiente alerta proactiva temporal por cierre inminente de subasta. |
+| **US12** | Estadísticas de admin | ✅ | ✅ | **Completo** |
 
-**Requisito de promoción pendiente:** **load test** (Vegeta/wrk). **NFR pendiente:** Javadoc en métodos no triviales.
+---
 
 ## Testing
 
-Estado actual: **78 tests unitarios** de services (JUnit 5 + Mockito con mocks de repositorios): `UsuarioServiceTest`, `SolicitudDeIntercambioServiceTest`, `FiguritaServiceTest`, `NotificacionServiceTest`, `FiguritaBaseServiceTest`, `IntercambioServiceTest`, `OfertaServiceTest`.
+**Estado actual:** 78 tests unitarios de services (JUnit 5 + Mockito con mocks de repositorios y del nuevo `MongoTemplate` de la actualización concurrente).
 
 ```bash
 cd backend && ./mvnw test
+
 ```
 
 **Pendiente:**
-- Tests de controllers (`@WebMvcTest` / `MockMvc`) e integración (`@DataMongoTest` / Testcontainers) — hoy inexistentes.
-- Ampliar cobertura de subastas/ofertas (hoy 1 test).
-- El CI (`.github/workflows/docker-build.yml`) solo valida el build de imágenes Docker; no corre `./mvnw test` ni `npm run lint`.
+
+* Tests de controllers (`@WebMvcTest` / `MockMvc`) e integración (`@DataMongoTest` / Testcontainers).
+* Ampliar cobertura de subastas/ofertas.
+
+---
 
 ## Seguridad
 
-- **Contraseñas**: hasheadas con **BCrypt** (`BCryptPasswordEncoder`) antes de persistir; nunca en texto plano.
-- **Autenticación**: JWT (HS256) emitido en `/auth/login`; el resto de endpoints requiere `Authorization: Bearer <token>` (salvo `/auth/register`). Sesiones STATELESS.
-- **Secreto JWT**: se inyecta por la variable de entorno `JWT_SECRET` (binding `jwt.secret`, ver `.env.example`); **no** está hardcodeado. Vigencia del token: 24 h.
-- **Credenciales**: `SPRING_MONGODB_URI` y `JWT_SECRET` viven solo en `.env` (gitignored). El repo solo versiona `.env.example` con placeholders.
-- **Autorización**: endpoints de administración protegidos con `@PreAuthorize("hasRole('ADMIN')")`.
-
-**Pendiente (hardening):**
-- Restringir CORS (hoy permisivo: todos los orígenes/métodos/headers).
-- Derivar el `owner` de las operaciones desde el JWT autenticado en vez del body/path.
-- Reemplazar el `printStackTrace` del filtro JWT por logging.
-
+* **Contraseñas:** hasheadas con BCrypt (`BCryptPasswordEncoder`) antes de persistir.
+* **Autenticación:** Filtro JWT interceptando excepciones de expiración o tokens inválidos para retornar prolijamente `401 Unauthorized` vía JSON. Sesiones STATELESS.
+* **Prevención de Escalamiento:** El endpoint de `/register` fue corregido para que no sea posible crear usuarios asignando un bypass del rol `ADMIN`.
+* **Secreto JWT:** Vigencia del token de 24 h. Inyectado por entorno local (`.env`) o de producción (Render).
+* **Autorización:** endpoints de administración protegidos con `@PreAuthorize("hasRole('ADMIN')")`.
 
 ---
 
 ## Uso de IA
 
-Durante el desarrollo se utilizó **Claude (familia 4.x, Sonnet/Opus) a través de Claude Code** —el CLI agéntico de Anthropic— como asistente de pair programming. Los archivos `CLAUDE.md` (raíz, `backend/`, `frontend/`) y `frontend/frontend-guidelines.md` son el contexto que consumen esos asistentes. Se utilizó para:
+Durante el desarrollo se utilizó Claude (familia 4.x, Sonnet/Opus) a través de Claude Code —el CLI agéntico de Anthropic— como asistente de pair programming. Los archivos `CLAUDE.md` (raíz, `backend/`, `frontend/`) y `frontend/frontend-guidelines.md` son el contexto que consumen esos asistentes.
+La herramienta fue utilizada como apoyo (validación de diseño, configuración Docker, maquetación UI), manteniendo siempre una revisión y adaptación manual del código y las transacciones generadas.
 
-- Desarrollo de los endpoints del backend.
-- Desarrollo de las interfaces de usuario de frontend.
-- Configuración de la infraestructura (Dockerfiles y docker-compose).
-- Generación de estructuras base y código repetitivo.
-- Validación de ideas y decisiones de diseño (principalmente UI).
-- Implemetación de la persistencia.
-
-La herramienta fue utilizada como apoyo, manteniendo revisión y adaptación manual del código generado.
 ---
 
 ## 📁 Estructura del proyecto
 
-```
+```text
 TACS/
 ├── backend/                  # Spring Boot
 │   ├── src/main/java/...
@@ -293,12 +231,19 @@ TACS/
 │   └── pom.xml
 ├── frontend/                 # React + Vite
 │   ├── src/
-│   │   ├── pages/            # Páginas por feature (subastas, colección, etc.)
+│   │   ├── pages/            # Páginas por feature
 │   │   ├── components/       # Componentes reutilizables
 │   │   ├── services/         # Llamadas a la API + mappers
 │   │   ├── types/            # Tipos TypeScript del dominio
 │   │   └── router/           # Definición de rutas
 │   ├── nginx.conf
 │   └── Dockerfile
+├── telegram-bot/             # Bot integrado
+│   └── Dockerfile
 └── docker-compose.yml
+
+```
+
+```
+
 ```

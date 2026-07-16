@@ -1,4 +1,5 @@
 import { Bot } from "grammy";
+import express from "express"; // <-- Agregado para Render
 import { loadConfig } from "./config";
 import { createApiClient } from "./api/client";
 import { createSessionStore } from "./session/store";
@@ -127,6 +128,21 @@ bot.catch((err) => {
 // Push de notificaciones: poll periódico por sesión activa.
 const notifPollMs = Number(process.env.NOTIF_POLL_MS ?? 30000);
 startNotifier({ bot, sessions, notificaciones: notificacionesApi, intervalMs: notifPollMs });
+
+
+// --- TRUCO DE COMPATIBILIDAD CON RENDER (FREE PORT BINDING) ---
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("🤖 Bot de Telegram de TACS activo y simulando HTTP service para Render.");
+});
+
+app.listen(port, () => {
+  console.log(`📡 Servidor Express dummy escuchando en puerto ${port} para evadir timeouts.`);
+});
+// ---------------------------------------------------------------
+
 
 bot.start({
   onStart: (info) => console.log(`🤖 Bot @${info.username} iniciado (long polling).`),
