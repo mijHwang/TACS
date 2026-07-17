@@ -167,7 +167,16 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     handleUnauthorized();
     throw new Error(`API 401: ${path}`);
   }
-  if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
+  if (!res.ok) {
+    let detail: string | undefined;
+    try {
+      const body = await res.json();
+      detail = body?.detail ?? body?.message;
+    } catch {
+      // response wasn't JSON, fall through with no detail
+    }
+    throw new Error(detail ?? `API ${res.status}: ${path}`);
+  }
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }

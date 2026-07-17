@@ -46,12 +46,9 @@ export default function SubastasNuevaPage() {
       
       setSuccess(true);
     } catch (error: unknown) {
-      // ---> NUEVO CÓDIGO AQUÍ <---
-      const errorData = (error as any).response?.data;
-      const msg = errorData?.detail || errorData?.message;
-      
-      setError(msg || 'No se pudo publicar la subasta. Verificá que el servidor esté corriendo.');
-    } finally {
+  const msg = error instanceof Error ? error.message : undefined;
+  setError(msg || 'No se pudo publicar la subasta. Verificá que el servidor esté corriendo.');
+} finally {
       setSubmitting(false);
     }
   };
