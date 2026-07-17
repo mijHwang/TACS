@@ -54,12 +54,14 @@ public class FiguritaPublicadaService {
 
         // 3. Pick only unoccupied ones
         List<Figurita> disponibles = todasDelUsuario.stream()
+                .filter(f -> f.getEstado() == EstadoFigurita.LIBRE)
                 .filter(f -> !yaPublicadas.contains(f.getId()))
                 .toList();
 
         if (disponibles.size() < dto.getCantidad()) {
             throw new IllegalArgumentException(
-                    "Solo tenés " + disponibles.size() + " figuritas disponibles para publicar"
+                    "No tenés suficientes figuritas LIBRES. Tenés " + disponibles.size() +
+                            " disponible(s), el resto ya están publicadas o en subasta."
             );
         }
 

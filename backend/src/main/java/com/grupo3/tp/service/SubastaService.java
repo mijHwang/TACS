@@ -51,6 +51,12 @@ public class SubastaService {
         Figurita figurita = figuritaService.obtenerPorId(dto.getFiguritaId())
                 .orElseThrow(() -> new RuntimeException("Figurita no encontrada"));
 
+        if (figurita.getEstado() != EstadoFigurita.LIBRE) {
+            throw new IllegalArgumentException(
+                    "Esta figurita no está LIBRE. Ya se encuentra publicada o en otra subasta."
+            );
+        }
+
         figuritaService.reclamar(figurita.getId(), EstadoFigurita.EN_SUBASTA);
 
         Subasta subasta = Subasta.builder()

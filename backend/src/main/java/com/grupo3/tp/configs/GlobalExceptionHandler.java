@@ -41,4 +41,13 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
     }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ProblemDetail> handleBadRequest(RuntimeException e) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage() != null ? e.getMessage() : "Error en la solicitud."
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
+    }
 }

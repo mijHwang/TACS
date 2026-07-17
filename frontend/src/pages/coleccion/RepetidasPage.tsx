@@ -44,9 +44,12 @@ export default function RepetidasPage() {
       });
       toast.success(`¡${figurita.jugadorNombre} (x${cantidad}) publicada para intercambio!`);
       setPublishTarget(null);
-      await refetch(); // refresca counts y saca las copias publicadas
+      await refetch();
     } catch (error: unknown) {
-      const msg = (error as { response?: { data?: { message?: string } } }).response?.data?.message;
+      // ---> NUEVO CÓDIGO AQUÍ <---
+      const errorData = (error as any).response?.data;
+      const msg = errorData?.detail || errorData?.message;
+      
       toast.error(msg || 'Error al publicar.');
     } finally {
       setPublishingId(null);
