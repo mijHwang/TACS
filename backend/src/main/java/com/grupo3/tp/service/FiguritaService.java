@@ -13,11 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.dao.OptimisticLockingFailureException;
-import java.util.ConcurrentModificationException;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -136,6 +134,12 @@ public class FiguritaService {
         }
         figurita.setId(id);
         return Optional.of(repository.save(figurita));
+    }
+
+    public Map<String, Long> obtenerEstadosPorBase(String userId, String figuritaBaseId) {
+        return repository.findByFiguritaOwnerId(userId).stream()
+                .filter(f -> f.getFiguritaBase().getId().equals(figuritaBaseId))
+                .collect(Collectors.groupingBy(f -> f.getEstado().name(), Collectors.counting()));
     }
 
 
