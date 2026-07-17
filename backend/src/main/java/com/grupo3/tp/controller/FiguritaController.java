@@ -11,6 +11,7 @@ import com.grupo3.tp.repository.SubastaRepository;
 import com.grupo3.tp.service.FiguritaBaseService;
 import com.grupo3.tp.service.FiguritaPublicadaService;
 import com.grupo3.tp.service.FiguritaService;
+import com.grupo3.tp.service.SubastaService;
 import com.grupo3.tp.service.UsuarioService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -26,24 +27,23 @@ import java.util.Optional;
 public class FiguritaController {
 
     private final FiguritaService service;
-    private final FiguritaBaseService  baseService;
+    private final FiguritaBaseService baseService;
     private final UsuarioService usuarioService;
-    private final FiguritaPublicadaService publicadaService; // add
+    private final FiguritaPublicadaService publicadaService;
+    private final SubastaService subastaService;
 
     public FiguritaController(FiguritaService service,
                               FiguritaBaseService baseService,
                               UsuarioService usuarioService,
-                              FiguritaPublicadaService publicadaService) {
+                              FiguritaPublicadaService publicadaService,
+                              SubastaService subastaService) {
         this.service = service;
         this.baseService = baseService;
         this.usuarioService = usuarioService;
         this.publicadaService = publicadaService;
+        this.subastaService = subastaService;
     }
 
-    /**
-     * Catálogo paginado (una entrada por figurita-base, agrupada). Filtros server-side.
-     * {@code usuarioId} es el caller: se EXCLUYEN sus propias figuritas del catálogo.
-     */
     @GetMapping()
     public ResponseEntity<PagedResponse<FiguritaResponseDTO>> getAll(
             @RequestParam(required = false) String usuarioId,
@@ -72,11 +72,9 @@ public class FiguritaController {
         return ResponseEntity.ok(service.obtenerPorUserId(userId));
     }
 
-
     @PostMapping
     public ResponseEntity<Figurita> create(@RequestBody FiguritaRequestDTO figuritaRequestDTO) {
 
-        //check they exist
         FiguritaBase base = baseService.obtenerPorId(figuritaRequestDTO.getFiguritaBaseId())
                 .orElseThrow(() -> new RuntimeException("No se encontro el figurita Base"));
 
@@ -90,9 +88,6 @@ public class FiguritaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.crear(figurita));
     }
 
-
-
-    //I am beginning to wonder why would I use this.
     @PutMapping("/{id}")
     public ResponseEntity<Figurita> update(@PathVariable String id, @RequestBody Figurita figurita) {
         return service.actualizar(id, figurita)
@@ -102,7 +97,8 @@ public class FiguritaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        publicadaService.removeFiguritaFromPublications(id); // clean references first
+        publicadaService.removeFiguritaFromPublications(id); // clean references en publicaciones
+        subastaService.cancelarPorFigurita(id);               // clean references en subastas
         if (service.eliminar(id)) {
             return ResponseEntity.noContent().build();
         }

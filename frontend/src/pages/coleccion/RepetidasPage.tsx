@@ -47,10 +47,8 @@ export default function RepetidasPage() {
       await refetch();
     } catch (error: unknown) {
       // ---> NUEVO CÓDIGO AQUÍ <---
-      const errorData = (error as any).response?.data;
-      const msg = errorData?.detail || errorData?.message;
-      
-      toast.error(msg || 'Error al publicar.');
+       const msg = (error as { response?: { data?: { detail?: string } } }).response?.data?.detail;
+        toast.error(msg || 'Error al publicar.');
     } finally {
       setPublishingId(null);
     }

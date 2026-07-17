@@ -25,11 +25,7 @@ public class FiguritaPublicadaController {
     @PostMapping
     public ResponseEntity<FiguritaPublicadaResponseDTO> publicar(
             @RequestBody FiguritaPublicadaRequestDTO dto) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(service.publicar(dto));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.publicar(dto));
     }
 
     @GetMapping("/disponibles/{usuarioId}")

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 
@@ -50,4 +51,15 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
     }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ProblemDetail> handleResponseStatus(ResponseStatusException e) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+                e.getStatusCode(),
+                e.getReason() != null ? e.getReason() : "Error en la solicitud."
+        );
+        return ResponseEntity.status(e.getStatusCode()).body(pd);
+    }
+
+
 }
