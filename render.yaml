@@ -1,38 +1,18 @@
 services:
-  # 1. BACKEND (Spring Boot)
   - type: web
-    name: tacs-backend
-    env: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
-    plan: free
-    envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: docker # Coincide con application-docker.properties (NO 'prod', ese archivo no existe)
-      - key: SPRING_MONGODB_URI
-        sync: false # Set manually in Render Dashboard -> Environment
-      - key: JWT_SECRET
-        generateValue: true
-      - key: SEED_ON_STARTUP
-        value: "true"
-
-  # 2. FRONTEND (React)
-  - type: web
-    name: tacs-frontend
-    env: docker
-    dockerfilePath: ./frontend/Dockerfile
-    dockerContext: ./frontend
+    name: cachelru-backend
+    runtime: go
+    rootDir: CacheLRU
+    buildCommand: go build -o app
+    startCommand: ./app
     plan: free
 
-  # 3. BOT DE TELEGRAM
   - type: web
-    name: tacs-telegram-bot
-    env: docker
-    dockerfilePath: ./telegram-bot/Dockerfile
-    dockerContext: ./telegram-bot
-    plan: free
+    name: minj-wrkbnch-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
     envVars:
-      - key: TELEGRAM_BOT_TOKEN
-        sync: false # Set manually in Render Dashboard -> Environment
-      - key: BACKEND_URL
-        value: https://tacs-backend.onrender.com
+      - key: VITE_CACHE_API_URL
+        value: https://cachelru-backend.onrender.com
